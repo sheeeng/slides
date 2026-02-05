@@ -1,0 +1,23 @@
+name: Approve Dependabot Pull Request
+on: pull_request
+
+permissions: {}
+
+jobs:
+  dependabot:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    steps:
+      - name: Fetch Metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@21025c705c08248db411dc16f3619e6b5f9ea21a # v2.5.0
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Approve Pull Request
+        if: ${{ steps.metadata.outputs.update-type != 'version-update:semver-major' }}
+        run: gh pr review --approve "${PR_URL}"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
