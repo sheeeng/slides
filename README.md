@@ -7,9 +7,15 @@ Use a template from either git submodule or direct clone method.
 ```shell
 # git submodule add git@github.com:yhatt/marp-cli-example.git
 git submodule update --init --recursive
+```
+
+```shell
 rsync --archive \
     --exclude='.git' \
     --exclude='.github' \
+    --exclude='netlify.toml' \
+    --exclude='LICENSE' \
+    --exclude='README.md' \
     marp-cli-example/ new-slides/
 ```
 
