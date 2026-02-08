@@ -20,7 +20,7 @@ section {
 }
 </style>
 
-# <!--fit--> Tracking Nixpkgs Pull Requests
+## <!--fit--> Tracking Nixpkgs Pull Requests
 
 When is the fix available?
 A 5-Minute Guide to Tracking Nixpkgs PRs!
@@ -49,7 +49,7 @@ Where did your fix go?
 
 ## Real-World Example
 
-**PR #451386: Ruby Patches for GCC 15**
+PR #451386: Ruby Patches for GCC 15
 
 - Critical fix for Ruby compatibility
 - Merged weeks ago
