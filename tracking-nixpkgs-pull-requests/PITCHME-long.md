@@ -400,7 +400,7 @@ git merge-base --is-ancestor \
 
 ---
 
-## Thank You!
+## Thank You
 
 **Track your PRs wisely!** 🎯
 
