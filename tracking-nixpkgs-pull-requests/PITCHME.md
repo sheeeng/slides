@@ -9,70 +9,171 @@ paginate: true
 _paginate: false
 ---
 
-![bg opacity](./assets/gradient.jpg)
+<!-- markdownlint-disable MD033 -->
+<style>
+/* Apply to every slide. */
+section {
+  background-image: url('assets/nix-wallpaper-nineish.webp');
+  background-size: cover; /* contain; */
+  background-position: center;
+  background-repeat: no-repeat;
+}
+</style>
 
-# <!--fit--> Tracking Nixpkgs Pull Requests
+## <!--fit--> Tracking Nixpkgs Pull Requests
 
 When is the fix available?
-A 5-Minute Guide to Tracking Nixpkgs PRs!
 
 <!--
-You saw that a PR with a fix being made available to Nixpkgs. It’s approved! It’s merged! But when you run nix flake update, your changes are nowhere to be found. Where did they go?
-
-Using the real-world example of PR #451386 (Ruby patches for GCC 15), I’ll show you how to navigate the "Staging" labyrinth. We’ll decode the CONTRIBUTING.md guidelines, learn why some PRs take the "slow lane," and master the PR Tracker to see exactly when your code hits the notable branches.
+[30 seconds] Welcome! Quick show of hands: Who has waited for a merged Nixpkgs PR that just wouldn't show up? This is a 5-minute guide to understanding why that happens and how to track it.
 -->
 
 ---
 
-![Marp bg 60%](https://raw.githubusercontent.com/marp-team/marp/master/marp.png)
+## The Problem
+
+✅ Nixpkgs PR approved and merged.
+🔄 You run `nix flake update`.
+❌ **Updates not available yet.**
+
+Where did the fix go? 🤔
+
+<!--
+[30 seconds] This is the frustrating experience. You see the PR merged on GitHub, you're excited, but running nix flake update gives you nothing. The fix disappeared somewhere in the Nixpkgs pipeline.
+-->
 
 ---
 
-<!-- _backgroundColor: "#123" -->
-<!-- _color: "#fff" -->
+## Two Lanes to Production
 
-##### <!--fit--> [Marp CLI](https://github.com/marp-team/marp-cli) + [GitHub Pages](https://github.com/pages) | [Netlify](https://www.netlify.com/) | [Vercel](https://vercel.com/)
+**Fast Lane** (< 500 rebuilds):
 
-##### <!--fit--> 👉 The easiest way to host<br />your Marp deck on the web
+```text
+master → nixos-unstable
+```
 
----
+**Slow Lane** (1000+ rebuilds):
 
-![bg right 60%](https://icongr.am/octicons/mark-github.svg)
+```text
+staging → staging-next → master → nixos-unstable
+```
 
-## **[GitHub Pages](https://github.com/pages)**
-
-#### Ready to write & host your deck!
-
-[![Use this as template h:1.5em](https://img.shields.io/badge/-Use%20this%20as%20template-brightgreen?style=for-the-badge&logo=github)](https://github.com/yhatt/marp-cli-example/generate)
-
----
-
-![bg right 60%](https://icongr.am/simple/netlify.svg?colored)
-
-## **[Netlify](https://www.netlify.com/)**
-
-#### Ready to write & host your deck!
-
-[![Deploy to Netlify h:1.5em](./assets/netlify-deploy-button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/yhatt/marp-cli-example)
+<!--
+[45 seconds] Think of Nixpkgs like a highway system. Small changes take the fast lane: straight from master to nixos-unstable. But large changes that rebuild thousands of packages? They take the slow lane through staging. Staging gets merged to staging-next about once per week according to CONTRIBUTING.md.
+-->
 
 ---
 
-![bg right 60%](https://icongr.am/simple/zeit.svg)
+## Why the Slow Lane?
 
-## **[Vercel](https://vercel.com/)**
+Mass rebuilds (Go, Python, GCC):
 
-#### Ready to write & host your deck!
+- 5000+ packages affected.
+- Days of build time.
+- Risk of breakages.
 
-[![Deploy to Vercel h:1.5em](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/yhatt/marp-cli-example)
+**Solution:** Batch in `staging`
+
+<!--
+[30 seconds] Why separate lanes? When you update Go or Python, suddenly 5000+ packages need rebuilding. That's days of compute time on Hydra. Plus higher risk of something breaking. So Nixpkgs batches these together in staging to test them as a group.
+-->
 
 ---
 
-### <!--fit--> :ok_hand:
+## PR Labels Tell the Story
+
+Check your PR labels:
+
+- `10.rebuild-linux: 5001+` → **staging** (slow lane)
+- `10.rebuild-linux: 1-10` → **master** (fast lane)
+- `1.severity: security` → backport to stable
+
+**Labels = Your delivery route** 🏷️
+
+<!--
+[30 seconds] Here's the secret: Just look at the PR labels! The rebuild count label tells you which lane. 5001+ rebuilds? Staging. Under 500? Master. Security label means it should also get backported to stable releases. Labels are your roadmap.
+-->
 
 ---
 
-![bg 40% opacity blur](https://avatars1.githubusercontent.com/u/3993388?v=4)
+## Real Example: Go 1.25.6
 
-### Created by Yuki Hattori ([@yhatt](https://github.com/yhatt))
+**PR #480465** (Security fix)
 
-https://github.com/yhatt/marp-cli-example
+Labels: `5001+ rebuilds` + `security`
+
+Path: `staging` → slow lane → your system
+
+<!--
+[20 seconds] Real example: Go 1.25.6 security update. Labels show 5001+ rebuilds plus security severity. This went through staging, took the slow lane, and eventually reached users. The labels predicted this path perfectly.
+-->
+
+---
+
+## Track Your PR
+
+```bash
+COMMIT_ID=$(gh pr view 451386 \
+    --repo NixOS/nixpkgs \
+    --json mergeCommit \
+    | jq --raw-output '.mergeCommit.oid')
+
+gh api \
+    "repos/NixOS/nixpkgs/compare/${COMMIT_ID}...nixos-unstable" \
+    --jq '.status'
+```
+
+`ahead` or `identical` = ✅ Available
+
+<!--
+[45 seconds] Don't guess, track! Use GitHub CLI to get the merge commit, then use the GitHub API to compare branches. If status returns 'ahead' or 'identical', your commit is in that branch. The docs folder has a complete tracker script you can use. Much better than randomly running nix flake update.
+-->
+
+---
+
+## Quick Reference
+
+| Rebuilds | Target Branch | Speed         |
+| -------- | ------------- | ------------- |
+| < 500    | `master`      | Fast          |
+| 500-1000 | Maybe staging | Medium        |
+| 1000+    | `staging`     | Slow (~weeks) |
+
+Check: **status.nixos.org**
+
+<!--
+[20 seconds] Quick reference card. Under 500 rebuilds? Fast lane. Over 1000? Definitely staging, so be patient. Always check status.nixos.org to see current channel status and any build failures.
+-->
+
+---
+
+## Summary
+
+1. **Merging ≠ Availability** - PRs follow different paths.
+2. **Labels** - They predict timeline.
+3. **Staging ≈ Patience** - Mass rebuilds take time.
+4. **Track, Don't Guess** - Use GitHub API.
+
+<!--
+[30 seconds] Four key points: One, merging doesn't mean availability. Two, labels tell you everything. Three, be patient with staging. Four, track with the API instead of guessing. That's it!
+-->
+
+---
+
+<!-- markdownlint-disable MD026 -->
+
+## Thank You!
+
+<!-- markdownlint-enable MD026 -->
+
+<!-- markdownlint-disable MD036 -->
+
+**github.com/sheeeng/slides**
+
+<!-- markdownlint-enable MD036 -->
+
+Happy Nixing! ❄️
+
+<!--
+[15 seconds] Thanks! Slides and the tracker script are on GitHub. Questions? Remember: check the labels, use the tracker, and be patient with staging. Happy Nixing!
+-->
