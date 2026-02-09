@@ -11,6 +11,8 @@ _paginate: false
 
 <!-- markdownlint-disable MD033 -->
 <style>
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css');
+
 /* Apply to every slide. */
 section {
   background-image: url('assets/nix-wallpaper-nineish.webp');
