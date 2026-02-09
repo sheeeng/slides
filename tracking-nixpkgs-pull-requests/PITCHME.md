@@ -11,7 +11,7 @@ _paginate: false
 
 <!-- markdownlint-disable MD033 -->
 <style>
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css');
+@import url('https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css');
 
 /* Apply to every slide. */
 section {
