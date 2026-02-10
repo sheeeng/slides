@@ -31,6 +31,10 @@ section {
   background-position: center;
   background-repeat: no-repeat;
 }
+
+footer {
+  color: #000000;
+}
 </style>
 
 ## <!--fit--> Tracking Nixpkgs Pull Requests
@@ -73,7 +77,9 @@ section {
 
 **Slow Lane** (1000+ Rebuilds)
 
-`staging` 🔜 `staging-next` ➡️ `master` ➡️ `nixos-unstable`
+`staging` ➡️ `staging-next` ↩️
+
+↪️ `master` ➡️ `nixos-unstable`
 
 <!--
 [45 seconds] Think of Nixpkgs like a highway system. Small changes take the fast lane: straight from master to nixos-unstable. But large changes that rebuild thousands of packages? They take the slow lane through staging. Staging gets merged to staging-next about once per week according to CONTRIBUTING.md.
@@ -115,27 +121,25 @@ Check your PR labels:
 
 ---
 
-## Real Example: Go 1.25.6
+## Example: Go 1.25.6
 
 **PR #[480465](https://github.com/NixOS/nixpkgs/pull/480465)** (Security Fix)
 
-### Labels
+Labels:
 
-`1.severity: security`
+`1.severity: security` `10.rebuild-linux: 5001+`
 
-`10.rebuild-linux: 5001+`
-
-#### Path
+Path:
 
 `staging` → (Slow Lane) → Your System
 
 <!--
-[20 seconds] Real example: Go 1.25.6 security update. Labels show 5001+ rebuilds plus security severity. This went through staging, took the slow lane, and eventually reached users. The labels predicted this path perfectly.
+[20 seconds] Example: Go 1.25.6 security update. Labels show 5001+ rebuilds plus security severity. This went through staging, took the slow lane, and eventually reached users. The labels predicted this path perfectly.
 -->
 
 ---
 
-## Real Example: Ruby Backport
+## Example: Ruby Backport
 
 **PR #[451386](https://github.com/NixOS/nixpkgs/pull/451386)**
 
