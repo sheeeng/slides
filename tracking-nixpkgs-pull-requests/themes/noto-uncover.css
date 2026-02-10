@@ -1,0 +1,31 @@
+/* @theme noto-uncover */
+@import 'uncover';
+
+/* Use Noto fonts. */
+/* https://github.com/orgs/marp-team/discussions/315#discussioncomment-2863387 */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Color+Emoji|Noto+Emoji|Noto+Sans+Display|Noto+Sans|Noto-Serif&display=swap');
+@import url('https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css');
+
+/*
+> Original definition of font-family listed below.
+> * `default`: https://github.com/sindresorhus/github-markdown-css/blob/9719250aca854ff73070da6c64a579b610773cb3/github-markdown.css#L103 from [`github-markdown-css`](https://github.com/sindresorhus/github-markdown-css) package
+> * `gaia`: https://github.com/marp-team/marp-core/blob/abc4e2edfae297ba16525270205dcdba161d38f9/themes/gaia.scss#L197-L198
+> * `uncover`: https://github.com/marp-team/marp-core/blob/abc4e2edfae297ba16525270205dcdba161d38f9/themes/uncover.scss#L31-L32
+*/
+
+section {
+  background: #cef;
+  color: #135;
+  /* Apply to Uncover theme. */
+  /* https://github.com/orgs/marp-team/discussions/315#discussioncomment-2863387 */
+  font-family: "Noto Sans", "Noto Color Emoji", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+
+  background-image: url('assets/nix-wallpaper-nineish.webp');
+  background-size: cover; /* contain; */
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Noto Sans Display", "Noto Color Emoji", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
