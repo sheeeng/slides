@@ -11,7 +11,27 @@ _paginate: false
 
 <!-- markdownlint-disable MD033 -->
 <style>
-@import url('https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css');
+    @import url('https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css');
+
+/* Use Noto Emoji font. */
+/* https://github.com/orgs/marp-team/discussions/315#discussioncomment-2863387 */
+
+@import url(https://fonts.googleapis.com/css2?family=Noto+Color+Emoji);
+
+/* for default theme */
+section {
+  font-family: "Noto Color Emoji",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+}
+
+/* for gaia theme */
+section {
+  font-family: "Noto Color Emoji", Lato, 'Avenir Next', Avenir, 'Trebuchet MS', 'Segoe UI', sans-serif;
+}
+
+/* for uncover theme */
+section {
+  font-family: "Noto Color Emoji", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
 
 /* Apply to every slide. */
 section {
@@ -29,6 +49,12 @@ When is the fix available?
 <!--
 [30 seconds] Welcome! Quick show of hands: Who has waited for a merged Nixpkgs PR that just wouldn't show up? This is a 5-minute guide to understanding why that happens and how to track it.
 -->
+
+<br/>
+<picture>
+  <source srcset="https://fonts.gstatic.com/s/e/notoemoji/latest/1f914/512.webp" type="image/webp">
+  <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f914/512.gif" alt="🤔" width="128" height="128">
+</picture>
 
 ---
 
@@ -170,11 +196,14 @@ Check: **status.nixos.org**
 
 <!-- markdownlint-disable MD036 -->
 
-**github.com/sheeeng/slides**
+sheeeng.github.io/slides
 
 <!-- markdownlint-enable MD036 -->
 
-Happy Nixing! ❄️
+<picture>
+  <source srcset="https://fonts.gstatic.com/s/e/notoemoji/latest/2744_fe0f/512.webp" type="image/webp">
+  <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/2744_fe0f/512.gif" alt="❄" width="128" height="128">
+</picture>
 
 <!--
 [15 seconds] Thanks! Slides and the tracker script are on GitHub. Questions? Remember: check the labels, use the tracker, and be patient with staging. Happy Nixing!
