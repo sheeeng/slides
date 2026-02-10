@@ -1,0 +1,6 @@
+# Use Noto Emoji font.
+# https://github.com/orgs/marp-team/discussions/315#discussioncomment-2863387
+options:
+  emoji:
+    shortcode: true # Turn `:smile:` syntax into Unicode emoji instead of Twemoji.
+    unicode: false # Disable agressive converting to Twemoji in Unicode emoji.
