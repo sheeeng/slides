@@ -8,9 +8,21 @@
 
 /*
 > Original definition of font-family listed below.
-> * `default`: https://github.com/sindresorhus/github-markdown-css/blob/9719250aca854ff73070da6c64a579b610773cb3/github-markdown.css#L103 from [`github-markdown-css`](https://github.com/sindresorhus/github-markdown-css) package
-> * `gaia`: https://github.com/marp-team/marp-core/blob/abc4e2edfae297ba16525270205dcdba161d38f9/themes/gaia.scss#L197-L198
-> * `uncover`: https://github.com/marp-team/marp-core/blob/abc4e2edfae297ba16525270205dcdba161d38f9/themes/uncover.scss#L31-L32
+>
+> * `default`:
+> https://github.com/sindresorhus/github-markdown-css/blob/main/github-markdown.css#L139
+> https://github.com/sindresorhus/github-markdown-css/blob/265b22aa79815418195f453352456d5784bb7580/github-markdown.css#L139
+> https://github.com/marp-team/marp-core/blob/main/themes/default.scss#L15
+> https://github.com/marp-team/marp-core/blob/26e50d00f7fe14ded7dcacd971ef3a93ac47e94d/themes/default.scss#L15
+>
+> * `gaia`:
+> https://github.com/marp-team/marp-core/blob/main/themes/gaia.scss#L203-L204
+> https://github.com/marp-team/marp-core/blob/26e50d00f7fe14ded7dcacd971ef3a93ac47e94d/themes/gaia.scss#L203-L204
+>
+> * `uncover`:
+> https://github.com/marp-team/marp-core/blob/main/themes/uncover.scss#L43-L45
+> https://github.com/marp-team/marp-core/blob/26e50d00f7fe14ded7dcacd971ef3a93ac47e94d/themes/uncover.scss#L43-L45
+>
 */
 
 section {
