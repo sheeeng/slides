@@ -183,7 +183,7 @@ See status.nixos.org page.
 1. **Merging ≠ Availability** - PRs follow different paths.
 2. **Labels** - They predict timeline.
 3. **Staging ≈ Patience** - Mass rebuilds take time.
-4. **Track, Don't Guess** - Use Git{,Hub} command.
+4. **Track, Don't Guess** - Use Git{,Hub} commands.
 
 <!--
 [30 seconds] Four key points: One, merging doesn't mean availability. Two, labels tell you everything. Three, be patient with staging. Four, track with the commands instead of guessing. That's it!
