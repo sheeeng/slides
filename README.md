@@ -13,8 +13,9 @@ git submodule update --init --recursive
 rsync --archive \
     --exclude='.git' \
     --exclude='.github' \
-    --exclude='netlify.toml' \
+    --exclude='assets/netlify-deploy-button.svg' \
     --exclude='LICENSE' \
+    --exclude='netlify.toml' \
     --exclude='README.md' \
     marp-cli-example/ new-slides/
 ```
