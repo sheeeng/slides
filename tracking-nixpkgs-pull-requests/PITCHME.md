@@ -5,7 +5,7 @@ title: Tracking Nixpkgs Pull Requests
 description: When is the fix available? A 5-Minute Guide to Tracking Nixpkgs PRs!
 theme: uncover
 transition: fade
-footer: 'Leonard Sheng Sheng Lee <span class="nix-snowflake-rainbow"></span> Tracking Nixpkgs Pull Requests <span class="nix-snowflake-rainbow"></span> PlanetNix 2026 <span class="nix-snowflake-rainbow"></span> SCALE 23x'
+footer: "Leonard Sheng Sheng Lee | Tracking Nixpkgs Pull Requests | PlanetNix 2026 • SCALE 23x"
 paginate: true
 _paginate: false
 ---
@@ -34,6 +34,15 @@ section {
 
 footer {
   color: #000000;
+  font-size: 0.5rem;
+}
+
+/* Pagination "X / Y" — from neobeam. */
+section::after {
+  font-size: 1rem;
+  padding-right: 0.4em;
+  padding-bottom: 0.4em;
+  content: attr(data-marpit-pagination) ' / ' attr(data-marpit-pagination-total);
 }
 
 span[class^="nix-snowflake-"] {
