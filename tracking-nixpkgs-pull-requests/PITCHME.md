@@ -100,17 +100,17 @@ span.nix-snowflake-white {
 
 ---
 
-## Common Lanes to Production
+## Typical Deployment Paths
 
 **Fast Lane** (< 500 Rebuilds)
 
-`master` ➡️ `nixos-unstable`
+`master` ➡️ `<nix-channel>`
 
 **Slow Lane** (1000+ Rebuilds)
 
-`staging` ➡️ `staging-next` ↩️
+`staging` 🔁 `staging-next` ↩️
 
-↪️ `master` ➡️ `nixos-unstable`
+↪️ `master` ➡️ `<nix-channel>`
 
 <!--
 [45 seconds] Think of Nixpkgs like a highway system. Small changes take the fast lane: straight from master to nixos-unstable. But large changes that rebuild thousands of packages? They take the slow lane through staging. Staging gets merged to staging-next about once per week according to CONTRIBUTING.md.
