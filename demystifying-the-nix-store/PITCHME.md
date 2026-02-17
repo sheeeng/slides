@@ -175,7 +175,7 @@ Traditional package managers are like throwing all your LEGO bricks into one big
 
 ---
 
-# <!--fit--> Part 2: Derivations
+## <!--fit--> Part 2: Derivations
 
 The Instruction Manual
 
@@ -226,7 +226,7 @@ This is what a derivation looks like in practice. It's a JSON-like structure tha
 
 ## The Store Path Structure
 
-```
+```text
 /nix/store/[hash]-[name]-[version]
            └─────┬─────┘
           Unique identifier
@@ -235,7 +235,7 @@ This is what a derivation looks like in practice. It's a JSON-like structure tha
 
 **Example**:
 
-```
+```text
 /nix/store/d9di9cna6c8k8szfcl3p4sgrkkscjc2s-nix-nss-cacert-2.3.18
 ```
 
@@ -258,7 +258,7 @@ Hashes are the secret sauce. They enable all of Nix's superpowers: reproducibili
 
 ---
 
-# <!--fit--> Part 3: Building in Isolation
+## <!--fit--> Part 3: Building in Isolation
 
 The Sandbox
 
@@ -424,8 +424,8 @@ You can query the database directly to understand dependencies. What does this p
 
 ## Garbage Collection
 
-```bash
-$ nix-collect-garbage --delete-older-than 30d
+```shell
+nix-collect-garbage --delete-older-than 30d
 ```
 
 **What happens?**
