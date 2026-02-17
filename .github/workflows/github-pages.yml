@@ -52,12 +52,12 @@ jobs:
       - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: slides-tracking-nixpkgs-pull-requests
-          path: public/slides/tracking-nixpkgs-pull-requests
+          path: public/tracking-nixpkgs-pull-requests
 
       - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: slides-demystifying-the-nix-store
-          path: public/slides/demystifying-the-nix-store
+          path: public/demystifying-the-nix-store
 
       - name: Create Index Page
         run: |
@@ -90,8 +90,8 @@ jobs:
           <body>
             <h1>Slides</h1>
             <ul>
-              <li><a href="slides/tracking-nixpkgs-pull-requests/">Tracking Nixpkgs Pull Requests</a></li>
-              <li><a href="slides/demystifying-the-nix-store/">Demystifying the Nix Store</a></li>
+              <li><a href="tracking-nixpkgs-pull-requests/">Tracking Nixpkgs Pull Requests</a></li>
+              <li><a href="demystifying-the-nix-store/">Demystifying the Nix Store</a></li>
             </ul>
           </body>
           </html>
