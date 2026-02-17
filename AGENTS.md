@@ -16,6 +16,8 @@
   - Lowercase prepositions such as at, by, for, from, in, into, of, on, to, with, between, through.
   - Lowercase "to" in infinitives such as to run, to see, to build.
   - Exception: Capitalize prepositions when used adverbially or adjectivally ("Look Up," "Turn Down") or in verb phrases.
+  - Don't use normal dashes or proper em dashes (—).
+  - Don't use parenthesis `()` to phrase terms.
 
 ## Commands
 
