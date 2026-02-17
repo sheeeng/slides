@@ -1,8 +1,8 @@
 ---
 marp: true
 lang: en-US
-title: Tracking Nixpkgs Pull Requests
-description: When is the fix available? A 5-Minute Guide to Tracking Nixpkgs PRs!
+title: "Tracking Nixpkgs Pull Requests"
+description: "When is the fix available? A 5-Minute Guide to Tracking Nixpkgs PRs!"
 theme: uncover
 transition: fade
 footer: "Leonard Sheng Sheng Lee | Tracking Nixpkgs Pull Requests | PlanetNix 2026 • SCALE 23x"
@@ -238,5 +238,5 @@ sheeeng.github.io/slides
 </picture>
 
 <!--
-[15 seconds] Thanks! Slides and the tracker script are on GitHub. Questions? Remember: check the labels, use the tracker, and be patient with staging. Happy Nixing!
+[15 seconds] Thanks! Slides are on GitHub. Questions? Remember: check the labels, use the tracker, and be patient with staging. Happy Nixing!
 -->
