@@ -66,6 +66,16 @@ span.nix-snowflake-rainbow {
 span.nix-snowflake-white {
   background-image: url('assets/nix-snowflake-white.svg');
 }
+
+/* Two-column layout. */
+.columns {
+  display: flex;
+  gap: 2rem;
+}
+
+.columns > div {
+  flex: 1;
+}
 </style>
 
 ## <!--fit--> Demystifying the Nix Store
@@ -79,6 +89,12 @@ Ever looked inside /nix/store and felt immediate confusion? You aren't alone. Fo
 
 "LEGO® is a trademark of the LEGO Group of companies which does not sponsor, authorize or endorse this site/presentation."
 -->
+
+<br/>
+<picture>
+  <source srcset="https://fonts.gstatic.com/s/e/notoemoji/latest/1f635_200d_1f4ab/512.webp" type="image/webp">
+  <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f635_200d_1f4ab/512.gif" alt="🤔" width="128" height="128">
+</picture>
 
 ---
 
@@ -111,12 +127,25 @@ These are the common questions newcomers have. Traditional package managers hide
 
 ## Today's Journey
 
-1. Understanding the "Magic" of Nix.
-2. The LEGO® Metaphor.
-3. Inside a Derivation.
-4. How Nix Builds in Isolation.
-5. Why Your System Can't Break.
-6. Practical Commands and Tools.
+<div class="columns">
+<div>
+
+1. Explore the LEGO® Metaphor.
+2. Look Inside Derivations.
+3. Build in Isolation.
+4. Learn Why Your System Can't Break.
+
+</div>
+<div>
+
+5. Track Everything with SQLite.
+6. Use Practical Commands.
+7. Modernize with Flakes.
+8. Explore Closures.
+9. See the Big Picture.
+
+</div>
+</div>
 
 <!--
 Set expectations for the talk. We'll go from confusion to clarity using a simple metaphor that makes Nix's complexity make sense.
@@ -124,7 +153,7 @@ Set expectations for the talk. We'll go from confusion to clarity using a simple
 
 ---
 
-## <!--fit--> Part 1: The LEGO® Metaphor
+## Part 1: Explore the LEGO® Metaphor
 
 <!--
 Now we introduce the key metaphor that will help everything make sense.
@@ -175,7 +204,7 @@ Traditional package managers are like throwing all your LEGO bricks into one big
 
 ---
 
-## <!--fit--> Part 2: Derivations
+## Part 2: Look Inside Derivations
 
 The Instruction Manual
 
@@ -193,7 +222,7 @@ A **recipe** that describes:
 - **Build steps**: How to build it.
 - **Outputs**: What you get, including binaries and libraries.
 
-> The LEGO® instruction booklet that came with your set.
+> **The LEGO® instruction booklet inside your set.**
 
 <!--
 A derivation is just a recipe. It tells Nix exactly what inputs are needed, what steps to perform, and what the final output should look like.
@@ -206,13 +235,13 @@ A derivation is just a recipe. It tells Nix exactly what inputs are needed, what
 ```bash
 $ nix derivation show nixpkgs#hello
 {
-  "/nix/store/abc123...hello.drv": {
+  "/nix/store/msnhw2...hello.drv": {
     "outputs": {
-      "out": "/nix/store/xyz789...hello"
+      "out": "/nix/store/c12lxp...hello"
     },
     "inputSrcs": [...],
     "inputDrvs": {
-      "/nix/store/def456...stdenv.drv": ["out"]
+      "/nix/store/26mkra...stdenv.drv": ["out"]
     }
   }
 }
@@ -236,7 +265,7 @@ This is what a derivation looks like in practice. It's a JSON-like structure tha
 **Example**:
 
 ```text
-/nix/store/d9di9cna6c8k8szfcl3p4sgrkkscjc2s-nix-nss-cacert-2.3.18
+/nix/store/c12lxpykv6sld7a0sakcnr3y0la70x8w-hello-2.12.2
 ```
 
 <!--
@@ -258,7 +287,7 @@ Hashes are the secret sauce. They enable all of Nix's superpowers: reproducibili
 
 ---
 
-## <!--fit--> Part 3: Building in Isolation
+## Part 3: Build in Isolation
 
 The Sandbox
 
@@ -317,7 +346,7 @@ This is the build process in a nutshell. Everything is deterministic and traceab
 
 ---
 
-## <!--fit--> Part 4: Why Your System Can't Break
+## Part 4: Learn Why Your System Can't Break
 
 <!--
 Let's talk about the killer feature: system stability.
@@ -375,9 +404,9 @@ Operations are atomic. Either they complete fully or they don't happen at all. A
 
 ---
 
-## <!--fit--> Part 5: The SQLite Database
+## Part 5: Track Everything with SQLite
 
-Tracking Everything
+The Database
 
 <!--
 Let's look at how Nix tracks all of this internally.
@@ -387,15 +416,13 @@ Let's look at how Nix tracks all of this internally.
 
 ## Nix Database
 
-Located at: `/nix/var/nix/db/db.sqlite`
+Location: `/nix/var/nix/db/db.sqlite`
 
-**Tracks**:
-
-- Every store path.
-- Derivation metadata.
-- Dependencies and references.
-- Garbage collection roots.
-- Validity of store paths.
+- Track every store path.
+- Track derivation metadata.
+- Track dependencies and references.
+- Track garbage collection roots.
+- Track validity of store paths.
 
 <!--
 Nix uses SQLite to track the lifecycle of every single package in your store. This is how it knows what depends on what, what can be safely deleted, etc.
@@ -441,9 +468,9 @@ Garbage collection is safe because Nix knows exactly what's in use and what's no
 
 ---
 
-## <!--fit--> Part 6: Practical Commands
+## <!--fit--> Part 6: Use Practical Commands
 
-Getting Hands-On
+Get Hands-On
 
 <!--
 Now let's look at practical commands you can use to explore the Nix store.
@@ -540,7 +567,7 @@ Visualize the entire dependency tree. You can even generate graphs with Graphviz
 
 ---
 
-## <!--fit--> Part 7: Flakes and Modern Nix
+## <!--fit--> Part 7: Modernize with Flakes
 
 <!--
 Let's briefly touch on modern Nix with flakes.
@@ -559,8 +586,6 @@ Let's briefly touch on modern Nix with flakes.
   };
 }
 ```
-
-**Benefits**:
 
 - Explicit inputs with locked versions.
 - Better reproducibility.
@@ -582,7 +607,7 @@ nix flake show
 nix flake metadata
 ```
 
-**Everything is still derivations under the hood!**
+> **Everything is still derivations under the hood!**
 
 <!--
 Flakes are just a nicer interface. Under the hood, it's still the same derivation-based system we've been discussing.
@@ -608,7 +633,7 @@ Same analysis tools work with flakes. You can trace dependencies, understand clo
 
 ---
 
-## <!--fit--> Part 8: Nested Paths and Closure
+## Part 8: Explore Closures
 
 <!--
 Let's explore closures - the complete set of dependencies.
@@ -656,8 +681,6 @@ This often surprises people. Even a simple program has dependencies. But remembe
 
 ## Optimizing Closures
 
-**Techniques**:
-
 - Remove unnecessary dependencies.
 - Use `removeReferencesTo`.
 - Split outputs into `bin`, `dev`, `doc`.
@@ -673,9 +696,9 @@ For production deployments, you can optimize closures by splitting outputs and r
 
 ---
 
-## <!--fit--> Part 9: Why This Matters
+## Part 9: See the Big Picture
 
-The Big Picture
+Why This Matters
 
 <!--
 Let's wrap up with why all of this matters in practice.
