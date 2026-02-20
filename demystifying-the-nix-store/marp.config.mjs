@@ -7,7 +7,7 @@ const config = {
     if (canonicalUrl) return `${canonicalUrl}/og-image.jpg`
     if (process.env.VERCEL_URL)
       return `https://${process.env.VERCEL_URL}/og-image.jpg`
-  
+
     return undefined
   })(),
   themeSet: 'themes',
