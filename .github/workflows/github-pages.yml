@@ -49,6 +49,11 @@ jobs:
       pages: write
       id-token: write
     steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          sparse-checkout: index.html
+          sparse-checkout-cone-mode: false
+
       - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: slides-tracking-nixpkgs-pull-requests
@@ -59,10 +64,10 @@ jobs:
           name: slides-demystifying-the-nix-store
           path: public/demystifying-the-nix-store
 
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-
-      - name: Copy Index Page
-        run: cp index.html public/index.html
+      - name: Prepare Public Directory
+        run: |-
+          mkdir --parents public
+          cp index.html public/index.html
 
       - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4.0.0
         with:
