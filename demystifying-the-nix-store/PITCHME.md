@@ -101,9 +101,9 @@ Ever looked inside /nix/store and felt immediate confusion? You aren't alone. Fo
 ## Have You Ever Looked Inside `/nix/store`?
 
 ```bash
-/nix/store/d9di9cna6c8k8szfcl3p4sgrkkscjc2s-nix-nss...
-/nix/store/k7zgvzp2r31zkg9xqgjim7mbknryv6bs-glibc-2...
-/nix/store/1gf2flfqnpqbr1b4p4qz2f72y42bs56r-gcc-11....
+/nix/store/vm9dz55z4g5p8qixnnkgy2jy7rh0m80p-nixd-2...
+/nix/store/3qk44frb7zpwpy0lkxp3xl97zhpjrcr7-glibc-...
+/nix/store/gyl90xhl7hf8wpz31zmvgz0m7wy343ib-gcc-15...
 ```
 
 <!--
@@ -125,27 +125,12 @@ These are the common questions newcomers have. Traditional package managers hide
 
 ---
 
-## Today's Journey
-
-<div class="columns">
-<div>
+## Today's Session
 
 1. Explore the LEGO® Metaphor.
-2. Look Inside Derivations.
-3. Build in Isolation.
-4. Learn Why Your System Can't Break.
-
-</div>
-<div>
-
-5. Track Everything with SQLite.
-6. Use Practical Commands.
-7. Modernize with Flakes.
-8. Explore Closures.
-9. See the Big Picture.
-
-</div>
-</div>
+2. Look Inside Derivations and Closures.
+3. Track Everything with SQLite.
+4. Nix in Practice.
 
 <!--
 Set expectations for the talk. We'll go from confusion to clarity using a simple metaphor that makes Nix's complexity make sense.
@@ -161,13 +146,26 @@ Now we introduce the key metaphor that will help everything make sense.
 
 ---
 
+## Traditional Package Managers
+
+- Everything mixed together.
+- Upgrading one program might break another.
+- Hard to undo changes.
+- Dependency hell.
+
+<!--
+Traditional package managers are like throwing all your LEGO bricks into one big bin. Sure, you can find pieces, but things get messy, upgrades can break existing builds, and rolling back is painful.
+-->
+
+---
+
 ## Imagine a Giant LEGO® Set
 
-Each package is:
+Each package:
 
-- A **set of LEGO® bricks**, the binaries and libraries.
-- An **instruction manual**, the derivation that builds it.
-- A **unique set number**, the content-addressed hash.
+- The binaries and libraries are a set of LEGO® bricks.
+- The derivation that builds it is the instruction manual.
+- The content-addressed hash is a unique set number.
 
 <!--
 This is the core metaphor. Each LEGO set is self-contained, has clear instructions, and has a unique identifier. Sound familiar?
@@ -189,27 +187,12 @@ The immutability of LEGO sets maps perfectly to Nix's immutable store. Once buil
 
 ---
 
-## Traditional Package Managers
-
-Like a **shared toy box**:
-
-- Everything mixed together.
-- Upgrading one toy might break another.
-- Hard to undo changes.
-- "Dependency hell."
-
-<!--
-Traditional package managers are like throwing all your LEGO bricks into one big bin. Sure, you can find pieces, but things get messy, upgrades can break existing builds, and rolling back is painful.
--->
-
----
-
-## Part 2: Look Inside Derivations
+## Part 2: Look Inside Derivations and Closures
 
 The Instruction Manual
 
 <!--
-Now let's dive into what derivations actually are.
+Now let's dive into what derivations and closures actually are.
 -->
 
 ---
@@ -287,16 +270,6 @@ Hashes are the secret sauce. They enable all of Nix's superpowers: reproducibili
 
 ---
 
-## Part 3: Build in Isolation
-
-The Sandbox
-
-<!--
-Now let's explore how Nix builds packages in complete isolation.
--->
-
----
-
 ## Total Isolation
 
 During a build, Nix:
@@ -342,14 +315,6 @@ Every build happens in a clean room. Nix sets up the environment from scratch ev
 
 <!--
 This is the build process in a nutshell. Everything is deterministic and traceable.
--->
-
----
-
-## Part 4: Learn Why Your System Can't Break
-
-<!--
-Let's talk about the killer feature: system stability.
 -->
 
 ---
@@ -404,7 +369,7 @@ Operations are atomic. Either they complete fully or they don't happen at all. A
 
 ---
 
-## Part 5: Track Everything with SQLite
+## Part 3: Track Everything with SQLite
 
 The Database
 
@@ -468,109 +433,10 @@ Garbage collection is safe because Nix knows exactly what's in use and what's no
 
 ---
 
-## <!--fit--> Part 6: Use Practical Commands
-
-Get Hands-On
+## <!--fit--> Part 4: Nix in Practice
 
 <!--
-Now let's look at practical commands you can use to explore the Nix store.
--->
-
----
-
-## Show a Derivation
-
-```console
-$ nix derivation show nixpkgs#hello
-...
-$ nix show-derivation /nix/store/...-hello.drv
-```
-
-**See**:
-
-- All inputs and dependencies.
-- Environment variables.
-- Build commands.
-- Output paths.
-
-<!--
-These commands let you inspect the actual derivation files and understand exactly how a package is built.
--->
-
----
-
-## Find Store Paths
-
-```bash
-$ nix-store --query --outputs $(nix-instantiate '<nixpkgs>' -A hello)
-/nix/store/...-hello-2.12.1
-
-$ nix eval nixpkgs#hello.outPath
-"/nix/store/...-hello-2.12.1"
-```
-
-<!--
-Multiple ways to find where a package lives in the store.
--->
-
----
-
-## Dependency Analysis
-
-```bash
-$ nix why-depends nixpkgs#hello nixpkgs#glibc
-/nix/store/...-hello
-└───bin/hello: …→/nix/store/...-glibc/lib/ld-linux-x86-64.so.2
-```
-
-**Trace the dependency chain!**
-
-<!--
-This is incredibly powerful for understanding why a particular dependency exists. It shows you the exact reference chain.
--->
-
----
-
-## Using `jq` for Analysis
-
-```bash
-$ nix derivation show nixpkgs#hello | jq '.[] | .inputDrvs'
-{
-  "/nix/store/...-stdenv.drv": ["out"],
-  "/nix/store/...-bash.drv": ["out"]
-}
-```
-
-Parse derivations programmatically.
-
-<!--
-Since derivations are JSON, you can use jq to parse and analyze them programmatically. Great for automation and scripting.
--->
-
----
-
-## Exploring Runtime Dependencies
-
-```bash
-$ nix-store --query --tree /nix/store/...-hello
-/nix/store/...-hello
-├───/nix/store/...-glibc-2.35
-│   └───/nix/store/...-linux-headers-5.19
-└───/nix/store/...-gcc-11.3.0-lib
-
-$ nix-store --query --graph /nix/store/...-hello | dot -Tpng > deps.png
-```
-
-<!--
-Visualize the entire dependency tree. You can even generate graphs with Graphviz.
--->
-
----
-
-## <!--fit--> Part 7: Modernize with Flakes
-
-<!--
-Let's briefly touch on modern Nix with flakes.
+Let's look at modern Nix with flakes and wrap up with why all of this matters.
 -->
 
 ---
@@ -633,14 +499,6 @@ Same analysis tools work with flakes. You can trace dependencies, understand clo
 
 ---
 
-## Part 8: Explore Closures
-
-<!--
-Let's explore closures - the complete set of dependencies.
--->
-
----
-
 ## The Closure
 
 **Closure**: A package plus all its dependencies, resolved recursively.
@@ -692,16 +550,6 @@ outputs = [ "out" "dev" "doc" ];
 
 <!--
 For production deployments, you can optimize closures by splitting outputs and removing unnecessary references. This reduces the deployment size.
--->
-
----
-
-## Part 9: See the Big Picture
-
-Why This Matters
-
-<!--
-Let's wrap up with why all of this matters in practice.
 -->
 
 ---
@@ -763,28 +611,6 @@ Nothing is perfect. Nix trades disk space for reliability, and has a learning cu
 
 <!--
 These are the core concepts. Master these, and Nix will start to make sense.
--->
-
----
-
-## Commands to Remember
-
-```bash
-# Explore
-nix derivation show nixpkgs#hello
-nix-store --query --tree /nix/store/...-hello
-nix why-depends .#app nixpkgs#openssl
-
-# Manage
-nix-collect-garbage --delete-older-than 30d
-nix-env --rollback
-
-# Analyze
-nix path-info --closure-size .#app
-```
-
-<!--
-These are the practical commands you'll use day-to-day to understand and manage your Nix store.
 -->
 
 ---
