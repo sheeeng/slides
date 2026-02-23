@@ -251,3 +251,11 @@ $RECYCLE.BIN/
 
 
 # End of https://www.gitignore.io/api/node,windows,macos,linux,sublimetext,emacs,vim,visualstudiocode
+
+# Start of Nix
+# Ignore build outputs from performing a nix-build or `nix build` command.
+result
+result-*
+# Ignore automatically generated direnv output.
+.direnv
+# End of Nix
