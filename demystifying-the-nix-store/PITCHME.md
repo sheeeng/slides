@@ -717,6 +717,27 @@ Run the script on any machine with this Nix closure.
 
 ---
 
+## Build Process in a Nutshell
+
+1. **Evaluate the expression**, the `.nix` file.
+2. **Produce the derivation**, the `.drv` file.
+3. **Gather all inputs**, including dependencies.
+4. **Create isolated environment.**
+5. **Run build steps.**
+6. **Store output** at the computed path.
+
+<!--
+This is the build process in a nutshell.
+
+The Nix expression is evaluated to produce a derivation.
+
+The derivation is then executed in a sandbox to produce the output.
+
+Everything is deterministic and traceable.
+-->
+
+---
+
 ## The Store Path Structure
 
 ```text
@@ -746,8 +767,11 @@ Change anything, and you get a different hash.
 ## Why Hashes Matter
 
 **Reproducibility**: Same inputs = same hash.
+
 **Caching**: Already built? Reuse it!
+
 **Isolation**: Different versions coexist peacefully.
+
 **Atomic upgrades**: New hash = new path.
 
 <!--
@@ -756,79 +780,14 @@ Hashes are the secret sauce. They enable all of Nix's superpowers: reproducibili
 
 ---
 
-## Total Isolation
-
-During a Nix build:
-
-Block network access in most cases.
-
-Block access to `/usr`, `/bin`, etc.
-
-Prevent environment variable leakage.
-
-Allow only declared dependencies.
-
-**Result**: Reproducible builds!
-
-<!--
-This is crucial.
-
-Nix builds happen in a sandbox where the only things available are what you explicitly declared.
-
-No hidden dependencies, no accidental reliance on system packages.
--->
-
----
-
-## The Build Sandbox
-
-```bash
-$ nix-build '<nixpkgs>' --attr hello --check
-checking outputs of '/nix/store/msnhw2b4...-hello-2.12.2.drv'...
-Using versionCheckHook
-Running phase: unpackPhase
-unpacking source archive /nix/store/dw402azx...-hello-2.12.2.tar.gz
-source root is hello-2.12.2
-...
-/nix/store/c12lxpyk...-hello-2.12.2
-```
-
-<!--
-Every build happens in a clean room.
-
-Nix sets up the environment from scratch every time, ensuring consistency.
-
-nix-build '<nixpkgs>' --attr hello --check --no-out-link --no-substitute
--->
-
----
-
-## Build Process in a Nutshell
-
-1. **Evaluate the expression**, the `.nix` file.
-2. **Produce the derivation**, the `.drv` file.
-3. **Gather all inputs**, including dependencies.
-4. **Create isolated environment.**
-5. **Run build steps.**
-6. **Store output** at the computed path.
-
-<!--
-This is the build process in a nutshell.
-
-The Nix expression is evaluated to produce a derivation.
-
-The derivation is then executed in a sandbox to produce the output.
-
-Everything is deterministic and traceable.
--->
-
----
-
 ## Immutable Store
 
 Once built, **never changes**.
+
 Upgrades create **new paths**.
+
 Old versions remain until garbage collected.
+
 Rollbacks are just **switching symlinks**.
 
 <!--
@@ -843,9 +802,9 @@ Instead, you're always creating new versions alongside the old ones.
 
 ## Example: Upgrading Python
 
-```bash
-Before: /nix/store/aaa-python-3.10/bin/python
-After:  /nix/store/bbb-python-3.11/bin/python
+```text
+/nix/store/aaa-python-3.10/bin/python
+/nix/store/bbb-python-3.11/bin/python
 ```
 
 **Both exist simultaneously!**
@@ -884,6 +843,36 @@ And rolling back is just changing which generation your profile points to.
 
 ---
 
+## Total Isolation
+
+During a Nix build:
+
+Block network access in most cases.
+
+Block access to `/usr`, `/bin`, etc.
+
+Prevent environment variable leakage.
+
+Allow only declared dependencies.
+
+**Result**: Reproducible builds!
+
+<!--
+This is crucial.
+
+Nix builds happen in a sandbox where the only things available are what you explicitly declared.
+
+No hidden dependencies, no accidental reliance on system packages.
+
+Every build happens in a clean room. Nix sets up the environment from scratch every time, ensuring consistency.
+
+You can verify this yourself:
+
+nix-build '<nixpkgs>' --attr hello --check --no-out-link --no-substitute
+-->
+
+---
+
 ## Exploring Dependencies
 
 ```bash
@@ -909,193 +898,6 @@ nix-store --query --references "$(nix-build '<nixpkgs>' --attr hello --no-out-li
 /nix/store/7h6icyvqv6lqd0bcx41c8h3615rjcqb2-libiconv-109.100.2
 
 # TODO: Run on Linux system.
--->
-
----
-
-## Put Nix into Practice
-
-<!--
-Let's look at modern Nix with flakes and wrap up with why all of this matters.
--->
-
----
-
-## Flakes: Modern Nix
-
-```nix
-{
-  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
-
-  outputs = { self, nixpkgs }: {
-    packages.x86_64-linux.default = nixpkgs.legacyPackages.x86_64-linux.hello;
-  };
-}
-```
-
-- Explicit inputs with locked versions.
-- Better reproducibility.
-- Easier to share and compose.
-
-<!--
-Flakes are the modern way to work with Nix. They make dependencies explicit, lock versions automatically, and make projects easier to share.
--->
-
----
-
-## Our Flake: Full Expression
-
-```nix
-{
-  description = "Show UTC Date & Time";
-  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-  outputs = { self, nixpkgs }:
-    let
-      forAllSystems = f:
-        nixpkgs.lib.genAttrs
-          [ "x86_64-linux" ... "aarch64-darwin" ]
-          (system: f nixpkgs.legacyPackages.${system});
-    in
-    { packages = forAllSystems (pkgs: {
-        default = pkgs.runCommand "show-utc-datetime" { ... } ''...'';
-      });
-    };
-}
-```
-
-<!--
-This is the complete flake version of our show-utc-datetime example.
-
-We will walk through it piece by piece.
--->
-
----
-
-## Flake: Metadata and Inputs
-
-```nix
-  description = "Show UTC Date & Time";
-
-  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-```
-
-Declare external dependencies with exact sources.
-
-Create a `flake.lock` to pin the exact revision.
-
-> **Order from which LEGO® catalog edition.**
-
-<!--
-Unlike the standalone expression that used import <nixpkgs>, a flake pins its inputs to a specific Git revision.
-
-The lock file ensures everyone building this flake uses the exact same nixpkgs commit.
-
-No more "it works on my machine" because of different channels.
--->
-
----
-
-## Flake: Multi-Platform Support
-
-```nix
-  outputs = { self, nixpkgs }:
-    let
-      forAllSystems = f:
-        nixpkgs.lib.genAttrs
-          [ "x86_64-linux" "aarch64-linux"
-            "x86_64-darwin" "aarch64-darwin" ]
-          (system: f nixpkgs.legacyPackages.${system});
-    in
-```
-
-- `outputs` is a function receiving resolved inputs.
-
-<!--
-The outputs function receives the resolved inputs.
-
-The forAllSystems helper generates packages for all four common platforms: x86 Linux, ARM Linux, x86 macOS, and ARM macOS.
-
-This means the same flake works everywhere without modification, provided the binary are supported on those platforms.
--->
-
----
-
-## Flake: Package Definition
-
-```nix
-    {
-      packages = forAllSystems (pkgs: {
-        default =
-          pkgs.runCommand "show-utc-datetime"
-            # ...
-      });
-    };
-```
-
-The build logic is identical to our regular expression.
-
-<!--
-The package definition inside the flake is the same runCommand we used before.
-
-The only difference is that it is wrapped in the flake structure.
-
-The default attribute means you can build it with just nix build without specifying a package name.
--->
-
----
-
-## Flake Outputs and Derivations
-
-```shell
-nix build
-
-nix flake show
-
-nix flake metadata
-
-nix run
-```
-
-> **Everything is still derivations under the hood!**
-
-<!--
-Flakes are just a nicer interface.
-
-Under the hood, it's still the same derivation-based system we've been discussing.
-
-The `nix build` evaluates the default package from our flake.nix and produces a derivation.
-
-The implicit defaults expanded:
-nix build = nix build .#default
-nix flake show = nix flake show .
-nix flake metadata = nix flake metadata .
-nix run = nix run .#default
--->
-
----
-
-## Analyzing Flake Dependencies
-
-```shell
-nix why-depends .#default \
-  "$(nix path-info --recursive .#default | grep bash)"
-
-# /nix/store/42c3md0x...-show-utc-datetime
-# └───/nix/store/vlfjhc97...-bash-5.3p9
-
-nix path-info --recursive .#default
-
-nix path-info --closure-size .#default
-```
-
-Explore your dependency graph.
-
-<!--
-Same analysis tools work with flakes.
-
-Using .#default references the default package from your flake.nix directly.
-
-You can trace dependencies, understand closure sizes, and optimize your builds.
 -->
 
 ---
@@ -1189,42 +991,213 @@ It traces from roots like your active profiles and running programs, then only d
 
 ---
 
-## Benefits of the Nix Model
-
-**Reproducible**: Same inputs = Same output.
-
-**Reliable**: Rollbacks are trivial.
-
-**Isolated**: No dependency conflicts.
-
-**Declarative**: Configuration as code.
-
-**Cacheable**: Binary caches save time.
+## Put Nix into Practice
 
 <!--
-This architecture enables all of Nix's benefits. It's not magic. It's careful engineering.
+Let's look at modern Nix with flakes and wrap up with why all of this matters.
+-->
+
+---
+
+## Flakes: Modern Nix
+
+```nix
+{
+  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+
+  outputs = { self, nixpkgs }: {
+    packages.x86_64-linux.default = nixpkgs.legacyPackages.x86_64-linux.hello;
+  };
+}
+```
+
+Explicit inputs with locked versions.
+Better reproducibility.
+Easier to share and compose.
+
+<!--
+Flakes are the modern way to work with Nix. They make dependencies explicit, lock versions automatically, and make projects easier to share.
+-->
+
+---
+
+## Our Flake: Full Expression
+
+```nix
+{
+  description = "Show UTC Date & Time";
+  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+  outputs = { self, nixpkgs }:
+    let
+      forAllSystems = f:
+        nixpkgs.lib.genAttrs
+          [ "x86_64-linux" ... "aarch64-darwin" ]
+          (system: f nixpkgs.legacyPackages.${system});
+    in
+    { packages = forAllSystems (pkgs: {
+        default = pkgs.runCommand "show-utc-datetime" { ... } ''...'';
+      });
+    };
+}
+```
+
+<!--
+This is the complete flake version of our show-utc-datetime example.
+
+We will walk through it piece by piece.
+-->
+
+---
+
+## Flake: Metadata and Inputs
+
+```nix
+  description = "Show UTC Date & Time";
+
+  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+```
+
+Declare external dependencies with exact sources.
+
+Create a `flake.lock` to pin the exact revision.
+
+> **Order from which LEGO® catalog edition.**
+
+<!--
+Unlike the standalone expression that used import <nixpkgs>, a flake pins its inputs to a specific Git revision.
+
+The lock file ensures everyone building this flake uses the exact same nixpkgs commit.
+
+No more "it works on my machine" because of different channels.
+-->
+
+---
+
+## Flake: Multi-Platform Support
+
+```nix
+  outputs = { self, nixpkgs }:
+    let
+      forAllSystems = f:
+        nixpkgs.lib.genAttrs
+          [ "x86_64-linux" "aarch64-linux"
+            "x86_64-darwin" "aarch64-darwin" ]
+          (system: f nixpkgs.legacyPackages.${system});
+    in
+```
+
+The `outputs` is a function receiving resolved inputs.
+
+<!--
+The outputs function receives the resolved inputs.
+
+The forAllSystems helper generates packages for all four common platforms: x86 Linux, ARM Linux, x86 macOS, and ARM macOS.
+
+This means the same flake works everywhere without modification, provided the binary are supported on those platforms.
+-->
+
+---
+
+## Flake: Package Definition
+
+```nix
+    {
+      packages = forAllSystems (pkgs: {
+        default =
+          pkgs.runCommand "show-utc-datetime"
+            # ...
+      });
+    };
+```
+
+The build logic is identical to our regular expression.
+
+<!--
+The package definition inside the flake is the same runCommand we used before.
+
+The only difference is that it is wrapped in the flake structure.
+
+The default attribute means you can build it with just nix build without specifying a package name.
+-->
+
+---
+
+## Flake Outputs and Derivations
+
+```shell
+nix build
+
+nix flake show
+
+nix flake metadata
+
+nix run
+```
+
+> **Everything is still derivations under the hood!**
+
+<!--
+Flakes are just a nicer interface.
+
+Under the hood, it's still the same derivation-based system we've been discussing.
+
+The `nix build` evaluates the default package from our flake.nix and produces a derivation.
+
+The implicit defaults expanded:
+nix build = nix build .#default
+nix flake show = nix flake show .
+nix flake metadata = nix flake metadata .
+nix run = nix run .#default
+-->
+
+---
+
+## Analyzing Flake Dependencies
+
+```shell
+nix why-depends .#default \
+  "$(nix path-info --recursive .#default | grep bash)"
+
+# /nix/store/42c3md0x...-show-utc-datetime
+# └───/nix/store/vlfjhc97...-bash-5.3p9
+
+nix path-info --recursive .#default
+
+nix path-info --closure-size .#default
+```
+
+Explore your dependency graph.
+
+<!--
+Same analysis tools work with flakes.
+
+Using .#default references the default package from your flake.nix directly.
+
+You can trace dependencies, understand closure sizes, and optimize your builds.
 -->
 
 ---
 
 ## Real-World Impact
 
-**Development**: Consistent environments.
+**Development**: Consistent, reproducible environments.
 
-**CI/CD**: Reproducible builds.
+**CI/CD**: Hermetic, cacheable builds.
 
-**Production**: Atomic deployments. SBOM.
+**Production**: Atomic deployments. Declarative configuration. SBOM.
 
-**Multi-user**: Isolated user environments.
+**Multi-user**: Isolated user environments. No dependency conflicts.
 
 <!--
+This architecture enables all of Nix's benefits. It's not magic. It's careful engineering.
+
 These benefits translate to real productivity gains in software development and operations.
 
 Development: Nix dev shells activate instantly and share dependencies across projects via the Nix store. No extra files to maintain and no caching surprises.
 
-CI/CD: Our builds are hermetic, meaning that they are insensitive to the libraries and other software installed on the build machine. Nix builds are hermetic at the package level, meaning they are insensitive to the libraries and other software installed on the build machine. Every dependency is pinned by hash.
+CI/CD: Nix builds are hermetic at the package level, meaning they are insensitive to the libraries and other software installed on the build machine. Every dependency is pinned by hash. Binary caches save time by reusing previously built outputs.
 
-Production: Nix can produce minimal container images containing only the exact closure needed. Nix also complements container workflows by generating optimized images from precise dependency graphs.
+Production: Nix can produce minimal container images containing only the exact closure needed. Nix also complements container workflows by generating optimized images from precise dependency graphs. Rollbacks are trivial because old versions remain in the store.
 
 SBOM: Because Nix tracks the full dependency graph, generating a complete software bill of materials is trivial.
 
@@ -1257,13 +1230,17 @@ But for some, the benefits far outweigh the costs.
 
 ## Key Takeaways
 
-1. **Nix Store ≈ Giant LEGO® Set**
-2. **Expressions ≈ Design Sketches**
-3. **Derivations ≈ Instruction Manuals**
-4. **Hashes ≈ Unique Identifiers**
-5. **Isolation ≈ Reproducibility**
-6. **Immutability ≈ No Breakage**
-7. **Closures ≈ Complete Dependencies**
+**Expressions ≈ Design Sketches**
+
+**Derivations ≈ Instruction Manuals**
+
+**Hashes ≈ Unique Identifiers**
+
+**Isolation ≈ Reproducibility**
+
+**Immutability ≈ No Breakage**
+
+**Closures ≈ Complete Dependencies**
 
 <!--
 These are the core concepts. Master these, and Nix will start to make sense.
@@ -1273,11 +1250,15 @@ These are the core concepts. Master these, and Nix will start to make sense.
 
 ## Next Steps
 
-1. **Explore your own `/nix/store`.**
-2. **Read some `.drv` files.**
-3. **Trace dependencies** with `why-depends`.
-4. **Write your first Nix expression.**
-5. **Join the Nix community.**
+**Explore your own `/nix/store`.**
+
+**Read some `.drv` files.**
+
+**Trace dependencies** with `why-depends`.
+
+**Write your first Nix expression.**
+
+**Join the Nix community.**
 
 <!--
 The best way to learn is by doing. Start exploring your own system and see how things connect.
