@@ -86,7 +86,13 @@ span.nix-snowflake-white {
 The Giant Immutable LEGO® Set
 
 <!--
-Ever looked inside /nix/store and felt immediate confusion? You aren't alone. For many, the "magic" of Nix is hidden behind cryptic hashes and the mysterious "derivation." This talk strips away the jargon to explain how Nix actually works using a simple metaphor: a giant, immutable LEGO set. We'll explore how Nix builds software in total isolation, why your system can't "break" like traditional distros, and how every package is just a recipe waiting to be snapped into place.
+Ever looked inside /nix/store and felt immediate confusion? You aren't alone.
+
+For many, the "magic" of Nix is hidden behind cryptic hashes and the mysterious "derivation."
+
+This talk strips away the jargon to explain how Nix actually works using a simple metaphor: a giant, immutable LEGO set.
+
+We'll explore how Nix builds software in total isolation, why your system can't "break" like traditional distros, and how every package is just a recipe waiting to be snapped into place.
 
 "LEGO® is a trademark of the LEGO Group of companies which does not sponsor, authorize or endorse this site/presentation."
 -->
@@ -108,7 +114,11 @@ Ever looked inside /nix/store and felt immediate confusion? You aren't alone. Fo
 ```
 
 <!--
-Start with something familiar but confusing. These cryptic paths are what many users see first and immediately feel lost. The hashes look random, the structure seems opaque.
+Start with something familiar but confusing.
+
+These cryptic paths are what many users see first and immediately feel lost.
+
+The hashes look random, the structure seems opaque.
 -->
 
 ---
@@ -124,7 +134,11 @@ Start with something familiar but confusing. These cryptic paths are what many u
 **How does anything even work?**
 
 <!--
-These are the common questions newcomers have. Traditional package managers hide complexity behind familiar directories like /usr/bin. Nix does the opposite. It shows you everything, but at first glance it seems like chaos.
+These are the common questions newcomers have.
+
+Traditional package managers hide complexity behind familiar directories like /usr/bin.
+
+Nix does the opposite. It shows you everything, but at first glance it seems like chaos.
 -->
 
 ---
@@ -138,7 +152,7 @@ Look Inside Expressions & Derivations.
 Put Nix into Practice.
 
 <!--
-Set expectations for the talk. We'll go from confusion to clarity using a simple metaphor that makes Nix's complexity make sense.
+We'll go from confusion to clarity using a simple metaphor that makes Nix's complexity make sense.
 -->
 
 ---
@@ -162,7 +176,9 @@ Hard to undo changes.
 Dependency hell.
 
 <!--
-Traditional package managers are like throwing all your LEGO bricks into one big bin. Sure, you can find pieces, but things get messy, upgrades can break existing builds, and rolling back is painful.
+Traditional package managers are like throwing all your LEGO bricks into one big bin.
+
+Sure, you can find pieces, but things get messy, upgrades can break existing builds, and rolling back is painful.
 -->
 
 ---
@@ -178,7 +194,11 @@ The derivation that builds it is like a instruction manual.
 The content-addressed hash is like a unique set number.
 
 <!--
-This is the core metaphor. Each LEGO set is self-contained, has clear instructions, and has a unique identifier. Sound familiar?
+This is the core metaphor.
+
+Each LEGO set is self-contained, has clear instructions, and has a unique identifier.
+
+Sound familiar?
 -->
 
 ---
@@ -196,7 +216,9 @@ You can combine sets safely.
 You can't modify a built set.
 
 <!--
-The immutability of LEGO sets maps perfectly to Nix's immutable store. Once built, you don't change them; you build new ones.
+The immutability of LEGO sets maps perfectly to Nix's immutable store.
+
+Once built, you don't change them; you build new ones.
 
 The Kragle holds them together!
 -->
@@ -224,7 +246,13 @@ Expressions declare **what** to build, not **how** to run it.
 > **The LEGO® design sketch you draw on paper.**
 
 <!--
-A Nix expression is just source code written in the Nix language. It is declarative. You describe the inputs, the build steps, and the expected outputs. Nix expressions are pure functions, meaning the same inputs always produce the same result. This is the file you edit as a developer.
+A Nix expression is just declarative source code written in the Nix language.
+
+You describe the inputs, the build steps, and the expected outputs.
+
+Nix expressions are pure functions, meaning the same inputs always produce the same result.
+
+This is the file you edit as a developer.
 -->
 
 ---
@@ -240,7 +268,13 @@ Every dependency is pinned to an exact store path.
 > **Read the sketch, prints the instruction manual.**
 
 <!--
-This is the most important distinction in Nix. You write expressions. Nix turns them into derivations. The expression is human-friendly source code. The derivation is a fully resolved build recipe with every dependency pinned to an exact store path.
+This is the most important distinction in Nix.
+
+You write expressions, which is human-friendly source code.
+
+Nix turns them into derivations.
+
+The derivation is a fully resolved build recipe with every dependency pinned to an exact store path.
 -->
 
 ---
@@ -256,7 +290,9 @@ A **recipe** that describes:
 > **The LEGO® instruction booklet inside your set.**
 
 <!--
-A derivation is just a recipe. It tells Nix exactly what inputs are needed, what steps to perform, and what the final output should look like.
+A derivation is just a recipe.
+
+It tells Nix exactly what inputs are needed, what steps to perform, and what the final output should look like.
 -->
 
 ---
@@ -280,7 +316,11 @@ pkgs.runCommand "show-utc-datetime"
 ```
 
 <!--
-This is a real Nix expression you can build yourself. Don't worry if it looks dense. We will walk through it piece by piece over the next few slides.
+This is a real Nix expression you can build yourself.
+
+Don't worry if it looks dense.
+
+We will walk through it piece by piece over the next few slides.
 -->
 
 ---
@@ -298,7 +338,13 @@ This is a real Nix expression you can build yourself. Don't worry if it looks de
 > **Find the bricks you need in a LEGO® catalog.**
 
 <!--
-Every Nix file is a function. This line says "give me a package set, or I will load nixpkgs myself." This is how the expression knows where to find its dependencies. It is the shopping list before you start building.
+Every Nix file is a function.
+
+This line says "give Nix a package set, or Nix will load nixpkgs itself."
+
+This is how the expression knows where to find its dependencies.
+
+It is the shopping list before you start building.
 -->
 
 ---
@@ -313,11 +359,15 @@ pkgs.runCommand "show-utc-datetime"
 The `runCommand` creates a simple derivation without needing a full `stdenv.mkDerivation` function.
 
 <!--
-runCommand is the simplest way to create a derivation. You give it a name, declare what tools you need at build time, and provide a build script. The name you choose here is what appears after the hash in the final store path.
+The runCommand is the simplest way to create a derivation.
 
-`"show-utc-datetime"` becomes the package name in the store path.
+You give it a name, declare what tools you need at build time, and provide a build script.
 
-`nativeBuildInputs` lists dependencies available during the build.
+The name you choose here is what appears after the hash in the final store path.
+
+The `"show-utc-datetime"` becomes the package name in the store path.
+
+The `nativeBuildInputs` lists dependencies available during the build.
 -->
 
 ---
@@ -335,7 +385,15 @@ chmod +x $out/bin/show-utc-datetime
 The shell script that calls `date` from the package.
 
 <!--
-This is the actual build logic. Notice how $out is a placeholder for the final store path that Nix will compute. The script uses absolute paths to dependencies, pointing directly into the Nix store. No reliance on PATH or system-wide binaries. That is total isolation in action.
+This is the actual build logic.
+
+Notice how $out is a placeholder for the final store path that Nix will compute.
+
+The script uses absolute paths to dependencies, pointing directly into the Nix store.
+
+No reliance on PATH or system-wide binaries.
+
+That is total isolation in action.
 -->
 
 ---
@@ -358,7 +416,15 @@ exec /nix/store/qx971axpac355l325832aghxx093gp61-uutils-coreutils-0.6.0/bin/date
 Every dependency is pinned to an **exact store path**.
 
 <!--
-This is the key insight. Nix replaces the interpolation expressions with absolute paths into the store. The resulting script does not depend on any system PATH. It points directly at a specific version of bash and a specific version of uutils-coreutils-noprefix. If either dependency changes, the hash changes, and you get a completely new store path.
+This is the key insight.
+
+Nix replaces the interpolation expressions with absolute paths into the store.
+
+The resulting script does not depend on any system PATH.
+
+It points directly at a specific version of bash and a specific version of uutils-coreutils-noprefix.
+
+If either dependency changes, the hash changes, and you get a completely new store path.
 -->
 
 ---
@@ -375,7 +441,13 @@ Run the build script in an isolated sandbox.
 Store the output at the computed path.
 
 <!--
-Building evaluates the Nix expression, produces a derivation, and then executes that derivation in a sandbox. The hash in the output path is deterministic. If you build this on another machine with the same nixpkgs version, you get the exact same hash. That is reproducibility. Input Addressability: Hashes from everything: dependencies, build script, name.
+Building evaluates the Nix expression, produces a derivation, and then executes that derivation in a sandbox.
+
+The hash in the output path is deterministic.
+
+If you build this on another machine with the same nixpkgs version, you get the exact same hash. That is reproducibility.
+
+Input addressability: Calculate hashes from everything, which includes dependencies, build script, name, etc.
 -->
 
 ---
@@ -392,7 +464,13 @@ Compute the hash `86bwwvp5...` from all inputs.
 Execute the `.drv` file as the actual build recipe.
 
 <!--
-The first thing Nix reports is which derivation it plans to build. The .drv file is the real derivation. Our .nix file was just the expression that produced it. The hash encodes every input: the build script, dependencies, system architecture, everything.
+The first thing Nix reports is which derivation it plans to build.
+
+The .drv file is the real derivation.
+
+Our .nix file was just the expression that produced it.
+
+The hash encodes every input: the build script, dependencies, system architecture, everything.
 -->
 
 ---
@@ -406,10 +484,16 @@ this path will be fetched (3.22 MiB download, 12.22 MiB unpacked):
 copying path '...-uutils-coreutils-0.6.0' from 'https://cache.nixos.org'
 ```
 
-- `uutils-coreutils-0.6.0` is needed but not in the local store.
+The `uutils-coreutils-0.6.0` package is needed but not in the local store.
 
 <!--
-Nix checks the binary cache before building anything. Since someone already built uutils-coreutils with the exact same hash, Nix downloads the pre-built result. This saves enormous amounts of time. Without the cache, it would need to compile the entire Rust codebase for uutils-coreutils from source.
+Nix checks the binary cache before building anything.
+
+Since someone already built uutils-coreutils with the exact same hash, Nix downloads the pre-built result.
+
+This saves enormous amounts of time.
+
+Without the cache, it would need to compile the entire Rust codebase for uutils-coreutils from source.
 -->
 
 ---
@@ -427,7 +511,15 @@ Block network access and access to `/usr` or `/bin`.
 Place the output at the computed store path.
 
 <!--
-Now Nix actually executes the derivation. It runs our build script in total isolation. The only tools available are what we declared in nativeBuildInputs. This is why Nix builds are reproducible. Nothing from the host system can leak in.
+Now Nix actually executes the derivation.
+
+It runs our build script in total isolation.
+
+The only tools available are what we declared in nativeBuildInputs variable.
+
+This is why Nix builds are reproducible.
+
+Nothing from the host system can leak in in the build process.
 -->
 
 ---
@@ -444,7 +536,13 @@ Now Nix actually executes the derivation. It runs our build script in total isol
 Visualize the build process with `nix-output-monitor`.
 
 <!--
-The nix-output-monitor tool gives us a clear picture of what happened. The dependency graph shows that show-utc-datetime was built locally. All dependencies including uutils-coreutils were already available in the store, so nothing needed to be downloaded. The build itself took only 3 seconds.
+The nix-output-monitor tool gives us a clear picture of what happened.
+
+The dependency graph shows that show-utc-datetime was built locally.
+
+All dependencies including uutils-coreutils were already available in the store, so nothing needed to be downloaded.
+
+The build itself took only 3 seconds.
 -->
 
 ---
@@ -470,7 +568,13 @@ nix derivation show --file show-utc-datetime.nix
 Map a derivation hash to a deterministic output path.
 
 <!--
-The .drv file is what Nix actually executes. It contains the fully resolved build recipe with all store paths filled in. The outputs section tells you exactly where the build result will land. Both the derivation hash and the output hash are deterministic.
+The .drv file is what Nix actually executes.
+
+It contains the fully resolved build recipe with all store paths filled in.
+
+The outputs section tells you exactly where the build result will land.
+
+Both the derivation hash and the output hash are deterministic.
 -->
 
 ---
@@ -491,7 +595,11 @@ The .drv file is what Nix actually executes. It contains the fully resolved buil
 Every path is absolute. Nothing comes from the host system.
 
 <!--
-Even the shell that runs the build is a specific, immutable store path. Nix does not use /bin/bash from the host. It uses its own bash, locked to a specific version. The arguments point to stdenv setup scripts that configure the build environment before running our build command.
+Even the shell that runs the build is a specific, immutable store path.
+
+Nix does not use /bin/bash from the host. It uses its own bash, locked to a specific version.
+
+The arguments point to stdenv setup scripts that configure the build environment before running our build command.
 -->
 
 ---
@@ -513,7 +621,15 @@ Even the shell that runs the build is a specific, immutable store path. Nix does
 Three input derivations must be built first.
 
 <!--
-Input derivations form the dependency graph. Each one must be available in the store before our build can start. Notice that stdenv is also an input even though we did not declare it explicitly. The runCommand helper added it for us. This is how Nix ensures complete dependency tracking.
+Input derivations form the dependency graph.
+
+Each one must be available in the store before our build can start.
+
+Notice that stdenv is also an input even though we did not declare it explicitly.
+
+The runCommand helper added it for us.
+
+This is how Nix ensures complete dependency tracking.
 -->
 
 ---
@@ -538,7 +654,15 @@ Input derivations form the dependency graph. Each one must be available in the s
 Resolve all interpolations in the build script.
 
 <!--
-This is the fully expanded version of our build script. Compare this to the original Nix expression. Every Nix interpolation has been replaced with a concrete store path. This is the script that Nix actually executes inside the sandbox. The system field tells Nix which platform this derivation targets.
+This is the fully expanded version of our build script.
+
+Compare this to the original Nix expression.
+
+Every Nix interpolation has been replaced with a concrete store path.
+
+This is the script that Nix actually executes inside the sandbox.
+
+The system field tells Nix which platform this derivation targets.
 -->
 
 ---
@@ -558,7 +682,13 @@ exec /nix/store/qx971axpac355l325832aghxx093gp61-uutils-coreutils-0.6.0/bin/date
 ```
 
 <!--
-The output is a clean directory with a single executable. Looking inside the script, you can see that every path is an absolute store path. There is no ambiguity about which bash or which date command runs. This is what makes Nix packages self-contained.
+The output is a clean directory with a single executable.
+
+Looking inside the script, you can see that every path is an absolute store path.
+
+There is no ambiguity about which bash or which date command runs.
+
+This is what makes Nix packages self-contained.
 -->
 
 ---
@@ -576,9 +706,12 @@ $ ./result/bin/show-utc-datetime
 Create a `./result` symlink to the store path.
 
 <!--
-The result symlink is a convenience. It points at the immutable store path. You can copy the entire closure to another machine, and it will produce the same output. No "works on my machine" surprises.
+The result symlink is a convenience. It points at the immutable store path.
+
+You can copy the entire closure to another machine, and it will produce the same output. No "works on my machine" surprises.
 
 Output a UTC timestamp in ISO 8601 compact format.
+
 Run the script on any machine with this Nix closure.
 -->
 
@@ -601,7 +734,11 @@ $$f(\text{inputs}) = \text{/nix/store/...}$$
 ```
 
 <!--
-The hash isn't random. It's deterministic! It's computed from all the inputs, the build recipe, and even the compiler version. Change anything, and you get a different hash.
+The hash isn't random. It's deterministic!
+
+It's computed from all the inputs, the build recipe, and even the compiler version.
+
+Change anything, and you get a different hash.
 -->
 
 ---
@@ -634,7 +771,11 @@ Allow only declared dependencies.
 **Result**: Reproducible builds!
 
 <!--
-This is crucial. Nix builds happen in a sandbox where the only things available are what you explicitly declared. No hidden dependencies, no accidental reliance on system packages.
+This is crucial.
+
+Nix builds happen in a sandbox where the only things available are what you explicitly declared.
+
+No hidden dependencies, no accidental reliance on system packages.
 -->
 
 ---
@@ -653,14 +794,16 @@ source root is hello-2.12.2
 ```
 
 <!--
-Every build happens in a clean room. Nix sets up the environment from scratch every time, ensuring consistency.
+Every build happens in a clean room.
+
+Nix sets up the environment from scratch every time, ensuring consistency.
 
 nix-build '<nixpkgs>' --attr hello --check --no-out-link --no-substitute
 -->
 
 ---
 
-## How It Works
+## Build Process in a Nutshell
 
 1. **Evaluate the expression**, the `.nix` file.
 2. **Produce the derivation**, the `.drv` file.
@@ -670,20 +813,30 @@ nix-build '<nixpkgs>' --attr hello --check --no-out-link --no-substitute
 6. **Store output** at the computed path.
 
 <!--
-This is the build process in a nutshell. The Nix expression is evaluated to produce a derivation. The derivation is then executed in a sandbox to produce the output. Everything is deterministic and traceable.
+This is the build process in a nutshell.
+
+The Nix expression is evaluated to produce a derivation.
+
+The derivation is then executed in a sandbox to produce the output.
+
+Everything is deterministic and traceable.
 -->
 
 ---
 
 ## Immutable Store
 
-- Once built, **never changes**.
-- Upgrades create **new paths**.
-- Old versions remain until garbage collected.
-- Rollbacks are just **switching symlinks**.
+Once built, **never changes**.
+Upgrades create **new paths**.
+Old versions remain until garbage collected.
+Rollbacks are just **switching symlinks**.
 
 <!--
-This is why Nix systems are so stable. You're never modifying existing working software. Instead, you're always creating new versions alongside the old ones.
+This is why Nix systems are so stable.
+
+You're never modifying existing working software.
+
+Instead, you're always creating new versions alongside the old ones.
 -->
 
 ---
@@ -700,7 +853,13 @@ After:  /nix/store/bbb-python-3.11/bin/python
 Your programs use whatever version they need.
 
 <!--
-Multiple versions coexist peacefully. Program A can use Python 3.10 while Program B uses Python 3.11. No conflicts.
+Multiple versions coexist peacefully.
+
+Program A can use Python 3.10 while Program B uses Python 3.11.
+
+No conflicts.
+
+rg --files --follow --glob "**/bin/python" /nix/store
 -->
 
 ---
@@ -713,12 +872,14 @@ $ nix-env --install firefox
 $ nix-env --rollback  # Instant undo!
 ```
 
-**What just happened?**
-
-Symlink updated at `/nix/var/nix/profiles/default` path.
+Update symbolic link at `/nix/var/nix/profiles/default` path.
 
 <!--
-Operations are atomic. Either they complete fully or they don't happen at all. And rolling back is just changing which generation your profile points to.
+Operations are atomic.
+
+Either they complete fully or they don't happen at all.
+
+And rolling back is just changing which generation your profile points to.
 -->
 
 ---
@@ -737,7 +898,9 @@ $ nix-store --query --referrers /nix/store/...-glibc
 ```
 
 <!--
-You can explore the dependency graph to understand what each package needs. What does this package reference? What references this package?
+You can explore the dependency graph to understand what each package needs.
+
+What does this package reference? What references this package?
 
 # Run on macOS system.
 
@@ -790,8 +953,7 @@ Flakes are the modern way to work with Nix. They make dependencies explicit, loc
     let
       forAllSystems = f:
         nixpkgs.lib.genAttrs
-          [ "x86_64-linux" "aarch64-linux"
-            "x86_64-darwin" "aarch64-darwin" ]
+          [ "x86_64-linux" ... "aarch64-darwin" ]
           (system: f nixpkgs.legacyPackages.${system});
     in
     { packages = forAllSystems (pkgs: {
@@ -802,7 +964,9 @@ Flakes are the modern way to work with Nix. They make dependencies explicit, loc
 ```
 
 <!--
-This is the complete flake version of our show-utc-datetime example. We will walk through it piece by piece.
+This is the complete flake version of our show-utc-datetime example.
+
+We will walk through it piece by piece.
 -->
 
 ---
@@ -810,19 +974,23 @@ This is the complete flake version of our show-utc-datetime example. We will wal
 ## Flake: Metadata and Inputs
 
 ```nix
-{
   description = "Show UTC Date & Time";
 
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 ```
 
-- `inputs` declares external dependencies with exact sources.
-- Nix creates a `flake.lock` to pin the exact revision.
+Declare external dependencies with exact sources.
+
+Create a `flake.lock` to pin the exact revision.
 
 > **Order from which LEGO® catalog edition.**
 
 <!--
-Unlike the standalone expression that used import <nixpkgs>, a flake pins its inputs to a specific Git revision. The lock file ensures everyone building this flake uses the exact same nixpkgs commit. No more "it works on my machine" because of different channels.
+Unlike the standalone expression that used import <nixpkgs>, a flake pins its inputs to a specific Git revision.
+
+The lock file ensures everyone building this flake uses the exact same nixpkgs commit.
+
+No more "it works on my machine" because of different channels.
 -->
 
 ---
@@ -843,7 +1011,11 @@ Unlike the standalone expression that used import <nixpkgs>, a flake pins its in
 - `outputs` is a function receiving resolved inputs.
 
 <!--
-The outputs function receives the resolved inputs. The forAllSystems helper generates packages for all four common platforms: x86 Linux, ARM Linux, x86 macOS, and ARM macOS. This means the same flake works everywhere without modification.
+The outputs function receives the resolved inputs.
+
+The forAllSystems helper generates packages for all four common platforms: x86 Linux, ARM Linux, x86 macOS, and ARM macOS.
+
+This means the same flake works everywhere without modification, provided the binary are supported on those platforms.
 -->
 
 ---
@@ -863,7 +1035,11 @@ The outputs function receives the resolved inputs. The forAllSystems helper gene
 The build logic is identical to our regular expression.
 
 <!--
-The package definition inside the flake is the same runCommand we used before. The only difference is that it is wrapped in the flake structure. The default attribute means you can build it with just nix build without specifying a package name.
+The package definition inside the flake is the same runCommand we used before.
+
+The only difference is that it is wrapped in the flake structure.
+
+The default attribute means you can build it with just nix build without specifying a package name.
 -->
 
 ---
@@ -883,7 +1059,11 @@ nix run
 > **Everything is still derivations under the hood!**
 
 <!--
-Flakes are just a nicer interface. Under the hood, it's still the same derivation-based system we've been discussing. nix build evaluates the default package from our flake.nix and produces a derivation.
+Flakes are just a nicer interface.
+
+Under the hood, it's still the same derivation-based system we've been discussing.
+
+The `nix build` evaluates the default package from our flake.nix and produces a derivation.
 
 The implicit defaults expanded:
 nix build = nix build .#default
@@ -911,7 +1091,11 @@ nix path-info --closure-size .#default
 Explore your dependency graph.
 
 <!--
-Same analysis tools work with flakes. Using .#default references the default package from your flake.nix directly. You can trace dependencies, understand closure sizes, and optimize your builds.
+Same analysis tools work with flakes.
+
+Using .#default references the default package from your flake.nix directly.
+
+You can trace dependencies, understand closure sizes, and optimize your builds.
 -->
 
 ---
@@ -931,7 +1115,9 @@ $ nix-store --query --requisites /nix/store/...-hello
 This is everything needed to run the program.
 
 <!--
-The closure is the complete set of everything needed. If you copy a closure to another machine, the program will work because all dependencies are included.
+The closure is the complete set of everything needed.
+
+If you copy a closure to another machine, the program will work because all dependencies are included.
 -->
 
 ---
@@ -940,18 +1126,46 @@ The closure is the complete set of everything needed. If you copy a closure to a
 
 ```console
 $ nix path-info --closure-size --human-readable nixpkgs#hello
-/nix/store/...-hello  32.4M
+/nix/store/...-hello-2.12.2  31.8 MiB
 ```
 
-**Why does "Hello World" need 32MB?**
+**Why does "Hello World" need 31.8 MiB?**
 
-- `glibc`: ~28MB.
-- `hello`: ~4MB.
+`glibc-2.42-47`: 29.0 MiB
+
+`...`
+
+`hello-2.12.2`: 268.2 KiB
 
 <!--
-This often surprises people. Even a simple program has dependencies. But remember, glibc is shared across many programs in the store.
+This often surprises people.
 
-# TODO: Run on Linux system.
+Even a simple program has dependencies.
+
+But remember, glibc is shared across many programs in the store.
+
+Get total closure size, the sum of the package and all its transitive dependencies:
+
+$ nix path-info --closure-size --human-readable nixpkgs#hello
+/nix/store/mi08jhbcjib1i1kgvbd0fxn2yrnzdv4a-hello-2.12.2    31.8 MiB
+
+Get cumulative closure size per package, each entry includes the sizes of its own dependencies:
+
+$ nix path-info --recursive --closure-size --human-readable nixpkgs#hello
+/nix/store/pkphs076yz5ajnqczzj0588n6miph269-libunistring-1.4.1     2.0 MiB
+/nix/store/d0d9wqmw5saaynfvmszsda3dmh5q82z8-libidn2-2.3.8          2.3 MiB
+/nix/store/kbijm6lc9va8xann3cfyam0vczzmwkxj-xgcc-15.2.0-libgcc   193.1 KiB
+/nix/store/wb6rhpznjfczwlwx23zmdrrw74bayxw4-glibc-2.42-47         31.5 MiB
+/nix/store/mi08jhbcjib1i1kgvbd0fxn2yrnzdv4a-hello-2.12.2          31.8 MiB
+
+Get individual Nix ARchive (NAR) size per package, how much disk space each single store path occupies:
+
+$ nix path-info --recursive --size --human-readable nixpkgs#hello
+/nix/store/pkphs076yz5ajnqczzj0588n6miph269-libunistring-1.4.1     2.0 MiB
+/nix/store/d0d9wqmw5saaynfvmszsda3dmh5q82z8-libidn2-2.3.8        359.6 KiB
+/nix/store/kbijm6lc9va8xann3cfyam0vczzmwkxj-xgcc-15.2.0-libgcc   193.1 KiB
+/nix/store/wb6rhpznjfczwlwx23zmdrrw74bayxw4-glibc-2.42-47         29.0 MiB
+/nix/store/mi08jhbcjib1i1kgvbd0fxn2yrnzdv4a-hello-2.12.2         268.2 KiB
 -->
 
 ---
@@ -963,7 +1177,9 @@ nix-collect-garbage --delete-older-than 30d
 ```
 
 <!--
-Garbage collection is safe because Nix knows exactly what's in use and what's not. It traces from roots like your active profiles and running programs, then only deletes what's unreachable.
+Garbage collection is safe because Nix knows exactly what's in use and what's not.
+
+It traces from roots like your active profiles and running programs, then only deletes what's unreachable.
 
 1. Find all roots, such as active profiles.
 2. Trace all references from roots.
@@ -975,11 +1191,15 @@ Garbage collection is safe because Nix knows exactly what's in use and what's no
 
 ## Benefits of the Nix Model
 
-✅ **Reproducible**: Same inputs = Same output.
-✅ **Reliable**: Rollbacks are trivial.
-✅ **Isolated**: No dependency conflicts.
-✅ **Declarative**: Configuration as code.
-✅ **Cacheable**: Binary caches save time.
+**Reproducible**: Same inputs = Same output.
+
+**Reliable**: Rollbacks are trivial.
+
+**Isolated**: No dependency conflicts.
+
+**Declarative**: Configuration as code.
+
+**Cacheable**: Binary caches save time.
 
 <!--
 This architecture enables all of Nix's benefits. It's not magic. It's careful engineering.
@@ -989,13 +1209,26 @@ This architecture enables all of Nix's benefits. It's not magic. It's careful en
 
 ## Real-World Impact
 
-- **Development**: Consistent environments.
-- **CI/CD**: Reproducible builds.
-- **Production**: Atomic deployments. SBOM.
-- **Multi-user**: Isolated user environments.
+**Development**: Consistent environments.
+
+**CI/CD**: Reproducible builds.
+
+**Production**: Atomic deployments. SBOM.
+
+**Multi-user**: Isolated user environments.
 
 <!--
 These benefits translate to real productivity gains in software development and operations.
+
+Development: Nix dev shells activate instantly and share dependencies across projects via the Nix store. No extra files to maintain and no caching surprises.
+
+CI/CD: Our builds are hermetic, meaning that they are insensitive to the libraries and other software installed on the build machine. Nix builds are hermetic at the package level, meaning they are insensitive to the libraries and other software installed on the build machine. Every dependency is pinned by hash.
+
+Production: Nix can produce minimal container images containing only the exact closure needed. Nix also complements container workflows by generating optimized images from precise dependency graphs.
+
+SBOM: Because Nix tracks the full dependency graph, generating a complete software bill of materials is trivial.
+
+Multi-user: Nix allows multiple users on a single machine to have isolated package sets. Just symlinks to immutable store paths, with no additional overhead.
 -->
 
 ---
@@ -1004,16 +1237,20 @@ These benefits translate to real productivity gains in software development and 
 
 **Benefits**:
 
-- Extreme reliability.
-- Perfect reproducibility.
+Extreme reliability.
+Perfect reproducibility.
 
 **Drawbacks**:
 
-- Disk space from storing many versions.
-- Steep learning curve.
+Disk space from storing many versions.
+Steep learning curve.
 
 <!--
-Nothing is perfect. Nix trades disk space for reliability, and has a learning curve. But for many teams, the benefits far outweigh the costs.
+Nothing is perfect.
+
+Nix trades disk space for reliability, and has a learning curve.
+
+But for some, the benefits far outweigh the costs.
 -->
 
 ---
