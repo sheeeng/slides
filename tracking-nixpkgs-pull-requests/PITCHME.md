@@ -222,7 +222,7 @@ See status.nixos.org page.
 
 ---
 
-## Thank You!
+## Thanks!
 
 <!-- markdownlint-enable MD026 -->
 
