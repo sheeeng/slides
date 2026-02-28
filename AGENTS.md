@@ -18,6 +18,8 @@
     - Exception: Capitalize prepositions when used adverbially or adjectivally ("Look Up," "Turn Down") or in verb phrases.
     - Don't use normal dashes or proper em dashes (—).
     - Don't use parenthesis `()` to phrase terms.
+- Use concise, but not terse phrasing.
+- Fix grammatically incomplete sentences.
 
 ## Commands
 
