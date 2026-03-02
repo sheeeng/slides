@@ -77,6 +77,19 @@ span.nix-snowflake-white {
 .columns > div {
   flex: 1;
 }
+
+/* Fit the Uncover theme decorative quotation marks to the quoted text. */
+blockquote {
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 1.5em;
+}
+
+blockquote::before,
+blockquote::after {
+  width: 0.6em;
+}
 </style>
 
 ## <!--fit--> Demystifying the Nix Store
