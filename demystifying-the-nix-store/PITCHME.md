@@ -83,6 +83,7 @@ blockquote {
   width: fit-content;
   margin-left: auto;
   margin-right: auto;
+  margin-top: 1em;
   /* padding: 1em; */
 }
 
