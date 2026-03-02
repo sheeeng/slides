@@ -464,8 +464,8 @@ exec ${pkgs.uutils-coreutils-noprefix}/bin/date --universal +"%Y%m%dT%H%M%SZ"
 After Nix evaluates the expression, this becomes:
 
 ```bash
-#!/nix/store/vlfjhc9730i65q1xhzf51kzh58s9kxnp-bash-5.3p9/bin/bash
-exec /nix/store/qx971axpac355l325832aghxx093gp61-uutils-coreutils-0.6.0/bin/date \
+#!/nix/store/...8s9kxnp-bash-5.3p9/bin/bash
+exec /nix/store/...093gp61-uutils-coreutils-0.6.0/bin/date \
   --universal +"%Y%m%dT%H%M%SZ"
 ```
 
@@ -512,11 +512,11 @@ Input addressability: Calculate hashes from everything, which includes dependenc
 
 ```text
 this derivation will be built:
-  /nix/store/86bwwvp5qn13fhzyjg82dag1pgn1360z-show-utc-datetime.drv
+  /nix/store/...gn1360z-show-utc-datetime.drv
 ```
 
 Evaluate the `.nix` expression to produce a `.drv` file.
-Compute the hash `86bwwvp5...` from all inputs.
+Compute the hash `...gn1360z` from all inputs.
 Execute the `.drv` file as the actual build recipe.
 
 <!--
@@ -535,7 +535,7 @@ The hash encodes every input: the build script, dependencies, system architectur
 
 ```text
 this path will be fetched (3.22 MiB download, 12.22 MiB unpacked):
-  /nix/store/qx971axpac355l325832aghxx093gp61-uutils-coreutils-0.6.0
+  /nix/store/...093gp61-uutils-coreutils-0.6.0
 
 copying path '...-uutils-coreutils-0.6.0' from 'https://cache.nixos.org'
 ```
@@ -558,7 +558,7 @@ Without the cache, it would need to compile the entire Rust codebase for uutils-
 
 ```text
 show-utc-datetime> building
-  '/nix/store/86bwwvp5qn13fhzyjg82dag1pgn1360z-show-utc-datetime.drv'
+  '/nix/store/...gn1360z-show-utc-datetime.drv'
 ```
 
 Run the build script inside a sandbox.
@@ -611,10 +611,10 @@ nix derivation show --file show-utc-datetime.nix
 
 ```json
 {
-    "/nix/store/86bwwvp5qn13fhzyjg82dag1pgn1360z-show-utc-datetime.drv": {
+    "/nix/store/...gn1360z-show-utc-datetime.drv": {
         "outputs": {
             "out": {
-                "path": "/nix/store/42c3md0xxwbr0i3d5nrmscjcmv8h9rcs-show-utc-datetime"
+                "path": "/nix/store/...v8h9rcs-show-utc-datetime"
             }
         }
     }
@@ -639,11 +639,11 @@ Both the derivation hash and the output hash are deterministic.
 
 ```json
 {
-    "builder": "/nix/store/vlfjhc9730i65q1xhzf51kzh58s9kxnp-bash-5.3p9/bin/bash",
+    "builder": "/nix/store/...8s9kxnp-bash-5.3p9/bin/bash",
     "args": [
         "-e",
-        "/nix/store/l622p70vy8k5sh7y5wizi5f2mic6ynpg-source-stdenv.sh",
-        "/nix/store/shkw4qm9qcw5sc5n1k5jznc83ny02r39-default-builder.sh"
+        "/nix/store/...ic6ynpg-source-stdenv.sh",
+        "/nix/store/...ny02r39-default-builder.sh"
     ]
 }
 ```
@@ -698,8 +698,8 @@ This is how Nix ensures complete dependency tracking.
   "env": {
     "buildCommand": "mkdir --parents $out/bin\n
       cat > $out/bin/show-utc-datetime <<'EOF'\n
-      #!/nix/store/vlfjhc9730i65q1xhzf51kzh58s9kxnp-bash-5.3p9/bin/bash\n
-      exec /nix/store/qx971axpac355l325832aghxx093gp61-uutils-coreutils-0.6.0/bin/date
+      #!/nix/store/...8s9kxnp-bash-5.3p9/bin/bash\n
+      exec /nix/store/...093gp61-uutils-coreutils-0.6.0/bin/date
         --universal +\"%Y%m%dT%H%M%SZ\"\n
       EOF\nchmod +x $out/bin/show-utc-datetime\n",
     "name": "show-utc-datetime",
@@ -727,14 +727,14 @@ The system field tells Nix which platform this derivation targets.
 ## Examining the Output
 
 ```console
-$ tree /nix/store/42c3md0xxwbr0i3d5nrmscjcmv8h9rcs-show-utc-datetime
-/nix/store/42c3md0xxwbr0i3d5nrmscjcmv8h9rcs-show-utc-datetime
+$ tree /nix/store/...v8h9rcs-show-utc-datetime
+/nix/store/...v8h9rcs-show-utc-datetime
 └── bin
     └── show-utc-datetime
 
-$ cat /nix/store/42c3md0xxwbr0i3d5nrmscjcmv8h9rcs-show-utc-datetime/bin/show-utc-datetime
-#!/nix/store/vlfjhc9730i65q1xhzf51kzh58s9kxnp-bash-5.3p9/bin/bash
-exec /nix/store/qx971axpac355l325832aghxx093gp61-uutils-coreutils-0.6.0/bin/date \
+$ cat /nix/store/...v8h9rcs-show-utc-datetime/bin/show-utc-datetime
+#!/nix/store/...8s9kxnp-bash-5.3p9/bin/bash
+exec /nix/store/...093gp61-uutils-coreutils-0.6.0/bin/date \
   --universal +"%Y%m%dT%H%M%SZ"
 ```
 
@@ -753,7 +753,7 @@ This is what makes Nix packages self-contained.
 ## Running the Result
 
 ```console
-$ /nix/store/42c3md0xxwbr0i3d5nrmscjcmv8h9rcs-show-utc-datetime/bin/show-utc-datetime
+$ /nix/store/...v8h9rcs-show-utc-datetime/bin/show-utc-datetime
 20260223T184340Z
 
 $ ./result/bin/show-utc-datetime
@@ -808,7 +808,7 @@ $$f(\text{inputs}) = \text{/nix/store/...}$$
 **Example**:
 
 ```text
-/nix/store/42c3md0xxwbr0i3d5nrmscjcmv8h9rcs-show-utc-datetime
+/nix/store/...v8h9rcs-show-utc-datetime
 ```
 
 <!--
@@ -952,7 +952,7 @@ What does this package reference? What references this package?
 
 nix-store --query --references "$(nix-build '<nixpkgs>' --attr hello --no-out-link)"
 
-/nix/store/7h6icyvqv6lqd0bcx41c8h3615rjcqb2-libiconv-109.100.2
+/nix/store/...5rjcqb2-libiconv-109.100.2
 
 # TODO: Run on Linux system.
 -->
@@ -1006,25 +1006,25 @@ But remember, glibc is shared across many programs in the store.
 Get total closure size, the sum of the package and all its transitive dependencies:
 
 $ nix path-info --closure-size --human-readable nixpkgs#hello
-/nix/store/mi08jhbcjib1i1kgvbd0fxn2yrnzdv4a-hello-2.12.2    31.8 MiB
+/nix/store/...rnzdv4a-hello-2.12.2    31.8 MiB
 
 Get cumulative closure size per package, each entry includes the sizes of its own dependencies:
 
 $ nix path-info --recursive --closure-size --human-readable nixpkgs#hello
-/nix/store/pkphs076yz5ajnqczzj0588n6miph269-libunistring-1.4.1     2.0 MiB
-/nix/store/d0d9wqmw5saaynfvmszsda3dmh5q82z8-libidn2-2.3.8          2.3 MiB
-/nix/store/kbijm6lc9va8xann3cfyam0vczzmwkxj-xgcc-15.2.0-libgcc   193.1 KiB
-/nix/store/wb6rhpznjfczwlwx23zmdrrw74bayxw4-glibc-2.42-47         31.5 MiB
-/nix/store/mi08jhbcjib1i1kgvbd0fxn2yrnzdv4a-hello-2.12.2          31.8 MiB
+/nix/store/...miph269-libunistring-1.4.1     2.0 MiB
+/nix/store/...h5q82z8-libidn2-2.3.8          2.3 MiB
+/nix/store/...zzmwkxj-xgcc-15.2.0-libgcc   193.1 KiB
+/nix/store/...4bayxw4-glibc-2.42-47         31.5 MiB
+/nix/store/...rnzdv4a-hello-2.12.2          31.8 MiB
 
 Get individual Nix ARchive (NAR) size per package, how much disk space each single store path occupies:
 
 $ nix path-info --recursive --size --human-readable nixpkgs#hello
-/nix/store/pkphs076yz5ajnqczzj0588n6miph269-libunistring-1.4.1     2.0 MiB
-/nix/store/d0d9wqmw5saaynfvmszsda3dmh5q82z8-libidn2-2.3.8        359.6 KiB
-/nix/store/kbijm6lc9va8xann3cfyam0vczzmwkxj-xgcc-15.2.0-libgcc   193.1 KiB
-/nix/store/wb6rhpznjfczwlwx23zmdrrw74bayxw4-glibc-2.42-47         29.0 MiB
-/nix/store/mi08jhbcjib1i1kgvbd0fxn2yrnzdv4a-hello-2.12.2         268.2 KiB
+/nix/store/...miph269-libunistring-1.4.1     2.0 MiB
+/nix/store/...h5q82z8-libidn2-2.3.8        359.6 KiB
+/nix/store/...zzmwkxj-xgcc-15.2.0-libgcc   193.1 KiB
+/nix/store/...4bayxw4-glibc-2.42-47         29.0 MiB
+/nix/store/...rnzdv4a-hello-2.12.2         268.2 KiB
 -->
 
 ---
