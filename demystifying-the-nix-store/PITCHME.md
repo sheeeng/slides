@@ -420,6 +420,10 @@ The name you choose here is what appears after the hash in the final store path.
 
 The `"show-utc-datetime"` becomes the package name in the store path.
 
+NOTE: An important note, is to notice that a nix-built bash-script, which contains e.g. the output of $(date) or `cat /dev/urandom` in the script-file, would never be possible to make reproducible.
+
+Thus, nix is not a guarantee for reproducibility, but can be thought of as a good system of guardrails to build software as reproducible as possible. - Hat tip to Christian Chavez!
+
 The `nativeBuildInputs` lists dependencies available during the build.
 
 Note that a nix-built bash-script, which contains e.g. the output of $(date) or `cat /dev/urandom` in the script-file, would never be possible to make reproducible.
