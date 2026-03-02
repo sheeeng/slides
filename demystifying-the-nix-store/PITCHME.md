@@ -185,6 +185,8 @@ We'll go from confusion to clarity using a simple metaphor that makes Nix's comp
 
 ## Explore the LEGO® Metaphor
 
+<img src="assets/twemoji-brick-1f9f1.svg" alt="🧱" width="256" height="256">
+
 <!--
 Now we introduce the key metaphor that will help everything make sense.
 -->
