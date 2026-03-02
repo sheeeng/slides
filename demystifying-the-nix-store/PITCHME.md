@@ -86,10 +86,23 @@ blockquote {
   padding: 0 1.5em;
 }
 
+/*
 blockquote::before,
 blockquote::after {
-  width: 0.6em;
+  color: rgba(32, 34, 40, 0.35);
+  font-size: 3em;
+  line-height: 0.5;
+  width: 1em;
 }
+
+blockquote::before {
+  content: "\201C";
+}
+
+blockquote::after {
+  content: "\201D";
+}
+*/
 </style>
 
 ## <!--fit--> Demystifying the Nix Store
