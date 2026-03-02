@@ -11,18 +11,9 @@ updates:
     labels:
       - dependencies
   - package-ecosystem: npm
-    directory: "/demystifying-the-nix-store"
-    schedule:
-      interval: "daily"
-    groups:
-      npm:
-        patterns:
-          - "*"
-    labels:
-      - dependencies
-    : increase
-  - package-ecosystem: npm
-    directory: "/tracking-nixpkgs-pull-requests"
+    directories:
+      - "/demystifying-the-nix-store"
+      - "/tracking-nixpkgs-pull-requests"
     schedule:
       interval: "daily"
     groups:
