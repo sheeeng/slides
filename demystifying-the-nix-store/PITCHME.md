@@ -206,7 +206,13 @@ Dependency hell.
 <!--
 Traditional package managers are like throwing all your LEGO bricks into one big bin.
 
-Sure, you can find pieces, but things get messy, upgrades can break existing builds, and rolling back is painful.
+Everything mixed together: packages share directories like /usr/lib, so two versions of the same library compete for one path. Nix gives every package a unique hash-based path in /nix/store.
+
+Upgrading might break: replacing a shared dependency can silently break other packages. Nix builds in isolation, so upgrading one package never touches another's files.
+
+Hard to undo changes: upgrades overwrite files in place with no previous state to restore. Nix tracks generations, and every old package remains in the store for instant rollback.
+
+Dependency hell: conflicting version requirements become unresolvable when only one global version is allowed. Nix lets each package depend on its own specific versions at distinct store paths.
 -->
 
 ---
