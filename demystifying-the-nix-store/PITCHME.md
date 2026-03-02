@@ -267,7 +267,7 @@ Now let's understand the relationship between Nix expressions and derivations.
 
 ---
 
-## What Is a Nix Expression?
+## What Is a Nix Expression? (1/2)
 
 The source code contained in a `.nix` file.
 
@@ -276,8 +276,6 @@ A **pure, functional language** for describing packages.
 Every `.nix` file is a function that returns a value.
 
 Expressions declare **what** to build, not **how** to run it.
-
-> **The LEGO® design sketch you draw on paper.**
 
 <!--
 A Nix expression is just declarative source code written in the Nix language.
@@ -288,6 +286,14 @@ Nix expressions are pure functions, meaning the same inputs always produce the s
 
 This is the file you edit as a developer.
 -->
+
+---
+
+## What Is a Nix Expression? (2/2)
+
+<img src="assets/twemoji-memo-1f4dd.svg" alt="📝" width="256" height="256">
+
+> **The LEGO® design sketch you draw on paper.**
 
 ---
 
@@ -313,7 +319,7 @@ The derivation is a fully resolved build recipe with every dependency pinned to 
 
 ---
 
-## What Is a Derivation?
+## What Is a Derivation? (1/2)
 
 A **recipe** that describes:
 
@@ -321,13 +327,19 @@ A **recipe** that describes:
 - **Build steps**: How to build it.
 - **Outputs**: What you get, including binaries and libraries.
 
-> **The LEGO® instruction booklet inside your set.**
-
 <!--
 A derivation is just a recipe.
 
 It tells Nix exactly what inputs are needed, what steps to perform, and what the final output should look like.
 -->
+
+---
+
+## What Is a Derivation? (2/2)
+
+<img src="assets/twemoji-open-book-1f4d6.svg" alt="📖" width="256" height="256">
+
+> **The LEGO® instruction booklet inside your set.**
 
 ---
 
@@ -359,7 +371,7 @@ We will walk through it piece by piece over the next few slides.
 
 ---
 
-## Declaring Inputs
+## Declaring Inputs (1/2)
 
 ```nix
 { pkgs ? import <nixpkgs> { }, }:
@@ -368,8 +380,6 @@ We will walk through it piece by piece over the next few slides.
 `pkgs` is the function argument.
 
 `import ...` loads the entire Nix packages collection.
-
-> **Find the bricks you need in a LEGO® catalog.**
 
 <!--
 Every Nix file is a function.
@@ -380,6 +390,14 @@ This is how the expression knows where to find its dependencies.
 
 It is the shopping list before you start building.
 -->
+
+---
+
+## Declaring Inputs (2/2)
+
+<img src="assets/twemoji-books-1f4da.svg" alt="📚" width="256" height="256">
+
+> **Find the bricks you need in a LEGO® catalog.**
 
 ---
 
@@ -630,7 +648,8 @@ Both the derivation hash and the output hash are deterministic.
 }
 ```
 
-Every path is absolute. Nothing comes from the host system.
+Every path is absolute.
+Nothing comes from the host system.
 
 <!--
 Even the shell that runs the build is a specific, immutable store path.
@@ -1087,7 +1106,7 @@ We will walk through it piece by piece.
 
 ---
 
-## Flake: Metadata and Inputs
+## Flake: Metadata and Inputs (1/2)
 
 ```nix
   description = "Show UTC Date & Time";
@@ -1099,8 +1118,6 @@ Declare external dependencies with exact sources.
 
 Create a `flake.lock` to pin the exact revision.
 
-> **Order from which LEGO® catalog edition.**
-
 <!--
 Unlike the standalone expression that used import <nixpkgs>, a flake pins its inputs to a specific Git revision.
 
@@ -1108,6 +1125,14 @@ The lock file ensures everyone building this flake uses the exact same nixpkgs c
 
 No more "it works on my machine" because of different channels.
 -->
+
+---
+
+## Flake: Metadata and Inputs (2/2)
+
+<img src="assets/twemoji-bookmark-1f516.svg" alt="🔖" width="256" height="256">
+
+> **Order from which LEGO® catalog edition.**
 
 ---
 
