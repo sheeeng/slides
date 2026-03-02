@@ -5,7 +5,7 @@ title: "Demystifying the Nix Store"
 description: "The Giant Immutable LEGO Set: Demystifying the Nix Store"
 theme: uncover
 transition: fade
-footer: "Leonard Sheng Sheng Lee | Demystifying the Nix Store | PlanetNix 2026 • SCALE 23x"
+footer: "Leonard Sheng Sheng Lee (Stø AS) | Demystifying the Nix Store | PlanetNix 2026 • SCALE 23x"
 paginate: true
 _paginate: false
 math: mathjax
