@@ -72,7 +72,7 @@ blockquote {
   width: fit-content;
   margin-left: auto;
   margin-right: auto;
-  padding: 0 1.5em;
+  /* padding: 1em; */
 }
 
 /*
