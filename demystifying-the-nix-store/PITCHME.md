@@ -135,9 +135,9 @@ We'll explore how Nix builds software in total isolation, why your system can't 
 ## Have You Ever Looked Inside `/nix/store`?
 
 ```bash
-/nix/store/vm9dz55z4g5p8qixnnkgy2jy7rh0m80p-nixd-2...
-/nix/store/3qk44frb7zpwpy0lkxp3xl97zhpjrcr7-glibc-...
-/nix/store/gyl90xhl7hf8wpz31zmvgz0m7wy343ib-gcc-15...
+├── 0a5jirwm929lxp126lhsaivlcjzj56dl-nixd-2.8.2
+├── k7gnyhjpdngfjv77hlh28zhrpv7gkar9-glibc-2.42-47.drv
+├── 7m2c9rgvk9hnd8ngvp4c1hhl43c97jxs-gcc-15.2.0
 ```
 
 <!--
@@ -220,7 +220,7 @@ Dependency hell: conflicting version requirements become unresolvable when only 
 
 ## Giant LEGO® Set
 
-For each Nix package:
+_For each Nix package:_
 
 The binaries and libraries are like a set of bricks.
 
@@ -234,6 +234,8 @@ This is the core metaphor.
 Each LEGO set is self-contained, has clear instructions, and has a unique identifier.
 
 Sound familiar?
+
+Manual: https://nix.dev/manual/nix/2.34/store/store-object/content-address
 -->
 
 ---
@@ -286,6 +288,8 @@ You describe the inputs, the build steps, and the expected outputs.
 Nix expressions are pure functions, meaning the same inputs always produce the same result.
 
 This is the file you edit as a developer.
+
+Glossary: https://nix.dev/manual/nix/2.34/glossary#gloss-nix-expression
 -->
 
 ---
@@ -298,25 +302,27 @@ This is the file you edit as a developer.
 
 ---
 
-## Expressions Produce Derivations
+## Expressions -> Derivations (1/2)
 
-Nix **evaluates** the expression to produce a **derivation**.
+Nix _evaluates_ **the expression** to produce a **derivation**.
 
-Derivation: Fully resolved, machine-readable build recipe.
-
-Every dependency is pinned to an exact store path.
-
-> **Read the sketch, prints the instruction manual.**
+The derivation is a fully resolved build recipe with every dependency pinned to an exact store path.
 
 <!--
 This is the most important distinction in Nix.
 
 You write expressions, which is human-friendly source code.
 
-Nix turns them into derivations.
-
-The derivation is a fully resolved build recipe with every dependency pinned to an exact store path.
+Then, Nix turns these expressions into full resolved, machine-readable build recipe, which is called derivations.
 -->
+
+---
+
+## Expressions -> Derivations (2/2)
+
+<img src="assets/twemoji-books-1f4da.svg" alt="📚" width="256" height="256">
+
+> **Read the sketch, prints the instruction manual.**
 
 ---
 
@@ -332,6 +338,8 @@ A **recipe** that describes:
 A derivation is just a recipe.
 
 It tells Nix exactly what inputs are needed, what steps to perform, and what the final output should look like.
+
+Glossary: https://nix.dev/manual/nix/2.34/glossary#gloss-derivation
 -->
 
 ---
@@ -341,6 +349,12 @@ It tells Nix exactly what inputs are needed, what steps to perform, and what the
 <img src="assets/twemoji-open-book-1f4d6.svg" alt="📖" width="256" height="256">
 
 > **The LEGO® instruction booklet inside your set.**
+
+<!--
+Derivations are implemented as operating system processes that run in a sandbox. This sandbox by default only allows reading from store objects specified as inputs, and only allows writing to designated outputs to be captured as store objects.
+
+Glossary: https://nix.dev/manual/nix/2.34/glossary#gloss-derivation
+-->
 
 ---
 
@@ -420,15 +434,11 @@ The name you choose here is what appears after the hash in the final store path.
 
 The `"show-utc-datetime"` becomes the package name in the store path.
 
+The `nativeBuildInputs` lists dependencies available during the build.
+
 NOTE: An important note, is to notice that a nix-built bash-script, which contains e.g. the output of $(date) or `cat /dev/urandom` in the script-file, would never be possible to make reproducible.
 
 Thus, nix is not a guarantee for reproducibility, but can be thought of as a good system of guardrails to build software as reproducible as possible. - Hat tip to Christian Chavez!
-
-The `nativeBuildInputs` lists dependencies available during the build.
-
-Note that a nix-built bash-script, which contains e.g. the output of $(date) or `cat /dev/urandom` in the script-file, would never be possible to make reproducible.
-
-So nix is not a guarantee for reproducibility, but can be thought of as a good system of guardrails to build software as reproducible as possible.
 -->
 
 ---
