@@ -1,0 +1,68 @@
+---
+title: "Nix Store: From Expressions to Outputs"
+---
+graph LR
+    %% ── Nix Expressions ──
+    subgraph expressions["Nix Expressions"]
+        direction TB
+        nix1["show-utc-datetime.nix"]
+        nix2["flake.nix"]
+        nix3["default.nix"]
+        note_expr["Human-readable source code<br/>describing <b>what</b> to build"]
+    end
+
+    %% ── Instantiate arrow ──
+    expressions -- "Instantiate<br/><code>nix-instantiate</code><br/><code>nix eval</code>" --> derivations
+
+    %% ── Nix Store: Derivations ──
+    subgraph nixstore["/nix/store"]
+        direction TB
+
+        subgraph derivations["Store Derivations"]
+            direction TB
+            drv1["...gn1360z-show-utc-datetime.drv"]
+            drv2["...8s9kxnp-bash-5.3p9.drv"]
+            drv3["...093gp61-uutils-coreutils-0.6.0.drv"]
+            note_drv["Fully resolved build recipes<br/>with pinned dependencies"]
+        end
+
+        %% ── Realise arrow ──
+        derivations -- "Realise<br/><code>nix-store --realise</code><br/><code>nix build</code>" --> outputs
+
+        subgraph outputs["Store Path Outputs"]
+            direction TB
+            out1["...v8h9rcs-show-utc-datetime/"]
+            out2["...8s9kxnp-bash-5.3p9/"]
+            out3["...093gp61-uutils-coreutils-0.6.0/"]
+            note_out["Immutable binaries, libraries,<br/>and directories"]
+        end
+    end
+
+    %% ── Store path structure annotation ──
+    subgraph storepath["Store Path Structure"]
+        direction TB
+        fmt["<code>/nix/store/[digest]-[name]</code><br/>Example: <code>v4bvnkm0...-cargo-1.92.0</code>"]
+        hash_props["Same inputs = same hash<br/>Content-addressed and deterministic"]
+    end
+
+    outputs -. "Each output follows<br/>the store path format" .-> storepath
+
+    %% ── Styling ──
+    classDef exprStyle fill:#d0ebff,stroke:#1971c2,stroke-width:2px,color:#1971c2
+    classDef drvStyle fill:#d8f5a2,stroke:#2f9e44,stroke-width:2px,color:#2f9e44
+    classDef outStyle fill:#f3d9fa,stroke:#9c36b5,stroke-width:2px,color:#9c36b5
+    classDef noteStyle fill:none,stroke:none,color:#495057,font-size:12px
+    classDef storeStyle fill:#fff9db,stroke:#e8590c,stroke-width:1px,stroke-dasharray:5 5,color:#495057
+    classDef pathStyle fill:#fff3bf,stroke:#f08c00,stroke-width:2px,color:#1e1e1e
+
+    class nix1,nix2,nix3 exprStyle
+    class drv1,drv2,drv3 drvStyle
+    class out1,out2,out3 outStyle
+    class note_expr,note_drv,note_out noteStyle
+    class fmt,hash_props pathStyle
+
+    style expressions fill:#a5d8ff22,stroke:#1971c2,stroke-width:2px
+    style derivations fill:#b2f2bb22,stroke:#2f9e44,stroke-width:2px
+    style outputs fill:#eebefa22,stroke:#9c36b5,stroke-width:2px
+    style nixstore fill:none,stroke:#868e96,stroke-width:2px,stroke-dasharray:8 4
+    style storepath fill:#fff9db22,stroke:#f08c00,stroke-width:2px,stroke-dasharray:5 5
