@@ -186,7 +186,7 @@ We'll go from confusion to clarity using a simple metaphor that makes Nix's comp
 
 ## Explore the LEGO® Metaphor
 
-<img src="assets/twemoji-brick-1f9f1.svg" alt="🧱" width="256" height="256">
+<img src="https://raw.githubusercontent.com/twitter/twemoji/master/assets/svg/1f9f1.svg" alt="🧱" width="256" height="256">
 
 <!--
 Now we introduce the key metaphor that will help everything make sense.
@@ -194,7 +194,7 @@ Now we introduce the key metaphor that will help everything make sense.
 
 ---
 
-## Traditional Package Managers
+## Conventional Package Managers
 
 Everything mixed together.
 
@@ -205,7 +205,7 @@ Hard to undo changes.
 Dependency hell.
 
 <!--
-Traditional package managers are like throwing all your LEGO bricks into one big bin.
+Conventional package managers are like throwing all your LEGO bricks into one big bin.
 
 Everything mixed together: packages share directories like /usr/lib, so two versions of the same library compete for one path. Nix gives every package a unique hash-based path in /nix/store.
 
@@ -296,7 +296,7 @@ Glossary: https://nix.dev/manual/nix/2.34/glossary#gloss-nix-expression
 
 ## What Is a Nix Expression? (2/2)
 
-<img src="assets/twemoji-memo-1f4dd.svg" alt="📝" width="256" height="256">
+<img src="https://raw.githubusercontent.com/twitter/twemoji/master/assets/svg/1f4dd.svg" alt="📝" width="256" height="256">
 
 > **The LEGO® design sketch you draw on paper.**
 
@@ -320,7 +320,7 @@ Then, Nix turns these expressions into full resolved, machine-readable build rec
 
 ## Expressions -> Derivations (2/2)
 
-<img src="assets/twemoji-books-1f4da.svg" alt="📚" width="256" height="256">
+<img src="https://raw.githubusercontent.com/twitter/twemoji/gh-pages/svg/1f4da.svg" alt="📚" width="256" height="256">
 
 > **Read the sketch, prints the instruction manual.**
 
@@ -346,13 +346,11 @@ Glossary: https://nix.dev/manual/nix/2.34/glossary#gloss-derivation
 
 ## What Is a Derivation? (2/2)
 
-<img src="assets/twemoji-open-book-1f4d6.svg" alt="📖" width="256" height="256">
+<img src="https://raw.githubusercontent.com/twitter/twemoji/master/assets/svg/1f4d6.svg" alt="📖" width="256" height="256">
 
 > **The LEGO® instruction booklet inside your set.**
 
 <!--
-Derivations are implemented as operating system processes that run in a sandbox. This sandbox by default only allows reading from store objects specified as inputs, and only allows writing to designated outputs to be captured as store objects.
-
 Glossary: https://nix.dev/manual/nix/2.34/glossary#gloss-derivation
 -->
 
@@ -364,8 +362,10 @@ Glossary: https://nix.dev/manual/nix/2.34/glossary#gloss-derivation
 # show-utc-datetime.nix
 
 {  pkgs ? import <nixpkgs> { }, }:
+# ------------------------------------------------
 pkgs.runCommand "show-utc-datetime"
   { nativeBuildInputs = [ pkgs.uutils-coreutils-noprefix ]; }
+# ------------------------------------------------
   ''
     mkdir --parents $out/bin
     cat > $out/bin/show-utc-datetime <<'EOF'
@@ -410,7 +410,7 @@ It is the shopping list before you start building.
 
 ## Declaring Inputs (2/2)
 
-<img src="assets/twemoji-books-1f4da.svg" alt="📚" width="256" height="256">
+<img src="https://raw.githubusercontent.com/twitter/twemoji/gh-pages/svg/1f4da.svg" alt="📚" width="256" height="256">
 
 > **Find the bricks you need in a LEGO® catalog.**
 
@@ -446,11 +446,14 @@ Thus, nix is not a guarantee for reproducibility, but can be thought of as a goo
 ## The Build Script
 
 ```bash
-cat > $out/bin/show-utc-datetime <<'EOF'
-#!${pkgs.runtimeShell}
-exec ${pkgs.uutils-coreutils-noprefix}/bin/date --universal +"%Y%m%dT%H%M%SZ"
-EOF
-chmod +x $out/bin/show-utc-datetime
+  ''
+    mkdir --parents $out/bin
+    cat > $out/bin/show-utc-datetime <<'EOF'
+    #!${pkgs.runtimeShell}
+    exec ${pkgs.uutils-coreutils-noprefix}/bin/date --universal +"%Y%m%dT%H%M%SZ"
+    EOF
+    chmod +x $out/bin/show-utc-datetime
+  ''
 ```
 
 The shell script that calls `date` from the package.
@@ -469,14 +472,15 @@ That is total isolation in action.
 
 ---
 
-## Nix Interpolation at Work
+## String Interpolation
 
 ```nix
 #!${pkgs.runtimeShell}
-exec ${pkgs.uutils-coreutils-noprefix}/bin/date --universal +"%Y%m%dT%H%M%SZ"
+exec ${pkgs.uutils-coreutils-noprefix}/bin/date \
+--universal +"%Y%m%dT%H%M%SZ"
 ```
 
-After Nix evaluates the expression, this becomes:
+After Nix evaluates above expression, it becomes:
 
 ```bash
 #!/nix/store/...8s9kxnp-bash-5.3p9/bin/bash
@@ -487,15 +491,17 @@ exec /nix/store/...093gp61-uutils-coreutils-0.6.0/bin/date \
 Every dependency is pinned to an **exact store path**.
 
 <!--
-This is the key insight.
-
-Nix replaces the interpolation expressions with absolute paths into the store.
+Nix replaces the string interpolation expressions with absolute paths into the store.
 
 The resulting script does not depend on any system PATH.
 
 It points directly at a specific version of bash and a specific version of uutils-coreutils-noprefix.
 
 If either dependency changes, the hash changes, and you get a completely new store path.
+
+Glossary: https://nix.dev/manual/nix/2.34/glossary#gloss-string-interpolation
+
+Manual: https://nix.dev/manual/nix/2.34/language/string-interpolation
 -->
 
 ---
@@ -503,22 +509,36 @@ If either dependency changes, the hash changes, and you get a completely new sto
 ## Build The Expression (\*.nix) File
 
 ```shell
-nix build --file show-utc-datetime.nix
+nix build --file show-utc-datetime.nix ...
 ```
 
 Evaluate the expression to produce a `.drv` file.
+
 Compute a hash from inputs.
+
 Run the build script in an isolated sandbox.
+
 Store the output at the computed path.
 
 <!--
-Building evaluates the Nix expression, produces a derivation, and then executes that derivation in a sandbox.
+First, evaluate the expression to get the derivation.
+
+Next, we execute a derivation (building it in the sandbox) to produce its outputs. When we run "nix build", we are producing (or more precisely, realising) the derivation by ensure the store paths are valid.
 
 The hash in the output path is deterministic.
 
-If you build this on another machine with the same nixpkgs version, you get the exact same hash. That is reproducibility.
+If we build this on another machine with the same nixpkgs version, we get the exact same hash. That is reproducibility.
 
-Input addressability: Calculate hashes from everything, which includes dependencies, build script, name, etc.
+Glossary: https://nix.dev/manual/nix/2.34/glossary#gloss-realise
+
+Ensure a store path is valid. This can be achieved by:
+- Fetching a pre-built store object from a substituter.
+- Building the corresponding store derivation.
+- Delegating to a remote machine and retrieving the outputs.
+
+Glossary: https://nix.dev/manual/nix/2.34/glossary#gloss-derivation
+
+Derivations are implemented as operating system processes that run in a sandbox. This sandbox by default only allows reading from store objects specified as inputs, and only allows writing to designated outputs to be captured as store objects.
 -->
 
 ---
@@ -531,7 +551,9 @@ this derivation will be built:
 ```
 
 Evaluate the `.nix` expression to produce a `.drv` file.
+
 Compute the hash `...gn1360z` from all inputs.
+
 Execute the `.drv` file as the actual build recipe.
 
 <!--
@@ -541,7 +563,9 @@ The .drv file is the real derivation.
 
 Our .nix file was just the expression that produced it.
 
-The hash encodes every input: the build script, dependencies, system architecture, everything.
+The content-addressed hash encodes every input: the build script, dependencies, system architecture, everything.
+
+Glossary: https://nix.dev/manual/nix/2.34/glossary#gloss-content-address
 -->
 
 ---
@@ -577,8 +601,11 @@ show-utc-datetime> building
 ```
 
 Run the build script inside a sandbox.
+
 Allow only declared dependencies.
+
 Block network access and access to `/usr` or `/bin`.
+
 Place the output at the computed store path.
 
 <!--
@@ -604,16 +631,16 @@ Nothing from the host system can leak in in the build process.
 ┗━ ∑ ⏵ 0 │ ✔ 1 │ ⏸ 0 │ Finished after 3s
 ```
 
-Visualize the build process with `nix-output-monitor`.
+Optional: `nix-output-monitor`
 
 <!--
-The nix-output-monitor tool gives us a clear picture of what happened.
+If we use nix-output-monitor tool, it gives us a clear picture of what happened.
+
+nix build --rebuild --log-format internal-json --verbose --file show-utc-datetime.nix |& nix run nixpkgs#nix-output-monitor -- --json
 
 The dependency graph shows that show-utc-datetime was built locally.
 
 All dependencies including uutils-coreutils were already available in the store, so nothing needed to be downloaded.
-
-The build itself took only 3 seconds.
 -->
 
 ---
@@ -664,6 +691,7 @@ Both the derivation hash and the output hash are deterministic.
 ```
 
 Every path is absolute.
+
 Nothing comes from the host system.
 
 <!--
@@ -810,28 +838,65 @@ Everything is deterministic and traceable.
 
 ---
 
-## The Store Path Structure
+## The Store Path Structure (1/2)
 
 ```text
-/nix/store/[hash]-[name]-[version]
-           └─────┬─────┘
-          Unique Identifier
+[hash]-[name]-[version]
+└─────────┬───────────┘
+    Unique Identifier
 ```
 
-$$f(\text{inputs}) = \text{/nix/store/...}$$
+Example：
 
-**Example**:
-
-```text
-/nix/store/...v8h9rcs-show-utc-datetime
-```
+`1xy62wrp3m91snd3cazxgg0yrplb6sav-git-2.52.0`
 
 <!--
+Think of a store path as an opaque, unique identifier: The only way to obtain store path is by adding or building store objects. A store path will always reference exactly one store object.
+
+Store paths are pairs of:
+- A 20-byte / 32 ASCII characters digest for identification.
+- A symbolic name for people to read.
+
 The hash isn't random. It's deterministic!
 
 It's computed from all the inputs, the build recipe, and even the compiler version.
 
 Change anything, and you get a different hash.
+
+Manual: Store Path: https://nix.dev/manual/nix/2.34/store/store-path
+
+Manual: Complete Store Path Calculation: https://nix.dev/manual/nix/2.34/protocols/store-path
+-->
+
+---
+
+## The Store Path Structure (2/2)
+
+$$f(\text{inputs}) = \text{/nix/store/ ...}$$
+
+```text
+  /nix/store/v4bvnkm0p5x41fhybskr0cf2zvkgyrvv-cargo-1.92.0
+  |--------| |------------------------------| |----------|
+Store Directory            Digest                 Name
+
+```
+
+<!--
+The store directory defaults to /nix/store, but is in principle arbitrary.
+
+A store path is rendered to a file system path as the concatenation of:
+
+-Store directory (typically /nix/store)
+-Path separator (/)
+- Digest rendered in Nix32, a variant of base-32 (20 -hash bytes become 32 ASCII characters)
+-Hyphen (-)
+-Name
+
+Manual: Store Path: https://nix.dev/manual/nix/2.34/store/store-path
+
+Manual: Complete Store Path Calculation: https://nix.dev/manual/nix/2.34/protocols/store-path
+
+Manual: Nix32 Encoding: https://nix.dev/manual/nix/2.34/protocols/nix32
 -->
 
 ---
@@ -875,8 +940,8 @@ Instead, you're always creating new versions alongside the old ones.
 ## Example: Upgrading Python
 
 ```text
-/nix/store/aaa-python-3.10/bin/python
-/nix/store/bbb-python-3.11/bin/python
+/nix/store/iki3g1iyxydm65k7hm0r3ssm8l6mvlb6-python3-3.12.8
+/nix/store/8bwmgvfcyys3kfia055ih7gask3fid7s-python3-3.14.2
 ```
 
 **Both exist simultaneously!**
@@ -886,10 +951,11 @@ Your programs use whatever version they need.
 <!--
 Multiple versions coexist peacefully.
 
-Program A can use Python 3.10 while Program B uses Python 3.11.
+Program A can use Python 3.12 while Program B uses Python 3.14.
 
 No conflicts.
 
+tree -L 1 /nix/store/ | grep 'python3-3.12'
 rg --files --follow --glob "**/bin/python" /nix/store
 -->
 
@@ -911,6 +977,10 @@ Operations are atomic.
 Either they complete fully or they don't happen at all.
 
 And rolling back is just changing which generation your profile points to.
+
+Glossary: https://nix.dev/manual/nix/2.34/glossary#gloss-profile
+
+A symlink to the current user environment of a user, e.g., /nix/var/nix/profiles/default.
 -->
 
 ---
@@ -974,7 +1044,7 @@ nix-store --query --references "$(nix-build '<nixpkgs>' --attr hello --no-out-li
 
 ---
 
-## The Closure
+## Closure (1/2)
 
 A package with all its dependencies, resolved recursively.
 
@@ -993,6 +1063,14 @@ The closure is the complete set of everything needed.
 
 If you copy a closure to another machine, the program will work because all dependencies are included.
 -->
+
+---
+
+## Closure (2/2)
+
+<img src="https://raw.githubusercontent.com/twitter/twemoji/master/assets/svg/1f3f0.svg" alt="🏰" width="256" height="256">
+
+> The LEGO set that completely built.
 
 ---
 
@@ -1145,7 +1223,7 @@ No more "it works on my machine" because of different channels.
 
 ## Flake: Metadata and Inputs (2/2)
 
-<img src="assets/twemoji-bookmark-1f516.svg" alt="🔖" width="256" height="256">
+<img src="https://raw.githubusercontent.com/twitter/twemoji/master/assets/svg/1f4d3.svg" alt="📜" width="256" height="256">
 
 > **Order from which LEGO® catalog edition.**
 
@@ -1308,17 +1386,11 @@ But for some, the benefits far outweigh the costs.
 
 ## Key Takeaways
 
-**Expressions ≈ Design Sketches**
+Expressions ≈ Design Sketches
 
-**Derivations ≈ Instruction Manuals**
+Derivations ≈ Instruction Manuals
 
-**Hashes ≈ Unique Identifiers**
-
-**Isolation ≈ Reproducibility**
-
-**Immutability ≈ No Breakage**
-
-**Closures ≈ Complete Dependencies**
+Hashes ≈ Set Numbers
 
 <!--
 These are the core concepts. Master these, and Nix will start to make sense.
