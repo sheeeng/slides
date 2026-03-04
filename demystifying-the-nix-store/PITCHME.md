@@ -399,6 +399,8 @@ We will walk through it piece by piece over the next few slides.
 <!--
 Every Nix file is a function.
 
+The `?` operator is a 'default value if null' operator, if you don't find a good way to fit it on the slide?
+
 This line says "give Nix a package set, or Nix will load nixpkgs itself."
 
 This is how the expression knows where to find its dependencies.
