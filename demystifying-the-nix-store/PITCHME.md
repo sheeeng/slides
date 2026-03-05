@@ -1155,7 +1155,7 @@ Let's look at modern Nix with flakes and wrap up with why all of this matters.
 
 ```nix
 {
-  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
 
   outputs = { self, nixpkgs }: {
     packages.x86_64-linux.default = nixpkgs.legacyPackages.x86_64-linux.hello;
@@ -1178,7 +1178,7 @@ Flakes are the modern way to work with Nix. They make dependencies explicit, loc
 ```nix
 {
   description = "Show UTC Date & Time";
-  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
   outputs = { self, nixpkgs }:
     let
       forAllSystems = f:
@@ -1206,7 +1206,7 @@ We will walk through it piece by piece.
 ```nix
   description = "Show UTC Date & Time";
 
-  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 ```
 
 Declare external dependencies with exact sources.
