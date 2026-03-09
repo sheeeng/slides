@@ -5,7 +5,7 @@ title: "Tracking Nixpkgs Pull Requests"
 description: "When is the fix available? A 5-Minute Guide to Tracking Nixpkgs PRs!"
 theme: uncover
 transition: fade
-footer: "Leonard Sheng Sheng Lee | Stø AS | Tracking Nixpkgs Pull Requests | PlanetNix 2026 • SCALE 23x"
+footer: "Leonard Sheng Sheng Lee | Stø AS | Tracking Nixpkgs Pull Requests | PlanetNix 2026 • SCaLE 23x"
 paginate: true
 _paginate: false
 ---
