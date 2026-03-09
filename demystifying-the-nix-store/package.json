@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "build": "rimraf public && npm run -s og-image && npm run -s deck",
-    "deck": "marp --no-stdin PITCHME.md --output public/index.html && ncp assets public/assets",
+    "deck": "marp --no-stdin PITCHME.md --output public/index.html && ncp assets public/assets && node ../scripts/inject-ga.mjs public/index.html",
     "og-image": "marp --no-stdin PITCHME.md --output public/og-image.jpg",
     "export-all": "marp --no-stdin PITCHME.md --output PITCHME.html && marp --no-stdin PITCHME.md --output PITCHME.pdf && marp --no-stdin PITCHME.md --output PITCHME.png && marp --no-stdin PITCHME.md --output PITCHME.jpeg",
     "start": "marp --server --preview .",
