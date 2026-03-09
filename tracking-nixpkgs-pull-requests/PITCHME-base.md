@@ -1,7 +1,7 @@
 ---
 marp: true
 lang: en-US
-title: Tracking Nixpkgs Pull Requests
+title: Tracking Merged Nixpkgs Pull Requests
 description: When is the fix available? A 5-Minute Guide to Tracking Nixpkgs PRs!
 theme: uncover
 transition: fade
@@ -23,7 +23,7 @@ section {
 
 ![bg opacity](assets/nix-wallpaper-nineish.webp)
 
-# <!--fit--> Tracking Nixpkgs Pull Requests
+# <!--fit--> Tracking Merged Nixpkgs Pull Requests
 
 When is the fix available?
 A 5-Minute Guide to Tracking Nixpkgs PRs!

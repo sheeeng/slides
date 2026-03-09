@@ -1,11 +1,11 @@
 ---
 marp: true
 lang: en-US
-title: "Tracking Nixpkgs Pull Requests"
+title: "Tracking Merged Nixpkgs Pull Requests"
 description: "When is the fix available? A 5-Minute Guide to Tracking Nixpkgs PRs!"
 theme: uncover
 transition: fade
-footer: "Leonard Sheng Sheng Lee | Stø AS | Tracking Nixpkgs Pull Requests | PlanetNix 2026 • SCaLE 23x"
+footer: "Leonard Sheng Sheng Lee | Stø AS | Tracking Merged Nixpkgs Pull Requests | PlanetNix 2026 • SCaLE 23x"
 paginate: true
 _paginate: false
 ---
@@ -94,7 +94,7 @@ blockquote::after {
 */
 </style>
 
-## <!--fit--> Tracking Nixpkgs Pull Requests
+## <!--fit--> Tracking Merged Nixpkgs Pull Requests
 
 <!-- markdownlint-disable MD026 -->
 
