@@ -5,7 +5,9 @@ title: "Tracking Merged Nixpkgs Pull Requests"
 description: "When is the fix available? A 5-Minute Guide to Tracking Nixpkgs PRs!"
 theme: uncover
 transition: fade
-footer: "Leonard Sheng Sheng Lee | Stø AS | Tracking Merged Nixpkgs Pull Requests | PlanetNix 2026 • SCaLE 23x"
+author: "Leonard Sheng Sheng Lee"
+header: "**[Tracking Merged Nixpkgs Pull Requests](https://sheeeng.github.io/slides/tracking-nixpkgs-pull-requests/)**"
+footer: "[Leonard Sheng Sheng Lee](https://github.com/sheeeng) | Stø AS | PlanetNix 2026 • SCaLE 23x | Made with [Marp](https://marp.app/)."
 paginate: true
 _paginate: false
 ---
