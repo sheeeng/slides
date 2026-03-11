@@ -4,43 +4,37 @@ on:
   schedule:
     - cron: "0 0 * * 0" # At 00:00 on Sunday.
   workflow_dispatch:
-
 permissions: {}
-
 concurrency:
   group: "deploy-pages"
   cancel-in-progress: true
-
 jobs:
   build-slides:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         slide:
+          - name: running-kernel-based-virtual-machine
+          - name: governing-azure-resources-with-policy
           - name: tracking-nixpkgs-pull-requests
           - name: demystifying-the-nix-store
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           submodules: true
-
       - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: "lts/*"
-
       - name: Install Dependencies
         working-directory: ${{ matrix.slide.name }}
         run: npm ci
-
       - name: Build Slides
         working-directory: ${{ matrix.slide.name }}
         run: npm run build
-
       - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v4.4.3
         with:
           name: slides-${{ matrix.slide.name }}
           path: ${{ matrix.slide.name }}/public
-
   deploy:
     needs: [build-slides]
     runs-on: ubuntu-latest
@@ -53,24 +47,27 @@ jobs:
         with:
           sparse-checkout: index.html
           sparse-checkout-cone-mode: false
-
+      - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
+        with:
+          name: slides-running-kernel-based-virtual-machine
+          path: public/running-kernel-based-virtual-machine
+      - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
+        with:
+          name: slides-governing-azure-resources-with-policy
+          path: public/governing-azure-resources-with-policy
       - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: slides-tracking-nixpkgs-pull-requests
           path: public/tracking-nixpkgs-pull-requests
-
       - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: slides-demystifying-the-nix-store
           path: public/demystifying-the-nix-store
-
       - name: Prepare Public Directory
         run: |-
           mkdir --parents public
           cp index.html public/index.html
-
       - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4.0.0
         with:
           path: public/
-
       - uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5
