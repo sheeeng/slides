@@ -1,7 +1,7 @@
 ---
 marp: true
 lang: en-US
-title: Tracking Merged Nixpkgs Pull Requests
+title: Tracking Nixpkgs Merged Pull Requests
 description: When is the fix available? A 5-Minute Guide to Tracking Nixpkgs PRs!
 theme: uncover
 transition: fade
@@ -20,7 +20,7 @@ section {
 }
 </style>
 
-## <!--fit--> Tracking Merged Nixpkgs Pull Requests
+## <!--fit--> Tracking Nixpkgs Merged Pull Requests
 
 When is the fix available?
 A 5-Minute Guide to Tracking Nixpkgs PRs!

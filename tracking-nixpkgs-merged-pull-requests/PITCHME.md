@@ -1,15 +1,18 @@
 ---
 marp: true
 lang: en-US
-title: "Tracking Merged Nixpkgs Pull Requests"
+title: "Tracking Nixpkgs Merged Pull Requests"
 description: "When is the fix available? A 5-Minute Guide to Tracking Nixpkgs PRs!"
 theme: uncover
 transition: fade
 author: "Leonard Sheng Sheng Lee"
-header: "**[Tracking Merged Nixpkgs Pull Requests](https://sheeeng.github.io/slides/tracking-nixpkgs-pull-requests/)**"
-footer: "[Leonard Sheng Sheng Lee](https://github.com/sheeeng) | Stø AS | PlanetNix 2026 • SCaLE 23x | Made with [Marp](https://marp.app/)."
+header: "[Tracking Nixpkgs Merged Pull Requests](https://sheeeng.github.io/slides/tracking-nixpkgs-merged-pull-requests/) | [PlanetNix 2026 • SCaLE 23x](https://www.socallinuxexpo.org/scale/23x/presentations/when-fix-available-5-minute-guide-tracking-nixpkgs-prs)"
+footer: "Made with [Marp](https://marp.app/) by [Leonard Sheng Sheng Lee](https://github.com/sheeeng)."
 paginate: true
 _paginate: false
+backgroundImage: url('https://raw.githubusercontent.com/NixOS/nixos-artwork/refs/heads/master/wallpapers/nix-wallpaper-nineish.png')
+keywords: nix,nixos,nixpkgs
+math: mathjax
 ---
 
 <!-- markdownlint-disable MD033 -->
@@ -96,7 +99,7 @@ blockquote::after {
 */
 </style>
 
-## <!--fit--> Tracking Merged Nixpkgs Pull Requests
+## <!--fit--> Tracking Nixpkgs Merged Pull Requests
 
 <!-- markdownlint-disable MD026 -->
 
