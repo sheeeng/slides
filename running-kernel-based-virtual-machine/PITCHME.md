@@ -6,12 +6,13 @@ description: "Create, access, and manage kernel-based virtual machines on Linux 
 theme: uncover
 transition: fade
 author: "Leonard Sheng Sheng Lee"
-header: "**[Running Kernel-based Virtual Machine](https://sheeeng.github.io/slides/running-kernel-based-virtual-machine/)**"
-footer: "[Getting Started with Kernel-based Virtual Machine (KVM)](https://osseu2022.sched.com/event/15z24) | [Open Source On-Ramp](https://osseu2022.sched.com/overview/type/Open+Source+On-Ramp) | [Open Source Summit Europe 2022](https://osseu2022.sched.com/) <br/> Made with [Marp](https://marp.app/) by [Leonard Sheng Sheng Lee](https://github.com/sheeeng)."
+header: "[Running Kernel-based Virtual Machine](https://sheeeng.github.io/slides/running-kernel-based-virtual-machine/) | [Getting Started with Kernel-based Virtual Machine (KVM)](https://osseu2022.sched.com/event/15z24)"
+footer: "Made with [Marp](https://marp.app/) by [Leonard Sheng Sheng Lee](https://github.com/sheeeng)."
 paginate: true
 _paginate: false
 backgroundImage: url('https://marp.app/assets/hero-background.svg')
 keywords: kvm,linux,virtualization
+math: mathjax
 ---
 
 ## Getting Started with Kernel-based Virtual Machine (KVM)
