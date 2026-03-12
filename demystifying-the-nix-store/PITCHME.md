@@ -5,9 +5,13 @@ title: "Demystifying the Nix Store"
 description: "The Giant Immutable LEGO Set: Demystifying the Nix Store"
 theme: uncover
 transition: fade
-footer: "Leonard Sheng Sheng Lee | Stø AS | Demystifying the Nix Store | PlanetNix 2026 • SCaLE 23x"
+author: "Leonard Sheng Sheng Lee"
+header: "[Demystifying the Nix Store](https://sheeeng.github.io/slides/demystifying-the-nix-store/) | [PlanetNix 2026 • SCaLE 23x](https://www.socallinuxexpo.org/scale/23x/presentations/giant-immutable-lego-set-demystifying-nix-store)"
+footer: "Made with [Marp](https://marp.app/) by [Leonard Sheng Sheng Lee](https://github.com/sheeeng)."
 paginate: true
 _paginate: false
+backgroundImage: url('https://raw.githubusercontent.com/NixOS/nixos-artwork/refs/heads/master/wallpapers/nix-wallpaper-nineish.png')
+keywords: nix,nixos,nix-store
 math: mathjax
 ---
 
@@ -26,12 +30,14 @@ section {
 }
 
 /* Apply to every slide. */
+/*
 section {
   background-image: url('assets/nix-wallpaper-nineish.webp');
-  background-size: cover; /* contain; */
+  background-size: cover; // contain;
   background-position: center;
   background-repeat: no-repeat;
 }
+*/
 
 footer {
   color: #000000;

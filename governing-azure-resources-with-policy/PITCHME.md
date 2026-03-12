@@ -6,10 +6,13 @@ description: "Enforcing standards and assessing compliance at scale with Azure P
 theme: uncover
 transition: fade
 author: "Leonard Sheng Sheng Lee"
-header: "**[Governing Azure Resources with Policy](https://sheeeng.github.io/slides/governing-azure-resources-with-policy/)**"
+header: "[Governing Azure Resources with Policy](https://sheeeng.github.io/slides/governing-azure-resources-with-policy/)"
 footer: "Made with [Marp](https://marp.app/) by [Leonard Sheng Sheng Lee](https://github.com/sheeeng)."
 paginate: true
 _paginate: false
+backgroundImage: url('https://marp.app/assets/hero-background.svg')
+keywords: azure,azure-policy,governance
+math: mathjax
 ---
 
 ![bg opacity:.2 blur:5px 50%](./assets/icons/Microsoft_Azure.svg)
