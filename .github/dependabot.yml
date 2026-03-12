@@ -13,7 +13,7 @@ updates:
   - package-ecosystem: npm
     directories:
       - "/demystifying-the-nix-store"
-      - "/tracking-nixpkgs-pull-requests"
+      - "/tracking-nixpkgs-merged-pull-requests"
     schedule:
       interval: "daily"
     groups:
