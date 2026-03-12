@@ -12,8 +12,10 @@ updates:
       - dependencies
   - package-ecosystem: npm
     directories:
-      - "/demystifying-the-nix-store"
-      - "/tracking-nixpkgs-merged-pull-requests"
+      - "/slides/demystifying-the-nix-store"
+      - "/slides/governing-azure-resources-with-policy"
+      - "/slides/running-kernel-based-virtual-machine"
+      - "/slides/tracking-nixpkgs-merged-pull-requests"
     schedule:
       interval: "daily"
     groups:
