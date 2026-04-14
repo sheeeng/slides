@@ -19,7 +19,12 @@ updates:
     schedule:
       interval: "daily"
     groups:
-      npm:
+      deps:
+        dependency-type: "production"
+        patterns:
+          - "*"
+      deps-dev:
+        dependency-type: "development"
         patterns:
           - "*"
     labels:
