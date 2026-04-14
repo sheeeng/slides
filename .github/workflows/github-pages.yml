@@ -31,7 +31,7 @@ jobs:
       - name: Build Slides
         working-directory: slides/${{ matrix.slide.name }}
         run: npm run build
-      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v4.4.3
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v4.4.3
         with:
           name: slides-${{ matrix.slide.name }}
           path: slides/${{ matrix.slide.name }}/public
@@ -67,7 +67,7 @@ jobs:
         run: |-
           mkdir --parents public
           cp index.html public/index.html
-      - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4.0.0
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: public/
-      - uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5
+      - uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
