@@ -199,12 +199,28 @@
         margin-bottom: 0.375rem;
       }
 
+      .stats-continents {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 0.375rem;
+      }
+
+      .stats-continent-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        color: var(--text-muted);
+      }
+
       .stats-countries {
         list-style: none;
         color: var(--text-muted);
         display: flex;
         flex-direction: column;
         gap: 0.125rem;
+        padding-left: 0.75rem;
+        margin-top: 0.125rem;
       }
 
       @media (prefers-reduced-motion: reduce) {
@@ -348,10 +364,28 @@
         return result;
       }
 
+      const VALID_CONTINENTS = new Set([
+        "Africa",
+        "Antarctica",
+        "Asia",
+        "Europe",
+        "North America",
+        "Oceania",
+        "South America",
+      ]);
+
       async function loadTalks() {
         const res = await fetch("talks.toml");
         if (!res.ok) return [];
-        return parseTOML(await res.text()).talk ?? [];
+        const talks = parseTOML(await res.text()).talk ?? [];
+        for (const t of talks) {
+          if (!t.continent) {
+            console.warn(`talks.toml: missing continent for "${t.title}"`);
+          } else if (!VALID_CONTINENTS.has(t.continent)) {
+            console.warn(`talks.toml: unknown continent "${t.continent}" for "${t.title}" — valid values: ${[...VALID_CONTINENTS].join(", ")}`);
+          }
+        }
+        return talks;
       }
 
       function formatDate(d) {
@@ -382,21 +416,31 @@
       }
 
       function renderStats(talks) {
-        const byCountry = {};
+        const byContinent = {};
         for (const t of talks) {
-          if (!byCountry[t.country]) byCountry[t.country] = new Set();
-          byCountry[t.country].add(t.city);
+          const c = t.continent ?? "Unknown";
+          if (!byContinent[c]) byContinent[c] = {};
+          if (!byContinent[c][t.country]) byContinent[c][t.country] = new Set();
+          byContinent[c][t.country].add(t.city);
         }
-        const totalCountries = Object.keys(byCountry).length;
-        const totalCities = Object.values(byCountry).reduce((n, s) => n + s.size, 0);
+        const totalContinents = Object.keys(byContinent).length;
+        const totalCountries = Object.values(byContinent).reduce((n, countries) => n + Object.keys(countries).length, 0);
+        const totalCities = Object.values(byContinent).reduce((n, countries) =>
+          n + Object.values(countries).reduce((m, cities) => m + cities.size, 0), 0);
         const pl = (n, singular, plural = singular + "s") => `${n} ${n === 1 ? singular : plural}`;
-        const rows = Object.entries(byCountry)
+        const continentRows = Object.entries(byContinent)
           .sort(([a], [b]) => a.localeCompare(b))
-          .map(([country, cities]) => `<li>${country} • ${[...cities].sort().join(", ")}</li>`)
+          .map(([continent, countries]) => {
+            const countryRows = Object.entries(countries)
+              .sort(([a], [b]) => a.localeCompare(b))
+              .map(([country, cities]) => `<li>${country} • ${[...cities].sort().join(", ")}</li>`)
+              .join("");
+            return `<li><span class="stats-continent-label">${continent}</span><ul class="stats-countries">${countryRows}</ul></li>`;
+          })
           .join("");
         document.getElementById("map-stats").innerHTML =
-          `<p class="stats-summary">${pl(talks.length, "talk")} · ${pl(totalCountries, "country", "countries")} · ${pl(totalCities, "city", "cities")}</p>` +
-          `<ul class="stats-countries">${rows}</ul>`;
+          `<p class="stats-summary">${pl(talks.length, "talk")} · ${pl(totalContinents, "continent")} · ${pl(totalCountries, "country", "countries")} · ${pl(totalCities, "city", "cities")}</p>` +
+          `<ul class="stats-continents">${continentRows}</ul>`;
       }
 
       // Google Maps
