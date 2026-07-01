@@ -38,6 +38,7 @@ jobs:
   deploy:
     needs: [build-slides]
     runs-on: ubuntu-latest
+    environment: github-pages
     permissions:
       contents: read
       pages: write
@@ -45,28 +46,33 @@ jobs:
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
-          sparse-checkout: index.html
+          sparse-checkout: |
+            index.html
+            talks.toml
           sparse-checkout-cone-mode: false
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: slides-running-kernel-based-virtual-machine
-          path: public/slides/running-kernel-based-virtual-machine
+          path: public/running-kernel-based-virtual-machine
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: slides-governing-azure-resources-with-policy
-          path: public/slides/governing-azure-resources-with-policy
+          path: public/governing-azure-resources-with-policy
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: slides-tracking-nixpkgs-merged-pull-requests
-          path: public/slides/tracking-nixpkgs-merged-pull-requests
+          path: public/tracking-nixpkgs-merged-pull-requests
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: slides-demystifying-the-nix-store
-          path: public/slides/demystifying-the-nix-store
+          path: public/demystifying-the-nix-store
       - name: Prepare Public Directory
+        env:
+          GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
         run: |-
           mkdir --parents public
-          cp index.html public/index.html
+          sed "s/YOUR_GOOGLE_MAPS_API_KEY/${GOOGLE_MAPS_API_KEY}/g" index.html > public/index.html
+          cp talks.toml public/talks.toml
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: public/
