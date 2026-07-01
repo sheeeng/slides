@@ -49,6 +49,13 @@ jobs:
           sparse-checkout: |
             index.html
             talks.toml
+            favicon.ico
+            favicon-16x16.png
+            favicon-32x32.png
+            apple-touch-icon.png
+            android-chrome-192x192.png
+            android-chrome-512x512.png
+            site.webmanifest
           sparse-checkout-cone-mode: false
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
@@ -73,6 +80,8 @@ jobs:
           mkdir --parents public
           sed "s/YOUR_GOOGLE_MAPS_API_KEY/${GOOGLE_MAPS_API_KEY}/g" index.html > public/index.html
           cp talks.toml public/talks.toml
+          cp favicon.ico favicon-16x16.png favicon-32x32.png apple-touch-icon.png \
+             android-chrome-192x192.png android-chrome-512x512.png site.webmanifest public/
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: public/

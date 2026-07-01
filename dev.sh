@@ -25,6 +25,8 @@ OUT=".dev"
 mkdir -p "$OUT"
 sed "s/YOUR_GOOGLE_MAPS_API_KEY/${GOOGLE_MAPS_API_KEY}/g" index.html > "$OUT/index.html"
 cp talks.toml "$OUT/talks.toml"
+cp favicon.ico favicon-16x16.png favicon-32x32.png apple-touch-icon.png \
+   android-chrome-192x192.png android-chrome-512x512.png site.webmanifest "$OUT/"
 
 echo "Serving at http://localhost:${PORT}. Press Ctrl+C to stop."
 echo "Add 'localhost:${PORT}' to your Maps API key referrer restrictions if not already there."
