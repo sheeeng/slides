@@ -107,6 +107,106 @@
         height: clamp(24px, 5vw, 32px);
       }
 
+      /* Map section */
+      #talks-map {
+        margin-bottom: clamp(1.5rem, 4vw, 2rem);
+      }
+
+      .map-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .map-header h2 {
+        font-size: clamp(1rem, 2.5vw, 1.25rem);
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+
+      .map-toggle {
+        display: flex;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        overflow: hidden;
+      }
+
+      .map-btn {
+        padding: 0.375rem 0.875rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        font-family: inherit;
+        background: var(--bg-card);
+        color: var(--text-muted);
+        border: none;
+        cursor: pointer;
+        transition:
+          background 0.15s ease,
+          color 0.15s ease;
+      }
+
+      .map-btn:not(:last-child) {
+        border-right: 1px solid var(--border);
+      }
+
+      .map-btn.active {
+        background: var(--link);
+        color: #ffffff;
+      }
+
+      .map-btn:hover:not(.active) {
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      .map-btn:focus-visible {
+        outline: 2px solid var(--link);
+        outline-offset: -2px;
+      }
+
+      .map-container {
+        height: 420px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        overflow: hidden;
+      }
+
+      .map-container[hidden] {
+        display: none;
+      }
+
+      .map-error {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        padding: 1rem;
+        text-align: center;
+      }
+
+      #map-stats {
+        margin-bottom: 0.75rem;
+        font-size: 0.875rem;
+      }
+
+      .stats-summary {
+        font-weight: 600;
+        margin-bottom: 0.375rem;
+      }
+
+      .stats-countries {
+        list-style: none;
+        color: var(--text-muted);
+        display: flex;
+        flex-direction: column;
+        gap: 0.125rem;
+      }
+
       @media (prefers-reduced-motion: reduce) {
         * {
           transition-duration: 0.01ms !important;
@@ -134,9 +234,25 @@
         <img src="https://sheeeng.github.io/logo.png" alt="Leonard" />
         <h1>Leonard's Slides</h1>
       </header>
+      <section id="talks-map">
+        <div class="map-header">
+          <h2>Where I've Spoken</h2>
+          <div class="map-toggle" role="group" aria-label="Map provider">
+            <button id="btn-gmaps" class="map-btn active" aria-pressed="true">
+              Google Maps
+            </button>
+            <button id="btn-osm" class="map-btn" aria-pressed="false">
+              OpenStreetMap
+            </button>
+          </div>
+        </div>
+        <div id="map-stats" aria-live="polite"></div>
+        <div id="map-google" class="map-container"></div>
+        <div id="map-osm" class="map-container" hidden></div>
+      </section>
       <ul>
         <li>
-          <a href="slides/demystifying-the-nix-store/">
+          <a href="demystifying-the-nix-store/">
             <picture>
               <source
                 srcset="
@@ -155,7 +271,7 @@
           </a>
         </li>
         <li>
-          <a href="slides/governing-azure-resources-with-policy/">
+          <a href="governing-azure-resources-with-policy/">
             <img
               src="https://raw.githubusercontent.com/googlefonts/noto-emoji/main/png/512/emoji_u1f3db.png"
               alt="Classical Building"
@@ -166,7 +282,7 @@
           </a>
         </li>
         <li>
-          <a href="slides/running-kernel-based-virtual-machine/">
+          <a href="running-kernel-based-virtual-machine/">
             <img
               src="https://raw.githubusercontent.com/googlefonts/noto-emoji/main/png/512/emoji_u1f5a5.png"
               alt="Desktop Computer"
@@ -177,7 +293,7 @@
           </a>
         </li>
         <li>
-          <a href="slides/tracking-nixpkgs-merged-pull-requests/">
+          <a href="tracking-nixpkgs-merged-pull-requests/">
             <picture>
               <source
                 srcset="
@@ -197,5 +313,212 @@
         </li>
       </ul>
     </main>
+
+    <script type="module">
+      // Replace with your Google Maps JavaScript API key.
+      // Restrict it to your domain in Google Cloud Console.
+      const GOOGLE_MAPS_API_KEY = "YOUR_GOOGLE_MAPS_API_KEY";
+
+      function parseTOML(text) {
+        const result = {};
+        let current = null;
+        for (const raw of text.split("\n")) {
+          const line = raw.trim();
+          if (!line || line.startsWith("#")) continue;
+          const arr = line.match(/^\[\[(\w+)\]\]$/);
+          if (arr) {
+            const key = arr[1];
+            if (!result[key]) result[key] = [];
+            current = {};
+            result[key].push(current);
+            continue;
+          }
+          if (current) {
+            const eq = line.indexOf("=");
+            if (eq === -1) continue;
+            const k = line.slice(0, eq).trim();
+            let v = line.slice(eq + 1).trim();
+            if (v.startsWith('"') && v.endsWith('"')) v = v.slice(1, -1);
+            else if (v === "true") v = true;
+            else if (v === "false") v = false;
+            else if (v !== "" && !isNaN(v)) v = parseFloat(v);
+            current[k] = v;
+          }
+        }
+        return result;
+      }
+
+      async function loadTalks() {
+        const res = await fetch("talks.toml");
+        if (!res.ok) return [];
+        return parseTOML(await res.text()).talk ?? [];
+      }
+
+      function formatDate(d) {
+        if (!d) return "";
+        if (/^\d{4}$/.test(d)) return d;
+        const [y, m, day] = d.split("-").map(Number);
+        return new Date(y, m - 1, day).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+      }
+
+      function popupHTML(talk) {
+        const title = talk.url
+          ? `<a href="${talk.url}" target="_blank" rel="noopener">${talk.title}</a>`
+          : talk.title;
+        const meta = [talk.city && talk.country ? `${talk.city}, ${talk.country}` : "", formatDate(talk.date)]
+          .filter(Boolean)
+          .join(" • ");
+        return (
+          `<div style="font-family:inherit;line-height:1.6;padding:2px 4px">` +
+          `<strong>${title}</strong>` +
+          (talk.event ? `<br>${talk.event}` : "") +
+          (meta ? `<br><span style="color:#777">${meta}</span>` : "") +
+          `</div>`
+        );
+      }
+
+      function renderStats(talks) {
+        const byCountry = {};
+        for (const t of talks) {
+          if (!byCountry[t.country]) byCountry[t.country] = new Set();
+          byCountry[t.country].add(t.city);
+        }
+        const totalCountries = Object.keys(byCountry).length;
+        const totalCities = Object.values(byCountry).reduce((n, s) => n + s.size, 0);
+        const pl = (n, singular, plural = singular + "s") => `${n} ${n === 1 ? singular : plural}`;
+        const rows = Object.entries(byCountry)
+          .sort(([a], [b]) => a.localeCompare(b))
+          .map(([country, cities]) => `<li>${country} • ${[...cities].sort().join(", ")}</li>`)
+          .join("");
+        document.getElementById("map-stats").innerHTML =
+          `<p class="stats-summary">${pl(talks.length, "talk")} · ${pl(totalCountries, "country", "countries")} · ${pl(totalCities, "city", "cities")}</p>` +
+          `<ul class="stats-countries">${rows}</ul>`;
+      }
+
+      // Google Maps
+      let gmapsMap = null;
+
+      async function initGoogleMaps(talks) {
+        const el = document.getElementById("map-google");
+        if (gmapsMap) return;
+
+        if (GOOGLE_MAPS_API_KEY.startsWith("YOUR_")) {
+          el.innerHTML =
+            '<p class="map-error">Set your Google Maps API key in index.html to enable this map.</p>';
+          return;
+        }
+
+        if (!window.google?.maps) {
+          await new Promise((resolve, reject) => {
+            window.__gmapsReady = resolve;
+            const s = document.createElement("script");
+            s.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&callback=__gmapsReady&loading=async`;
+            s.onerror = reject;
+            document.head.appendChild(s);
+          });
+        }
+
+        const bounds = new google.maps.LatLngBounds();
+        gmapsMap = new google.maps.Map(el, {
+          zoom: 4,
+          center: { lat: 50, lng: 10 },
+        });
+
+        const infoWindow = new google.maps.InfoWindow();
+        for (const talk of talks) {
+          const pos = { lat: talk.lat, lng: talk.lng };
+          const marker = new google.maps.Marker({
+            position: pos,
+            map: gmapsMap,
+            title: talk.title,
+          });
+          marker.addListener("click", () => {
+            infoWindow.setContent(popupHTML(talk));
+            infoWindow.open(gmapsMap, marker);
+          });
+          bounds.extend(pos);
+        }
+        if (talks.length) gmapsMap.fitBounds(bounds);
+      }
+
+      // Leaflet / OpenStreetMap
+      let leafletMap = null;
+
+      async function initLeaflet(talks) {
+        const el = document.getElementById("map-osm");
+        if (!window.L) {
+          const link = document.createElement("link");
+          link.rel = "stylesheet";
+          link.href = "https://unpkg.com/leaflet@1/dist/leaflet.css";
+          document.head.appendChild(link);
+          await new Promise((resolve, reject) => {
+            const s = document.createElement("script");
+            s.src = "https://unpkg.com/leaflet@1/dist/leaflet.js";
+            s.onload = resolve;
+            s.onerror = reject;
+            document.head.appendChild(s);
+          });
+        }
+
+        if (leafletMap) {
+          leafletMap.invalidateSize();
+          return;
+        }
+
+        leafletMap = L.map(el).setView([50, 10], 4);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution:
+            '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+          maxZoom: 18,
+        }).addTo(leafletMap);
+
+        const bounds = [];
+        for (const talk of talks) {
+          L.marker([talk.lat, talk.lng])
+            .addTo(leafletMap)
+            .bindPopup(popupHTML(talk));
+          bounds.push([talk.lat, talk.lng]);
+        }
+        if (bounds.length)
+          leafletMap.fitBounds(bounds, { padding: [40, 40] });
+      }
+
+      // Toggle
+      const btnGmaps = document.getElementById("btn-gmaps");
+      const btnOsm = document.getElementById("btn-osm");
+      const mapGoogle = document.getElementById("map-google");
+      const mapOsm = document.getElementById("map-osm");
+
+      btnGmaps.addEventListener("click", () => {
+        if (btnGmaps.classList.contains("active")) return;
+        btnGmaps.classList.add("active");
+        btnGmaps.setAttribute("aria-pressed", "true");
+        btnOsm.classList.remove("active");
+        btnOsm.setAttribute("aria-pressed", "false");
+        mapOsm.hidden = true;
+        mapGoogle.hidden = false;
+        initGoogleMaps(talks);
+      });
+
+      btnOsm.addEventListener("click", async () => {
+        if (btnOsm.classList.contains("active")) return;
+        btnOsm.classList.add("active");
+        btnOsm.setAttribute("aria-pressed", "true");
+        btnGmaps.classList.remove("active");
+        btnGmaps.setAttribute("aria-pressed", "false");
+        mapGoogle.hidden = true;
+        mapOsm.hidden = false;
+        await initLeaflet(talks);
+        leafletMap.invalidateSize();
+      });
+
+      const talks = await loadTalks();
+      renderStats(talks);
+      await initGoogleMaps(talks);
+    </script>
   </body>
 </html>
