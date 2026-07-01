@@ -399,18 +399,33 @@
         });
       }
 
-      function popupHTML(talk) {
-        const title = talk.url
-          ? `<a href="${talk.url}" target="_blank" rel="noopener">${talk.title}</a>`
-          : talk.title;
-        const meta = [talk.city && talk.country ? `${talk.city}, ${talk.country}` : "", formatDate(talk.date)]
-          .filter(Boolean)
-          .join(" • ");
+      function groupByLocation(talks) {
+        const map = new Map();
+        for (const t of talks) {
+          const key = `${t.lat},${t.lng}`;
+          if (!map.has(key)) map.set(key, []);
+          map.get(key).push(t);
+        }
+        return map;
+      }
+
+      function popupHTML(talkOrGroup) {
+        const group = Array.isArray(talkOrGroup) ? talkOrGroup : [talkOrGroup];
+        const first = group[0];
+        const location = [first.city, first.country].filter(Boolean).join(", ");
+        const items = group.map(t => {
+          const title = t.url
+            ? `<a href="${t.url}" target="_blank" rel="noopener">${t.title}</a>`
+            : `<strong>${t.title}</strong>`;
+          const itemMeta = [t.event, formatDate(t.date)].filter(Boolean).join(" • ");
+          return `<li style="margin-top:0.25rem">${title}` +
+            (itemMeta ? `<br><span style="color:#777;font-size:0.875em">${itemMeta}</span>` : "") +
+            `</li>`;
+        }).join("");
         return (
           `<div style="font-family:inherit;line-height:1.6;padding:2px 4px">` +
-          `<strong>${title}</strong>` +
-          (talk.event ? `<br>${talk.event}` : "") +
-          (meta ? `<br><span style="color:#777">${meta}</span>` : "") +
+          `<strong>${location}</strong>` +
+          `<ul style="margin:0.375rem 0 0 1rem;padding:0">${items}</ul>` +
           `</div>`
         );
       }
@@ -473,15 +488,15 @@
         });
 
         const infoWindow = new google.maps.InfoWindow();
-        for (const talk of talks) {
-          const pos = { lat: talk.lat, lng: talk.lng };
+        for (const group of groupByLocation(talks).values()) {
+          const pos = { lat: group[0].lat, lng: group[0].lng };
           const marker = new google.maps.Marker({
             position: pos,
             map: gmapsMap,
-            title: talk.title,
+            title: group.length > 1 ? `${group[0].city} (${group.length} talks)` : group[0].title,
           });
           marker.addListener("click", () => {
-            infoWindow.setContent(popupHTML(talk));
+            infoWindow.setContent(popupHTML(group));
             infoWindow.open(gmapsMap, marker);
           });
           bounds.extend(pos);
@@ -521,11 +536,11 @@
         }).addTo(leafletMap);
 
         const bounds = [];
-        for (const talk of talks) {
-          L.marker([talk.lat, talk.lng])
+        for (const group of groupByLocation(talks).values()) {
+          L.marker([group[0].lat, group[0].lng])
             .addTo(leafletMap)
-            .bindPopup(popupHTML(talk));
-          bounds.push([talk.lat, talk.lng]);
+            .bindPopup(popupHTML(group));
+          bounds.push([group[0].lat, group[0].lng]);
         }
         if (bounds.length)
           leafletMap.fitBounds(bounds, { padding: [40, 40] });
