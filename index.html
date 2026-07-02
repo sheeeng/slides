@@ -414,23 +414,22 @@
         return map;
       }
 
-      function popupHTML(talkOrGroup) {
+      function popupHTML(talkOrGroup, showLocation = true) {
         const group = Array.isArray(talkOrGroup) ? talkOrGroup : [talkOrGroup];
         const first = group[0];
         const location = [first.city, first.country].filter(Boolean).join(", ");
         const items = group.map(t => {
           const title = t.url
             ? `<a href="${t.url}" target="_blank" rel="noopener">${t.title}</a>`
-            : `<strong>${t.title}</strong>`;
-          const itemMeta = [t.event, formatDate(t.date)].filter(Boolean).join(" • ");
-          return `<li style="margin-top:0.25rem">${title}` +
-            (itemMeta ? `<br><span style="color:#777;font-size:0.875em">${itemMeta}</span>` : "") +
-            `</li>`;
+            : t.title;
+          const event = t.event ? `<div style="color:#777;font-size:0.875em">${t.event}</div>` : "";
+          const date = formatDate(t.date) ? `<div style="color:#777;font-size:0.875em">${formatDate(t.date)}</div>` : "";
+          return `<div style="margin-top:0.375rem">${event}${date}<div>${title}</div></div>`;
         }).join("");
         return (
           `<div style="font-family:inherit;line-height:1.6;padding:2px 4px;max-width:280px;overflow-wrap:break-word">` +
-          `<strong>${location}</strong>` +
-          `<ul style="margin:0.375rem 0 0 1rem;padding:0">${items}</ul>` +
+          (showLocation ? `<strong>${location}</strong>` : "") +
+          `${items}` +
           `</div>`
         );
       }
@@ -501,7 +500,9 @@
             title: group.length > 1 ? `${group[0].city} (${group.length} talks)` : group[0].title,
           });
           marker.addListener("click", () => {
-            infoWindow.setContent(popupHTML(group));
+            const location = [group[0].city, group[0].country].filter(Boolean).join(", ");
+            infoWindow.setHeaderContent(location);
+            infoWindow.setContent(popupHTML(group, false));
             infoWindow.open(gmapsMap, marker);
           });
           bounds.extend(pos);
