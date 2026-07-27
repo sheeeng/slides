@@ -52,6 +52,25 @@
         padding: clamp(2rem, 6vw, 4rem) clamp(1rem, 4vw, 2rem);
       }
 
+      footer {
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 0 clamp(1rem, 4vw, 2rem) clamp(2rem, 6vw, 4rem);
+        text-align: center;
+        font-size: 0.8125rem;
+        color: var(--text-muted);
+      }
+
+      footer a {
+        color: var(--link);
+        text-decoration: underline;
+      }
+
+      footer code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: inherit;
+      }
+
       header {
         display: flex;
         align-items: center;
@@ -334,6 +353,11 @@
         </li>
       </ul>
     </main>
+    <footer>
+      Built from
+      <a href="https://github.com/sheeeng/slides/commit/__BUILD_REVISION__"><code>__BUILD_SHA__</code></a>.
+      Made with 💚 by Leonard.
+    </footer>
 
     <script type="module">
       // Replace with your Google Maps JavaScript API key.
