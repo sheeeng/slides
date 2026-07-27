@@ -78,7 +78,12 @@ jobs:
           GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
         run: |-
           mkdir --parents public
-          sed "s/YOUR_GOOGLE_MAPS_API_KEY/${GOOGLE_MAPS_API_KEY}/g" index.html > public/index.html
+          BUILD_SHA="${GITHUB_SHA:0:8}"
+          sed \
+            --expression "s/YOUR_GOOGLE_MAPS_API_KEY/${GOOGLE_MAPS_API_KEY}/g" \
+            --expression "s/__BUILD_REVISION__/${GITHUB_SHA}/g" \
+            --expression "s/__BUILD_SHA__/${BUILD_SHA}/g" \
+            index.html > public/index.html
           cp talks.toml public/talks.toml
           cp favicon.ico favicon-16x16.png favicon-32x32.png apple-touch-icon.png \
              android-chrome-192x192.png android-chrome-512x512.png site.webmanifest public/
