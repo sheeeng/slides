@@ -52,3 +52,14 @@ country = "Norway"
 city = "Oslo"
 lat = 59.9139
 lng = 10.7522
+
+[[talk]]
+title = "MeeGo平台与塞班平台中的Qt跨平台开发"
+event = "Qt Developer Conference 2011"
+date = "2011-12-13"
+continent = "Asia"
+country = "China"
+city = "Beijing"
+lat = 39.9042
+lng = 116.4074
+url = "qt-cross-platform-development-meego-symbian/Qt Cross-platform Development - MeeGo and Symbian.pdf"
