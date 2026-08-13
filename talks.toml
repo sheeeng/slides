@@ -9,6 +9,7 @@ country = "Norway"
 city = "Oslo"
 lat = 59.9139
 lng = 10.7522
+url = "reproducible-environments-docker-vs-nix/"
 
 [[talk]]
 title = "When is the fix available? A 5-Minute Guide to Tracking Nixpkgs PRs"
