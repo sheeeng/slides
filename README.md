@@ -81,6 +81,7 @@ npm start
 Replace `demystifying-the-nix-store` with any of the other slide directories:
 
 - `governing-azure-resources-with-policy`
+- `reproducible-environments-docker-vs-nix`
 - `running-kernel-based-virtual-machine`
 - `tracking-nixpkgs-merged-pull-requests`
 
