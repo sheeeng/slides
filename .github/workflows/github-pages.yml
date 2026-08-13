@@ -14,10 +14,11 @@ jobs:
     strategy:
       matrix:
         slide:
-          - name: running-kernel-based-virtual-machine
-          - name: governing-azure-resources-with-policy
-          - name: tracking-nixpkgs-merged-pull-requests
           - name: demystifying-the-nix-store
+          - name: governing-azure-resources-with-policy
+          - name: reproducible-environments-docker-vs-nix
+          - name: running-kernel-based-virtual-machine
+          - name: tracking-nixpkgs-merged-pull-requests
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -59,20 +60,24 @@ jobs:
           sparse-checkout-cone-mode: false
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          name: slides-running-kernel-based-virtual-machine
-          path: public/running-kernel-based-virtual-machine
+          name: slides-demystifying-the-nix-store
+          path: public/demystifying-the-nix-store
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: slides-governing-azure-resources-with-policy
           path: public/governing-azure-resources-with-policy
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          name: slides-tracking-nixpkgs-merged-pull-requests
-          path: public/tracking-nixpkgs-merged-pull-requests
+          name: slides-reproducible-environments-docker-vs-nix
+          path: public/reproducible-environments-docker-vs-nix
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          name: slides-demystifying-the-nix-store
-          path: public/demystifying-the-nix-store
+          name: slides-running-kernel-based-virtual-machine
+          path: public/running-kernel-based-virtual-machine
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: slides-tracking-nixpkgs-merged-pull-requests
+          path: public/tracking-nixpkgs-merged-pull-requests
       - name: Prepare Public Directory
         env:
           GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
