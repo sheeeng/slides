@@ -159,6 +159,8 @@
 
       .map-toggle {
         display: flex;
+        width: fit-content;
+        margin-top: 0.75rem;
         border: 1px solid var(--border);
         border-radius: 6px;
         overflow: hidden;
@@ -409,18 +411,18 @@
       <section id="talks-map">
         <div class="map-header">
           <h2>Where I've Spoken</h2>
-          <div class="map-toggle" role="group" aria-label="Map provider">
-            <button id="btn-gmaps" class="map-btn active" aria-pressed="true">
-              Google Maps
-            </button>
-            <button id="btn-osm" class="map-btn" aria-pressed="false">
-              OpenStreetMap
-            </button>
-          </div>
         </div>
         <div id="map-stats" aria-live="polite"></div>
         <div id="map-google" class="map-container"></div>
         <div id="map-osm" class="map-container" hidden></div>
+        <div class="map-toggle" role="group" aria-label="Map provider">
+          <button id="btn-gmaps" class="map-btn active" aria-pressed="true">
+            Google Maps
+          </button>
+          <button id="btn-osm" class="map-btn" aria-pressed="false">
+            OpenStreetMap
+          </button>
+        </div>
       </section>
     </main>
     <footer>
