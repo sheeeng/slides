@@ -1,6 +1,17 @@
 # In-person talk locations. Virtual-only appearances are omitted.
 
 [[talk]]
+title = "The Giant Immutable LEGO Set: Demystifying the Nix Store"
+event = "Devoxx Morocco 2026"
+date = "2026-11-04"
+continent = "Africa"
+country = "Morocco"
+city = "Casablanca"
+lat = 33.5731
+lng = -7.5898
+url = "demystifying-the-nix-store/"
+
+[[talk]]
 title = "Reproducible Environments: Why Docker Isn't Enough and Why Nix Might Be!"
 event = "JavaZone 2026"
 date = "2026"
