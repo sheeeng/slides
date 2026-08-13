@@ -139,7 +139,7 @@
 
       /* Map section */
       #talks-map {
-        margin-bottom: clamp(1.5rem, 4vw, 2rem);
+        margin-top: clamp(1.5rem, 4vw, 2rem);
       }
 
       .map-header {
@@ -280,22 +280,6 @@
         <img src="https://sheeeng.github.io/logo.png" alt="Leonard" />
         <h1>Leonard's Slides</h1>
       </header>
-      <section id="talks-map">
-        <div class="map-header">
-          <h2>Where I've Spoken</h2>
-          <div class="map-toggle" role="group" aria-label="Map provider">
-            <button id="btn-gmaps" class="map-btn active" aria-pressed="true">
-              Google Maps
-            </button>
-            <button id="btn-osm" class="map-btn" aria-pressed="false">
-              OpenStreetMap
-            </button>
-          </div>
-        </div>
-        <div id="map-stats" aria-live="polite"></div>
-        <div id="map-google" class="map-container"></div>
-        <div id="map-osm" class="map-container" hidden></div>
-      </section>
       <h2 class="section-heading">Slides</h2>
       <ul>
         <li>
@@ -422,6 +406,22 @@
           </a>
         </li>
       </ul>
+      <section id="talks-map">
+        <div class="map-header">
+          <h2>Where I've Spoken</h2>
+          <div class="map-toggle" role="group" aria-label="Map provider">
+            <button id="btn-gmaps" class="map-btn active" aria-pressed="true">
+              Google Maps
+            </button>
+            <button id="btn-osm" class="map-btn" aria-pressed="false">
+              OpenStreetMap
+            </button>
+          </div>
+        </div>
+        <div id="map-stats" aria-live="polite"></div>
+        <div id="map-google" class="map-container"></div>
+        <div id="map-osm" class="map-container" hidden></div>
+      </section>
     </main>
     <footer>
       Built from
