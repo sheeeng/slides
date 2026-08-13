@@ -478,6 +478,15 @@
         "South America",
       ]);
 
+      // Flag emoji keyed by the country names used in talks.toml.
+      const COUNTRY_FLAGS = {
+        China: "🇨🇳",
+        Ireland: "🇮🇪",
+        Morocco: "🇲🇦",
+        Norway: "🇳🇴",
+        "United States": "🇺🇸",
+      };
+
       async function loadTalks() {
         const res = await fetch("talks.toml");
         if (!res.ok) return [];
@@ -551,7 +560,11 @@
           .map(([continent, countries]) => {
             const countryRows = Object.entries(countries)
               .sort(([a], [b]) => a.localeCompare(b))
-              .map(([country, cities]) => `<li>${country} • ${[...cities].sort().join(", ")}</li>`)
+              .map(([country, cities]) => {
+                const flag = COUNTRY_FLAGS[country];
+                const label = flag ? `${country} ${flag}` : country;
+                return `<li>${label} • ${[...cities].sort().join(", ")}</li>`;
+              })
               .join("");
             return `<li><span class="stats-continent-label">${continent}</span><ul class="stats-countries">${countryRows}</ul></li>`;
           })
