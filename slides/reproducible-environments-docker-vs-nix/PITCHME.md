@@ -78,6 +78,11 @@ blockquote {
   margin-left: auto;
   margin-right: auto;
 }
+
+section.comparison table {
+  font-size: 1em;
+  line-height: 1.2;
+}
 </style>
 
 ## <!--fit--> Reproducible Environments
@@ -98,13 +103,13 @@ blockquote {
 
 ---
 
-## The "Works on My Machine" Paradox
+## The "Works on My Machine" Contradiction
 
-​🧑‍💻 It runs on my laptop.
+​🧑‍💻 It ran on production.
 
-​🚚 Docker shipped the machine.
+​🚚 Docker shipped the contents.
 
-​🤔 So why did the build break in CI?
+​🤔 So why does it _not_ work _now_?
 
 <!--
 [45 seconds] We all know the line. Docker answered it by shipping the whole machine, so the running artifact travels with you. That solved portability. It did not, on its own, make the build itself reproducible. Same recipe, different result, and the gap between "runs" and "rebuilds the same" is where we live today.
@@ -114,11 +119,11 @@ blockquote {
 
 ## The Docker Myth
 
-> "I have a Dockerfile, so my environment is reproducible."
+> "I have a Dockerfile, so my environment is replicable."
 
-Portable? Yes. ✅
+Portable? Potentially. (Timing, Architecture, etc.) 🤔
 
-Deterministic? Not by default. ❌
+Reproducible? Not really. ❌
 
 <!--
 [45 seconds] Here is the comfortable myth. A Dockerfile feels like a reproducible spec. But a Dockerfile is a script of imperative steps, and it runs against a moving world: package mirrors, the network, and "latest" tags. Portable means the image runs anywhere. Deterministic means the same inputs always produce the same output. Docker gives you the first for free. The second you have to earn.
@@ -129,18 +134,20 @@ Deterministic? Not by default. ❌
 ## The Reality of Drift
 
 ```dockerfile
-FROM node:18
-RUN apt-get update && apt-get install -y curl
+FROM node:24
+
+RUN apt-get update && \
+    apt-get install --assume-yes curl
 ```
 
 ​📅 `apt-get update` today ≠ yesterday.
 
-​🏷️ `node:18` is a moving target.
+​🏷️ `node:24` is a moving target.
 
-​🌐 Caches and network state leak in.
+​🌐 An outside network dependency leaks in.
 
 <!--
-[45 seconds] Look at three lines almost every image starts with. "apt-get update" pulls whatever the mirror serves right now, so today's versions differ from yesterday's. "node:18" is a tag, not a fingerprint, and it is republished upstream. And the build layer cache quietly hides all of this. Build this image in June and in December and you get two different machines from identical text. That is drift.
+[45 seconds] Look at three lines almost every image starts with. "apt-get update" pulls whatever the mirror serves right now, so today's versions differ from yesterday's. "node:24" is a tag, not a fingerprint, and it is republished upstream. And the build layer cache quietly hides all of this. Build this image in June and in December and you get two different machines from identical text. That is drift.
 -->
 
 ---
@@ -155,9 +162,9 @@ RUN apt-get update && apt-get install -y curl
 
 ## How Docker Works
 
-A recipe of ordered steps.
+Each step depends on the results of the previous step.
 
-`Layer 1` ➡️ `Layer 2` ➡️ `Layer 3`
+`Layer 1` ⬅️ `Layer 2` ⬅️ `Layer 3`
 
 Each instruction stacks a new layer.
 
@@ -169,25 +176,25 @@ Each instruction stacks a new layer.
 
 ## Docker: Strengths
 
-​🌍 **Ubiquity.** The universal language of operations.
+​🌍 **Ubiquity.** A universal language of operations.
 
-​🧱 **Strong isolation.** Cgroups and namespaces give a hard boundary.
+​🧱 **Kernel-level isolation.** Namespaces isolate processes; cgroups control resources.
 
-​🚀 **Ships anywhere.** The registry is everywhere.
+​🚀 **Ubiquitous registries.** The registry is everywhere.
 
 <!--
-[45 seconds] Docker's strengths are real. Everyone knows it, so it is the common tongue between developers and operations. Cgroups and namespaces give a genuine runtime boundary around your process. And the registry ecosystem means an image runs the same on a laptop, in CI, and in production. This is why Docker won, and none of that is going away.
+[60 seconds] Docker's strengths are real. Everyone knows it, so it is the common tongue between developers and operations. Under the hood, Linux namespaces give processes their own views of things such as the process tree, network interfaces, mounts, and hostnames. Cgroups limit and account for resources such as CPU and memory. Together, they create a practical runtime boundary without the overhead of a virtual machine. It is strong isolation, but not an absolute security boundary: containers still share the host kernel. And the registry ecosystem means an image can run on a laptop, in CI, and in production. This is why Docker won, and none of that is going away.
 -->
 
 ---
 
 ## Docker: Weaknesses
 
-​🐘 **Opaque bloat.** A whole OS to run one script.
+​🐘 **Opaque bloat.** Often a _whole OS_ to run _one_ program.
 
-​🎲 **Mutable base.** If `node:18` shifts upstream, your build shifts.
+​🎲 **Mutable base.** _When_ `node:24` shifts upstream, your build _shifts_.
 
-​🔁 **Recipe, not a fingerprint.** Same steps, different output.
+​🔁 **Recipe, not a fingerprint.** Dockerfile contains same steps often produce different outputs.
 
 <!--
 [45 seconds] The weaknesses are the flip side. A tiny Python script often drags a full operating system along, which is bloat and, worse, attack surface. The base image is mutable, so upstream changes silently rewrite your foundation. And because the Dockerfile describes steps rather than a fingerprint of inputs, two builds of the same file can disagree. Docker pins the artifact well. It does not pin the build.
@@ -205,7 +212,7 @@ Each instruction stacks a new layer.
 
 ## The Core Idea
 
-A package is the output of a pure function.
+A package is the results of a deterministic set of inputs.
 
 $$
 \text{Output} = f(\text{Inputs})
@@ -223,13 +230,13 @@ Change any input ➡️ the content hash changes.
 
 ## The Nix Store
 
-Everything lives at:
+All dependencies, inputs, and ouputs live at:
 
 `/nix/store/<hash>-<name>`
 
 ​🔐 The hash is the fingerprint of every input.
 
-​🤝 OpenSSL 1.1 and 3.0 coexist. No conflict.
+​🤝 Mutually exclusive program versions available for any package.
 
 <!--
 [45 seconds] Where do these outputs go? Into the Nix store, each under a path stamped with that input hash. Two consequences. First, the path itself proves what produced it. Second, because the hash disambiguates, many versions of the same library live side by side without fighting over one global slot. No more "which OpenSSL is active." Both are, addressed by their hash.
@@ -239,14 +246,16 @@ Everything lives at:
 
 ## Nix Flakes
 
-A lockfile for your entire environment.
+Offer lockfile for all external inputs:
 
 ```nix
+# flake.nix
+
 inputs.nixpkgs.url =
-  "github:NixOS/nixpkgs/nixos-25.05";
+  "github:NixOS/nixpkgs/nixos-26.05";
 ```
 
-​📌 `flake.lock` pins every input to an exact commit.
+​📌 `flake.lock` pins every input to an exact hash.
 
 <!--
 [45 seconds] Flakes make this practical. A flake declares your inputs, and the flake.lock pins each one to an exact Git commit hash. Check that lockfile into the repository and your teammate, your CI runner, and your future self all resolve the identical dependency graph. It is the lockfile idea you know from application dependencies, raised to cover the whole toolchain.
@@ -262,15 +271,15 @@ inputs.nixpkgs.url =
 
 ---
 
+<!-- _class: comparison -->
+
 ## Docker vs. Nix
 
-| Feature         | Docker            | Nix                |
-| --------------- | ----------------- | ------------------ |
-| Model           | Imperative        | Functional         |
-| Primary goal    | Runtime isolation | Build determinism  |
-| Reproducibility | High, if saved    | Absolute, bit for bit |
-| Learning curve  | Low to moderate   | Steep              |
-| Environment     | Virtualized       | Native binaries    |
+| Feature         | Docker                           | Nix                                        |
+| --------------- | -------------------------------- | ------------------------------------------ |
+| Model           | Imperative                       | Functional                                 |
+| Primary Goal    | Build & Runtime Pseudo-Isolation | Deterministic Builds                       |
+| Reproducibility | Opt-in Only: Rarely              | Absolute, Bit for Bit, per OS/Architecture |
 
 <!--
 [60 seconds] Read this as complementary, not as a scoreboard. Docker's model is imperative steps; Nix's is a declarative function. Docker's primary goal is isolating a running process; Nix's is making the build itself deterministic. Docker is reproducible if you save the image; Nix is reproducible from the inputs, bit for bit. The honest trade is the learning curve: Docker is approachable, Nix is steep. And Nix runs native binaries from the store rather than shipping a virtual machine's worth of userland.
@@ -278,7 +287,7 @@ inputs.nixpkgs.url =
 
 ---
 
-## <!--fit--> Better Together
+## <!--fit--> Synergistic Symbiosis
 
 <!--
 [10 seconds] Here is the part I actually want you to remember.
@@ -286,13 +295,13 @@ inputs.nixpkgs.url =
 
 ---
 
-## The "Better Together" Strategy
+## Synergistic Symbiosis Strategy
 
 ​🏗️ **Build** the software with Nix.
 
-​📦 **Package** it with Docker.
+​📦 **Package** it with Docker container images.
 
-Nix computes the exact closure. Docker ships it.
+Nix computes the exact package. Ship it with Docker.
 
 <!--
 [45 seconds] You do not have to choose sides. Use Nix to build the software, because it computes the exact closure of dependencies and nothing more. Then use Docker to package and distribute that result, because the registry and the runtime boundary are excellent. Determinism on the way in, ubiquity on the way out.
@@ -300,23 +309,23 @@ Nix computes the exact closure. Docker ships it.
 
 ---
 
-## Distroless, for Free
+## Minimal Reproducible Docker Container Images for Free
 
 `pkgs.dockerTools.buildImage`
 
 Only the app and its exact dependencies.
 
+The image will contain:
+
 ​🚫 No shell. 🚫 No package manager. 🚫 No stray CVEs.
 
-Tooling: `dockerTools`, `devenv.sh`, `Flox`.
-
 <!--
-[45 seconds] The payoff is concrete. Nix can emit a Docker image that contains only your application and the exact store paths it needs. No shell, no package manager, no half of an operating system riding along. That is a small, honest image with far less attack surface, produced deterministically. And if the raw Nix language feels steep, devenv.sh and Flox give you the reproducibility with a gentler on-ramp.
+[45 seconds] The payoff is concrete. Nix can emit a Docker image that contains only your application and the exact store paths it needs. No shell, no package manager, no half of an operating system riding along. That is a small, honest image with far less attack surface, produced deterministically.
 -->
 
 ---
 
-## When to Reach for Each
+## My Two Cents
 
 Ship a black box to production? ➡️ **Docker.**
 
@@ -333,9 +342,9 @@ Want both? ➡️ **Build with Nix, ship with Docker.**
 ## Summary
 
 1. **Portable ≠ deterministic** ➡️ Docker ships the artifact.
-2. **Output = f(Inputs)** ➡️ Nix pins the build.
-3. **Flakes** ➡️ A lockfile for the whole toolchain.
-4. **Better together** ➡️ Build with Nix, ship with Docker.
+2. **Output = f(Inputs)** ➡️ Nix pins the build inputs.
+3. **Flakes** ➡️ Offer lockfile for the whole toolchain.
+4. **Synergistic Symbiosis** ➡️ Build with Nix, ship with Docker.
 
 <!--
 [30 seconds] Four things to carry out the door. Portable is not the same as deterministic; Docker gives you the first. Nix models the build as a function of its inputs, so it gives you the second. Flakes make that a lockfile for your whole toolchain. And the two compose beautifully: build with Nix, ship with Docker.
@@ -349,7 +358,7 @@ Want both? ➡️ **Build with Nix, ship with Docker.**
 
 <!-- markdownlint-disable MD036 -->
 
-> "Docker packages the mess; Nix eliminates the mess."
+> "Docker packages the mess; Nix fixes the mess."
 
 sheeeng.github.io/slides
 
