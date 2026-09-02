@@ -124,7 +124,7 @@ In this session, we compare the imperative and functional approaches to environm
 
 We all know the line.
 
-Docker answered it by shipping the whole machine, so the running artifact travels with you.
+Docker answered it by shipping the runtime environment, so the running artifact travels with you.
 
 That solved portability.
 
