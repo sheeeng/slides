@@ -92,7 +92,15 @@ section.comparison table {
 ### Why Docker Isn't Enough and Why Nix Might Be!
 
 <!--
-[30 seconds] Welcome! Quick show of hands: who has ever said "it works on my machine"? Keep your hand up if a Dockerfile did not fully save you. In this session, we compare the imperative and functional approaches to environments, and see where each one is most useful.
+[30 seconds]
+
+Welcome!
+
+Quick show of hands: who has ever said "it works on my machine"?
+
+Keep your hand up if a Dockerfile did not fully save you.
+
+In this session, we compare the imperative and functional approaches to environments, and see where each one is most useful.
 -->
 
 <br/>
@@ -112,7 +120,17 @@ section.comparison table {
 ​🤔 So why does it _not_ work _now_?
 
 <!--
-[45 seconds] We all know the line. Docker answered it by shipping the whole machine, so the running artifact travels with you. That solved portability. It did not, on its own, make the build itself reproducible. Same recipe, different result, and that gap is the problem this talk addresses.
+[45 seconds]
+
+We all know the line.
+
+Docker answered it by shipping the whole machine, so the running artifact travels with you.
+
+That solved portability.
+
+It did not, on its own, make the build itself reproducible.
+
+Same recipe, different result, and that gap is the problem this talk addresses.
 -->
 
 ---
@@ -126,7 +144,21 @@ Portable? Potentially. (Timing, Architecture, etc.) 🤔
 Reproducible? Not really. ❌
 
 <!--
-[45 seconds] Here is the comfortable myth. A Dockerfile feels like a reproducible spec. But a Dockerfile is a script of imperative steps, and it runs against a moving world: package mirrors, the network, and "latest" tags. Portable means the image runs anywhere. Deterministic means the same inputs always produce the same output. Docker gives you the first for free. The second you have to earn, and we will see how.
+[45 seconds]
+
+Here is the comfortable myth.
+
+A Dockerfile feels like a reproducible spec.
+
+But a Dockerfile is a script of imperative steps, and it runs against a moving world: package mirrors, the network, and "latest" tags.
+
+Portable means the image runs anywhere.
+
+Deterministic means the same inputs always produce the same output.
+
+Docker gives you the first for free.
+
+The second you have to earn, and we will see how.
 -->
 
 ---
@@ -147,7 +179,19 @@ RUN apt-get update && \
 ​🌐 An outside network dependency leaks in.
 
 <!--
-[45 seconds] Look at three lines almost every image starts with. "apt-get update" pulls whatever the mirror serves right now, so today's versions differ from yesterday's. "node:24" is a tag, not a fingerprint, and it is republished upstream. And the build layer cache quietly hides all of this. Build this image in June and in December and you get two different machines from identical text. That is drift.
+[45 seconds]
+
+Look at three lines almost every image starts with.
+
+"apt-get update" pulls whatever the mirror serves right now, so today's versions differ from yesterday's.
+
+"node:24" is a tag, not a fingerprint, and it is republished upstream.
+
+And the build layer cache quietly hides all of this.
+
+Build this image in June and in December and you get two different machines from identical text.
+
+That is drift.
 -->
 
 ---
@@ -155,7 +199,11 @@ RUN apt-get update && \
 ## <!--fit--> Docker: The Imperative Standard
 
 <!--
-[15 seconds] So let us give Docker a fair hearing. Docker is the imperative model, and it earned that position for good reasons.
+[15 seconds]
+
+So let us give Docker a fair hearing.
+
+Docker is the imperative model, and it earned that position for good reasons.
 -->
 
 ---
@@ -169,7 +217,15 @@ Each step depends on the results of the previous step.
 Each instruction stacks a new layer.
 
 <!--
-[45 seconds] Docker is imperative: do this, then this, then this. Each instruction adds a layer on top of the last, and the layers cache. That model is easy to read top to bottom and easy to teach. It is also exactly why it drifts, because every step depends on both the previous step's output and whatever the outside world provides.
+[45 seconds]
+
+Docker is imperative: do this, then this, then this.
+
+Each instruction adds a layer on top of the last, and the layers cache.
+
+That model is easy to read top to bottom and easy to teach.
+
+It is also exactly why it drifts, because every step depends on both the previous step's output and whatever the outside world provides.
 -->
 
 ---
@@ -183,7 +239,23 @@ Each instruction stacks a new layer.
 ​🚀 **Ubiquitous registries.** The registry is everywhere.
 
 <!--
-[60 seconds] Docker's strengths are real. Everyone knows it, so it is the common tongue between developers and operations. Under the hood, Linux namespaces give processes their own views of things such as the process tree, network interfaces, mounts, and hostnames. Cgroups limit and account for resources such as CPU and memory. Together, they create a practical runtime boundary without the overhead of a virtual machine. It is strong isolation, but not an absolute security boundary: containers still share the host kernel. And the registry ecosystem means an image can run on a laptop, in CI, and in production. This is why Docker won, and none of that is going away.
+[60 seconds]
+
+Docker's strengths are real.
+
+Everyone knows it, so it is the common tongue between developers and operations.
+
+Under the hood, Linux namespaces give processes their own views of things such as the process tree, network interfaces, mounts, and hostnames.
+
+Cgroups limit and account for resources such as CPU and memory.
+
+Together, they create a practical runtime boundary without the overhead of a virtual machine.
+
+It is strong isolation, but not an absolute security boundary: containers still share the host kernel.
+
+And the registry ecosystem means an image can run on a laptop, in CI, and in production.
+
+This is why Docker won, and none of that is going away.
 -->
 
 ---
@@ -197,7 +269,19 @@ Each instruction stacks a new layer.
 ​🔁 **Recipe, not a fingerprint.** Dockerfile contains same steps often produce different outputs.
 
 <!--
-[45 seconds] The weaknesses are the flip side. A tiny Python script often drags a full operating system along, which is bloat and, worse, attack surface. The base image is mutable, so upstream changes silently rewrite your foundation. And because the Dockerfile describes steps rather than a fingerprint of inputs, two builds of the same file can disagree. Docker pins the artifact well. It does not pin the build.
+[45 seconds]
+
+The weaknesses are the flip side.
+
+A tiny Python script often drags a full operating system along, which is bloat and, worse, attack surface.
+
+The base image is mutable, so upstream changes silently rewrite your foundation.
+
+And because the Dockerfile describes steps rather than a fingerprint of inputs, two builds of the same file can disagree.
+
+Docker pins the artifact well.
+
+It does not pin the build.
 -->
 
 ---
@@ -205,7 +289,11 @@ Each instruction stacks a new layer.
 ## <!--fit--> Nix: The Functional Challenger
 
 <!--
-[15 seconds] Now the challenger. Nix comes at the same problem from the opposite direction: not "run these steps" but "compute this result."
+[15 seconds]
+
+Now the challenger.
+
+Nix comes at the same problem from the opposite direction: not "run these steps" but "compute this result."
 -->
 
 ---
@@ -223,7 +311,21 @@ Inputs: source, dependencies, compiler, flags.
 Change any input ➡️ the content hash changes.
 
 <!--
-[60 seconds] Here is the whole idea on one slide. Nix treats a build as a pure function. The inputs are everything that matters: the source code, every dependency, the exact compiler, the build flags, the environment. Nix hashes all of it into one identifier. Same inputs, same hash, same output, every time. Change one input by a single byte and the hash changes, so you can always see what moved. This is what "functional" buys you: builds you can reason about like math instead of like weather.
+[60 seconds]
+
+Here is the whole idea on one slide.
+
+Nix treats a build as a pure function.
+
+The inputs are everything that matters: the source code, every dependency, the exact compiler, the build flags, the environment.
+
+Nix hashes all of it into one identifier.
+
+Same inputs, same hash, same output, every time.
+
+Change one input by a single byte and the hash changes, so you can always see what moved.
+
+This is what "functional" buys you: builds you can reason about like math instead of like weather.
 -->
 
 ---
@@ -239,7 +341,21 @@ All dependencies, inputs, and ouputs live at:
 ​🤝 Mutually exclusive program versions available for any package.
 
 <!--
-[45 seconds] Where do these outputs go? Into the Nix store, each under a path stamped with that input hash. Two consequences. First, the path itself proves what produced it. Second, because the hash disambiguates, many versions of the same library live side by side without fighting over one global slot. No more "which OpenSSL is active." Both versions coexist, each addressed by its own hash.
+[45 seconds]
+
+Where do these outputs go?
+
+Into the Nix store, each under a path stamped with that input hash.
+
+Two consequences.
+
+First, the path itself proves what produced it.
+
+Second, because the hash disambiguates, many versions of the same library live side by side without fighting over one global slot.
+
+No more "which OpenSSL is active."
+
+Both versions coexist, each addressed by its own hash.
 -->
 
 ---
@@ -258,7 +374,15 @@ inputs.nixpkgs.url =
 ​📌 `flake.lock` pins every input to an exact hash.
 
 <!--
-[45 seconds] Flakes make this practical. A flake declares your inputs, and the flake.lock pins each one to an exact Git commit hash. Check that lockfile into the repository and your teammate, your CI runner, and your future self all resolve the identical dependency graph. It is the lockfile idea you know from application dependencies, raised to cover the whole toolchain.
+[45 seconds]
+
+Flakes make this practical.
+
+A flake declares your inputs, and the flake.lock pins each one to an exact Git commit hash.
+
+Check that lockfile into the repository and your teammate, your CI runner, and your future self all resolve the identical dependency graph.
+
+It is the lockfile idea you know from application dependencies, raised to cover the whole toolchain.
 -->
 
 ---
@@ -266,7 +390,9 @@ inputs.nixpkgs.url =
 ## <!--fit--> Head to Head
 
 <!--
-[10 seconds] Let us put them next to each other.
+[10 seconds]
+
+Let us put them next to each other.
 -->
 
 ---
@@ -282,7 +408,19 @@ inputs.nixpkgs.url =
 | Reproducibility | Opt-in Only: Rarely              | Absolute, Bit for Bit, per OS/Architecture |
 
 <!--
-[60 seconds] Read this as complementary, not as a scoreboard. Docker's model is imperative steps; Nix's is a declarative function. Docker's primary goal is isolating a running process; Nix's is making the build itself deterministic. Docker is reproducible only if you pin the image digest; rebuilding the same Dockerfile may produce a different result. Nix is reproducible from the inputs, bit for bit. The honest trade is the learning curve: Docker is approachable, Nix is steep.
+[60 seconds]
+
+Read this as complementary, not as a scoreboard.
+
+Docker's model is imperative steps; Nix's is a declarative function.
+
+Docker's primary goal is isolating a running process; Nix's is making the build itself deterministic.
+
+Docker is reproducible only if you pin the image digest; rebuilding the same Dockerfile may produce a different result.
+
+Nix is reproducible from the inputs, bit for bit.
+
+The honest trade is the learning curve: Docker is approachable, Nix is steep.
 -->
 
 ---
@@ -290,7 +428,9 @@ inputs.nixpkgs.url =
 ## <!--fit--> Synergistic Symbiosis
 
 <!--
-[10 seconds] Here is the part I want you to remember.
+[10 seconds]
+
+Here is the part I want you to remember.
 -->
 
 ---
@@ -304,7 +444,15 @@ inputs.nixpkgs.url =
 Nix computes the exact package. Ship it with Docker.
 
 <!--
-[45 seconds] You do not have to choose sides. Use Nix to build the software, because it computes the exact closure of dependencies and nothing more. Then use Docker to package and distribute that result, because the registry and the runtime boundary are excellent. Determinism on the way in, ubiquity on the way out.
+[45 seconds]
+
+You do not have to choose sides.
+
+Use Nix to build the software, because it computes the exact closure of dependencies and nothing more.
+
+Then use Docker to package and distribute that result, because the registry and the runtime boundary are excellent.
+
+Determinism on the way in, ubiquity on the way out.
 -->
 
 ---
@@ -320,7 +468,15 @@ The image will contain:
 ​🚫 No shell. 🚫 No package manager. 🚫 No stray CVEs.
 
 <!--
-[45 seconds] The payoff is concrete. Nix can emit a Docker image that contains only your application and the exact store paths it needs. No shell, no package manager, no half of an operating system riding along. That is a small, honest image with far less attack surface, produced deterministically.
+[45 seconds]
+
+The payoff is concrete.
+
+Nix can emit a Docker image that contains only your application and the exact store paths it needs.
+
+No shell, no package manager, no half of an operating system riding along.
+
+That is a small, honest image with far less attack surface, produced deterministically.
 -->
 
 ---
@@ -334,7 +490,15 @@ Guarantee dev and CI are identical? ➡️ **Nix.**
 Want both? ➡️ **Build with Nix, ship with Docker.**
 
 <!--
-[45 seconds] So the decision rule. If your job is to hand a running black box to production, a Dockerfile is a fine and familiar answer. If your job is to guarantee that your development machine and your CI pipeline are identical down to the last byte, that is where Nix excels. And on a serious project, the answer is usually both, in that order.
+[45 seconds]
+
+So the decision rule.
+
+If your job is to hand a running black box to production, a Dockerfile is a fine and familiar answer.
+
+If your job is to guarantee that your development machine and your CI pipeline are identical down to the last byte, that is where Nix excels.
+
+And on a serious project, the answer is usually both, in that order.
 -->
 
 ---
@@ -347,7 +511,17 @@ Want both? ➡️ **Build with Nix, ship with Docker.**
 4. **Synergistic Symbiosis** ➡️ Build with Nix, ship with Docker.
 
 <!--
-[30 seconds] Four things to remember. Portable is not the same as deterministic; Docker gives you the first. Nix models the build as a function of its inputs, so it gives you the second. Flakes make that a lockfile for your whole toolchain. And the two compose well: build with Nix, ship with Docker.
+[30 seconds]
+
+Four things to remember.
+
+Portable is not the same as deterministic; Docker gives you the first.
+
+Nix models the build as a function of its inputs, so it gives you the second.
+
+Flakes make that a lockfile for your whole toolchain.
+
+And the two compose well: build with Nix, ship with Docker.
 -->
 
 ---
@@ -370,5 +544,13 @@ sheeeng.github.io/slides
 </picture>
 
 <!--
-[15 seconds] Thank you! Slides are on GitHub at that link. Leave with the one line that sums it up: Docker packages the mess, Nix fixes the mess. Questions?
+[15 seconds]
+
+Thank you!
+
+Slides are on GitHub at that link.
+
+Leave with the one line that sums it up: Docker packages the mess, Nix fixes the mess.
+
+Questions?
 -->
