@@ -92,7 +92,7 @@ section.comparison table {
 ### Why Docker Isn't Enough and Why Nix Might Be!
 
 <!--
-[30 seconds] Welcome! Quick show of hands: who has ever said "it works on my machine"? Keep your hand up if a Dockerfile did not fully save you. Over the next 20 minutes we compare the imperative and functional approaches to environments, and see where each one earns its keep.
+[30 seconds] Welcome! Quick show of hands: who has ever said "it works on my machine"? Keep your hand up if a Dockerfile did not fully save you. In this session, we compare the imperative and functional approaches to environments, and see where each one is most useful.
 -->
 
 <br/>
@@ -112,7 +112,7 @@ section.comparison table {
 ​🤔 So why does it _not_ work _now_?
 
 <!--
-[45 seconds] We all know the line. Docker answered it by shipping the whole machine, so the running artifact travels with you. That solved portability. It did not, on its own, make the build itself reproducible. Same recipe, different result, and the gap between "runs" and "rebuilds the same" is where we live today.
+[45 seconds] We all know the line. Docker answered it by shipping the whole machine, so the running artifact travels with you. That solved portability. It did not, on its own, make the build itself reproducible. Same recipe, different result, and that gap is the problem this talk addresses.
 -->
 
 ---
@@ -126,7 +126,7 @@ Portable? Potentially. (Timing, Architecture, etc.) 🤔
 Reproducible? Not really. ❌
 
 <!--
-[45 seconds] Here is the comfortable myth. A Dockerfile feels like a reproducible spec. But a Dockerfile is a script of imperative steps, and it runs against a moving world: package mirrors, the network, and "latest" tags. Portable means the image runs anywhere. Deterministic means the same inputs always produce the same output. Docker gives you the first for free. The second you have to earn.
+[45 seconds] Here is the comfortable myth. A Dockerfile feels like a reproducible spec. But a Dockerfile is a script of imperative steps, and it runs against a moving world: package mirrors, the network, and "latest" tags. Portable means the image runs anywhere. Deterministic means the same inputs always produce the same output. Docker gives you the first for free. The second you have to earn, and we will see how.
 -->
 
 ---
@@ -155,7 +155,7 @@ RUN apt-get update && \
 ## <!--fit--> Docker: The Imperative Standard
 
 <!--
-[15 seconds] So let us give Docker a fair hearing. This is the imperative standard, and it is the standard for good reasons.
+[15 seconds] So let us give Docker a fair hearing. Docker is the imperative model, and it earned that position for good reasons.
 -->
 
 ---
@@ -169,7 +169,7 @@ Each step depends on the results of the previous step.
 Each instruction stacks a new layer.
 
 <!--
-[45 seconds] Docker is imperative: do this, then this, then this. Each instruction adds a layer on top of the last, and the layers cache. That model is easy to read top to bottom and easy to teach. It is also exactly why it drifts, because every step trusts the state left by the step before it and the world outside it.
+[45 seconds] Docker is imperative: do this, then this, then this. Each instruction adds a layer on top of the last, and the layers cache. That model is easy to read top to bottom and easy to teach. It is also exactly why it drifts, because every step depends on both the previous step's output and whatever the outside world provides.
 -->
 
 ---
@@ -239,7 +239,7 @@ All dependencies, inputs, and ouputs live at:
 ​🤝 Mutually exclusive program versions available for any package.
 
 <!--
-[45 seconds] Where do these outputs go? Into the Nix store, each under a path stamped with that input hash. Two consequences. First, the path itself proves what produced it. Second, because the hash disambiguates, many versions of the same library live side by side without fighting over one global slot. No more "which OpenSSL is active." Both are, addressed by their hash.
+[45 seconds] Where do these outputs go? Into the Nix store, each under a path stamped with that input hash. Two consequences. First, the path itself proves what produced it. Second, because the hash disambiguates, many versions of the same library live side by side without fighting over one global slot. No more "which OpenSSL is active." Both versions coexist, each addressed by its own hash.
 -->
 
 ---
@@ -282,7 +282,7 @@ inputs.nixpkgs.url =
 | Reproducibility | Opt-in Only: Rarely              | Absolute, Bit for Bit, per OS/Architecture |
 
 <!--
-[60 seconds] Read this as complementary, not as a scoreboard. Docker's model is imperative steps; Nix's is a declarative function. Docker's primary goal is isolating a running process; Nix's is making the build itself deterministic. Docker is reproducible if you save the image; Nix is reproducible from the inputs, bit for bit. The honest trade is the learning curve: Docker is approachable, Nix is steep. And Nix runs native binaries from the store rather than shipping a virtual machine's worth of userland.
+[60 seconds] Read this as complementary, not as a scoreboard. Docker's model is imperative steps; Nix's is a declarative function. Docker's primary goal is isolating a running process; Nix's is making the build itself deterministic. Docker is reproducible only if you pin the image digest; rebuilding the same Dockerfile may produce a different result. Nix is reproducible from the inputs, bit for bit. The honest trade is the learning curve: Docker is approachable, Nix is steep.
 -->
 
 ---
@@ -290,7 +290,7 @@ inputs.nixpkgs.url =
 ## <!--fit--> Synergistic Symbiosis
 
 <!--
-[10 seconds] Here is the part I actually want you to remember.
+[10 seconds] Here is the part I want you to remember.
 -->
 
 ---
@@ -334,7 +334,7 @@ Guarantee dev and CI are identical? ➡️ **Nix.**
 Want both? ➡️ **Build with Nix, ship with Docker.**
 
 <!--
-[45 seconds] So the decision rule. If your job is to hand a running black box to production, a Dockerfile is a fine and familiar answer. If your job is to guarantee that your development machine and your CI pipeline are identical down to the last byte, that is Nix's home turf. And on a serious project, the answer is usually both, in that order.
+[45 seconds] So the decision rule. If your job is to hand a running black box to production, a Dockerfile is a fine and familiar answer. If your job is to guarantee that your development machine and your CI pipeline are identical down to the last byte, that is where Nix excels. And on a serious project, the answer is usually both, in that order.
 -->
 
 ---
@@ -347,7 +347,7 @@ Want both? ➡️ **Build with Nix, ship with Docker.**
 4. **Synergistic Symbiosis** ➡️ Build with Nix, ship with Docker.
 
 <!--
-[30 seconds] Four things to carry out the door. Portable is not the same as deterministic; Docker gives you the first. Nix models the build as a function of its inputs, so it gives you the second. Flakes make that a lockfile for your whole toolchain. And the two compose beautifully: build with Nix, ship with Docker.
+[30 seconds] Four things to remember. Portable is not the same as deterministic; Docker gives you the first. Nix models the build as a function of its inputs, so it gives you the second. Flakes make that a lockfile for your whole toolchain. And the two compose well: build with Nix, ship with Docker.
 -->
 
 ---
@@ -370,5 +370,5 @@ sheeeng.github.io/slides
 </picture>
 
 <!--
-[15 seconds] Thank you! Slides are on GitHub at that link. Leave with the one line that sums it up: Docker packages the mess, Nix eliminates the mess. Questions?
+[15 seconds] Thank you! Slides are on GitHub at that link. Leave with the one line that sums it up: Docker packages the mess, Nix fixes the mess. Questions?
 -->
