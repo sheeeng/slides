@@ -148,15 +148,15 @@ Reproducible? Not really. ❌
 
 Here is the comfortable myth.
 
-A Dockerfile feels like a reproducible spec.
+A Dockerfile feels like a reproducible specification.
 
-But a Dockerfile is a script of imperative steps, and it runs against a moving world: package mirrors, the network, and "latest" tags.
+But a Dockerfile is a script of imperative steps, and it runs against a changing environment: package mirrors, the network, and "latest" tags.
 
 Portable means the image runs anywhere.
 
 Deterministic means the same inputs always produce the same output.
 
-Docker gives you the first for free.
+Docker provides portability without extra effort.
 
 The second you have to earn, and we will see how.
 -->
@@ -243,9 +243,9 @@ It is also exactly why it drifts, because every step depends on both the previou
 
 Docker's strengths are real.
 
-Everyone knows it, so it is the common tongue between developers and operations.
+Everyone knows it, so it is a shared language between developers and operations.
 
-Under the hood, Linux namespaces give processes their own views of things such as the process tree, network interfaces, mounts, and hostnames.
+Internally, Linux namespaces give processes their own views of things such as the process tree, network interfaces, mounts, and hostnames.
 
 Cgroups limit and account for resources such as CPU and memory.
 
@@ -271,9 +271,9 @@ This is why Docker won, and none of that is going away.
 <!--
 [45 seconds]
 
-The weaknesses are the flip side.
+The weaknesses follow from the same model.
 
-A tiny Python script often drags a full operating system along, which is bloat and, worse, attack surface.
+Without careful base image selection, even a simple app drags a full operating system along, which is bloat and, worse, attack surface.
 
 The base image is mutable, so upstream changes silently rewrite your foundation.
 
@@ -321,11 +321,13 @@ The inputs are everything that matters: the source code, every dependency, the e
 
 Nix hashes all of it into one identifier.
 
+That hash is computed before the build runs, which is how the binary cache works: if the hash already exists upstream, Nix downloads the result instead of building it.
+
 Same inputs, same hash, same output, every time.
 
-Change one input by a single byte and the hash changes, so you can always see what moved.
+Change one input by a single byte and the hash changes, so you can always see which input changed.
 
-This is what "functional" buys you: builds you can reason about like math instead of like weather.
+This is what the functional model gives you: builds you can reason about like math instead of like weather.
 -->
 
 ---
@@ -351,7 +353,7 @@ Two consequences.
 
 First, the path itself proves what produced it.
 
-Second, because the hash disambiguates, many versions of the same library live side by side without fighting over one global slot.
+Second, because the hash disambiguates, many versions of the same library coexist without conflict.
 
 No more "which OpenSSL is active."
 
@@ -380,7 +382,7 @@ Flakes make this practical.
 
 A flake declares your inputs, and the flake.lock pins each one to an exact Git commit hash.
 
-Check that lockfile into the repository and your teammate, your CI runner, and your future self all resolve the identical dependency graph.
+Check that lockfile into the repository and your teammate, your CI runner, and you in six months all resolve the identical dependency graph.
 
 It is the lockfile idea you know from application dependencies, raised to cover the whole toolchain.
 -->
@@ -453,6 +455,8 @@ Use Nix to build the software, because it computes the exact closure of dependen
 Then use Docker to package and distribute that result, because the registry and the runtime boundary are excellent.
 
 Determinism on the way in, ubiquity on the way out.
+
+For day-to-day use, `nix develop` gives every developer an identical shell with the same JDK, build tool, and linter. No installation instructions are needed.
 -->
 
 ---
@@ -474,9 +478,9 @@ The payoff is concrete.
 
 Nix can emit a Docker image that contains only your application and the exact store paths it needs.
 
-No shell, no package manager, no half of an operating system riding along.
+No shell, no package manager, no half of an operating system included.
 
-That is a small, honest image with far less attack surface, produced deterministically.
+That is a small, minimal image with far less attack surface, produced deterministically.
 -->
 
 ---
@@ -496,7 +500,7 @@ So the decision rule.
 
 If your job is to hand a running black box to production, a Dockerfile is a fine and familiar answer.
 
-If your job is to guarantee that your development machine and your CI pipeline are identical down to the last byte, that is where Nix excels.
+If your job is to guarantee that your development machine and your CI pipeline are identical at every level, that is where Nix excels.
 
 And on a serious project, the answer is usually both, in that order.
 -->
