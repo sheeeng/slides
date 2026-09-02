@@ -2,11 +2,11 @@
 marp: true
 lang: en-US
 title: "Reproducible Environments: Why Docker Isn't Enough and Why Nix Might Be!"
-description: "A 20-minute tour of why Docker ships the artifact but not the build, and how Nix makes environments reproducible bit for bit."
+description: "A tour of why Docker ships the artifact but not the build, and how Nix makes environments reproducible bit for bit."
 theme: uncover
 transition: fade
 author: "Leonard Sheng Sheng Lee"
-header: "[Reproducible Environments](https://sheeeng.github.io/slides/reproducible-environments-docker-vs-nix/) | [JavaZone 2026](https://2026.javazone.no/program/3db5bd92-6205-404b-8582-96cf0e7d88c6)"
+header: "[Reproducible Environments: Why Docker Isn't Enough and Why Nix Might Be!](https://sheeeng.github.io/slides/reproducible-environments-docker-vs-nix/) | [JavaZone 2026](https://2026.javazone.no/program/3db5bd92-6205-404b-8582-96cf0e7d88c6) | [Stø AS](https://stoe.no/)"
 footer: "Made with [Marp](https://marp.app/) by [Leonard Sheng Sheng Lee](https://github.com/sheeeng)."
 paginate: true
 _paginate: false
