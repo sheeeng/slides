@@ -94,13 +94,11 @@ section.comparison table {
 <!--
 [30 seconds]
 
-Welcome!
+Docker solved portability.
 
-Quick show of hands: who has ever said "it works on my machine"?
+It did not solve reproducibility.
 
-Keep your hand up if a Dockerfile did not fully save you.
-
-In this session, we compare the imperative and functional approaches to environments, and see where each one is most useful.
+In this session, we look at why, and what does.
 -->
 
 <br/>
