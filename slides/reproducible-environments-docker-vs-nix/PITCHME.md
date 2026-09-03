@@ -154,9 +154,9 @@ Portable means the image runs anywhere.
 
 Deterministic means the same inputs always produce the same output.
 
-Docker provides portability without extra effort.
+Docker provides portability.
 
-The second you have to earn, and we will see how.
+Reproducibility requires more work, and we will see how.
 -->
 
 ---
