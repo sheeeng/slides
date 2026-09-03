@@ -277,9 +277,9 @@ The base image is mutable, so upstream changes silently rewrite your foundation.
 
 And because the Dockerfile describes steps rather than a fingerprint of inputs, two builds of the same file can disagree.
 
-Docker pins the artifact well.
+Save the image by digest and it is frozen.
 
-It does not pin the build.
+Rebuild from the same Dockerfile and the result may differ.
 -->
 
 ---
@@ -534,9 +534,9 @@ And the two compose well: build with Nix, ship with Docker.
 
 <!-- markdownlint-disable MD036 -->
 
-> "Docker packages the mess; Nix fixes the mess."
+> Docker packages the mess; Nix fixes the mess.
 
-`sheeeng.github.io/slides`
+sheeeng.github.io/slides
 
 ![QR code for sheeeng.github.io/slides](assets/qr-slides.svg)
 
@@ -544,7 +544,7 @@ And the two compose well: build with Nix, ship with Docker.
 
 <picture>
   <source srcset="https://fonts.gstatic.com/s/e/notoemoji/latest/2744_fe0f/512.webp" type="image/webp">
-  <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/2744_fe0f/512.gif" alt="❄" width="128" height="128">
+  <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/2744_fe0f/512.gif" alt="❄" width="96" height="96">
 </picture>
 
 <!--
