@@ -170,7 +170,7 @@ RUN apt-get update && \
     apt-get install --assume-yes curl
 ```
 
-​📅 `apt-get update` today ≠ yesterday.
+​📅 `apt-get update` last month ≠ next month.
 
 ​🏷️ `node:24` is a moving target.
 
@@ -537,6 +537,8 @@ And the two compose well: build with Nix, ship with Docker.
 > "Docker packages the mess; Nix fixes the mess."
 
 `sheeeng.github.io/slides`
+
+![QR code for sheeeng.github.io/slides](assets/qr-tree.webp)
 
 <!-- markdownlint-enable MD036 -->
 
