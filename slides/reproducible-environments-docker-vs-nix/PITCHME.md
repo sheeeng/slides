@@ -538,7 +538,7 @@ And the two compose well: build with Nix, ship with Docker.
 
 `sheeeng.github.io/slides`
 
-![QR code for sheeeng.github.io/slides](assets/qr-tree.webp)
+![QR code for sheeeng.github.io/slides](assets/qr-slides.svg)
 
 <!-- markdownlint-enable MD036 -->
 
