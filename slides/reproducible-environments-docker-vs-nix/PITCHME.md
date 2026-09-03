@@ -534,11 +534,9 @@ And the two compose well: build with Nix, ship with Docker.
 
 <!-- markdownlint-disable MD036 -->
 
-> Docker packages the mess; Nix fixes the mess.
+`sheeeng.github.io/slides`
 
-sheeeng.github.io/slides
-
-<img src="assets/qr-slides.svg" alt="QR code for sheeeng.github.io/slides" width="64" height="64">
+<img src="assets/qr-slides.svg" alt="QR code for sheeeng.github.io/slides" width="256" height="256">
 
 <!-- markdownlint-enable MD036 -->
 
