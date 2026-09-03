@@ -536,7 +536,7 @@ And the two compose well: build with Nix, ship with Docker.
 
 > "Docker packages the mess; Nix fixes the mess."
 
-sheeeng.github.io/slides
+`sheeeng.github.io/slides`
 
 <!-- markdownlint-enable MD036 -->
 
