@@ -6,28 +6,24 @@ updates:
       interval: "daily"
     groups:
       github-actions:
+        update-types:
+          - "minor"
+          - "patch"
         patterns:
           - "*"
     labels:
       - dependencies
+    open-pull-requests-limit: 1024 # A large value can be set to effectively remove the open pull request limit. # https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-options-reference#open-pull-requests-limit-
   - package-ecosystem: npm
     directories:
-      - "/slides/demystifying-the-nix-store"
-      - "/slides/governing-azure-resources-with-policy"
-      - "/slides/reproducible-environments-docker-vs-nix"
-      - "/slides/running-kernel-based-virtual-machine"
-      - "/slides/tracking-nixpkgs-merged-pull-requests"
+      - "/slides/*"
     schedule:
       interval: "daily"
     groups:
-      deps:
-        dependency-type: "production"
-        patterns:
-          - "*"
-      deps-dev:
-        dependency-type: "development"
-        patterns:
-          - "*"
+      npm-minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
     labels:
       - dependencies
     versioning-strategy: increase
