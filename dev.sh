@@ -21,20 +21,22 @@ echo "GOOGLE_MAPS_API_KEY detected: ${masked}"
 
 PORT="${PORT:-8080}"
 OUT=".dev"
+export GOOGLE_MAPS_API_KEY PORT OUT
 
 mkdir -p "$OUT"
 cp favicon.ico favicon-16x16.png favicon-32x32.png apple-touch-icon.png \
-   android-chrome-192x192.png android-chrome-512x512.png site.webmanifest "$OUT/"
+   android-chrome-192x192.png android-chrome-512x512.png site.webmanifest \
+   "$OUT/"
 
 echo "Serving at http://localhost:${PORT}. Press Ctrl+C to stop."
 echo "Live reload is on. Edits to index.html and talks.toml refresh the browser."
 echo "Add 'localhost:${PORT}' to your Maps API key referrer restrictions if not already there."
 
-export GOOGLE_MAPS_API_KEY PORT OUT
-
 python3 <<'PYEOF'
 import http.server
 import os
+import shutil
+import subprocess
 import threading
 import time
 
@@ -43,7 +45,18 @@ PORT = int(os.environ["PORT"])
 API_KEY = os.environ["GOOGLE_MAPS_API_KEY"]
 
 # Source files that trigger a rebuild and browser reload when they change.
-SOURCES = ["index.html", "talks.toml"]
+SOURCES = [
+    "index.html",
+    "motion/index.html",
+    "motion/src/App.jsx",
+    "motion/src/MapCanvas.jsx",
+    "motion/src/cameraFlight.js",
+    "motion/src/main.jsx",
+    "motion/src/mapProviders.js",
+    "motion/src/styles.css",
+    "motion/src/talks.js",
+    "talks.toml",
+]
 
 # Development live reload snippet. Injected by dev.sh; absent from production.
 LIVE_RELOAD = """
@@ -72,6 +85,11 @@ def build():
         html += LIVE_RELOAD
     with open(os.path.join(OUT, "index.html"), "w", encoding="utf-8") as handle:
         handle.write(html)
+    subprocess.run(["npm", "--prefix", "motion", "run", "build"], check=True)
+    with open("motion/dist/index.html", "r", encoding="utf-8") as source:
+        with open(os.path.join(OUT, "motion.html"), "w", encoding="utf-8") as target:
+            target.write(source.read())
+    shutil.copytree("motion/dist/motion-assets", os.path.join(OUT, "motion-assets"), dirs_exist_ok=True)
     with open("talks.toml", "r", encoding="utf-8") as source:
         with open(os.path.join(OUT, "talks.toml"), "w", encoding="utf-8") as target:
             target.write(source.read())
