@@ -165,8 +165,12 @@ export const MapCanvas = forwardRef(function MapCanvas(
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     function applyFrame(frame) {
-      mapRef.current.setCenter(frame.center);
-      mapRef.current.setZoom(frame.zoom);
+      if (typeof mapRef.current.moveCamera === "function") {
+        mapRef.current.moveCamera({ center: frame.center, zoom: frame.zoom });
+      } else {
+        mapRef.current.setCenter(frame.center);
+        mapRef.current.setZoom(frame.zoom);
+      }
     }
 
     if (reducedMotion) {
