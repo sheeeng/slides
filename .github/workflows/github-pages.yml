@@ -49,7 +49,7 @@ jobs:
       - name: Build Motion Preview
         working-directory: motion
         env:
-          GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
+          GOOGLE_MAPS_API_KEY: YOUR_GOOGLE_MAPS_API_KEY
         run: npm run build
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v4.4.3
         with:
@@ -115,6 +115,9 @@ jobs:
           cp talks.toml public/talks.toml
           cp motion-dist/index.html public/motion.html
           cp --recursive motion-dist/motion-assets public/motion-assets
+          sed --in-place \
+            --expression "s/YOUR_GOOGLE_MAPS_API_KEY/${GOOGLE_MAPS_API_KEY}/g" \
+            public/motion-assets/index.js
           cp favicon.ico favicon-16x16.png favicon-32x32.png apple-touch-icon.png \
              android-chrome-192x192.png android-chrome-512x512.png site.webmanifest public/
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
