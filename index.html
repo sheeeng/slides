@@ -200,7 +200,7 @@
       }
 
       .map-container {
-        height: 420px;
+        height: 320px;
         border-radius: 8px;
         border: 1px solid var(--border);
         overflow: hidden;
@@ -444,12 +444,16 @@
         <div id="map-stats" aria-live="polite"></div>
         <div id="map-google" class="map-container"></div>
         <div id="map-osm" class="map-container" hidden></div>
+        <div id="map-nasa" class="map-container" hidden></div>
         <div class="map-toggle" role="group" aria-label="Map provider">
           <button id="btn-gmaps" class="map-btn active" aria-pressed="true">
             Google Maps
           </button>
           <button id="btn-osm" class="map-btn" aria-pressed="false">
             OpenStreetMap
+          </button>
+          <button id="btn-nasa" class="map-btn" aria-pressed="false">
+            NASA Worldview
           </button>
         </div>
       </section>
@@ -648,75 +652,133 @@
         if (talks.length) gmapsMap.fitBounds(bounds);
       }
 
-      // Leaflet / OpenStreetMap
-      let leafletMap = null;
+      // Leaflet raster providers
+      const leafletMaps = {};
+      const nasaImageryDate = (() => {
+        const previousDate = new Date();
+        previousDate.setUTCDate(previousDate.getUTCDate() - 1);
+        return previousDate.toISOString().slice(0, 10);
+      })();
 
-      async function initLeaflet(talks) {
-        const el = document.getElementById("map-osm");
-        if (!window.L) {
-          const link = document.createElement("link");
-          link.rel = "stylesheet";
-          link.href = "https://unpkg.com/leaflet@1/dist/leaflet.css";
-          document.head.appendChild(link);
-          await new Promise((resolve, reject) => {
-            const s = document.createElement("script");
-            s.src = "https://unpkg.com/leaflet@1/dist/leaflet.js";
-            s.onload = resolve;
-            s.onerror = reject;
-            document.head.appendChild(s);
-          });
+      async function loadLeaflet() {
+        if (window.L) return;
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = "https://unpkg.com/leaflet@1/dist/leaflet.css";
+        document.head.appendChild(link);
+        await new Promise((resolve, reject) => {
+          const s = document.createElement("script");
+          s.src = "https://unpkg.com/leaflet@1/dist/leaflet.js";
+          s.onload = resolve;
+          s.onerror = reject;
+          document.head.appendChild(s);
+        });
+      }
+
+      function rasterTileConfig(providerId) {
+        if (providerId === "nasa") {
+          return {
+            attribution: '<a href="https://earthdata.nasa.gov/worldview">NASA Earthdata</a>',
+            maxZoom: 9,
+            minZoom: 2,
+            url:
+              `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/` +
+              `MODIS_Terra_CorrectedReflectance_TrueColor/default/` +
+              `${nasaImageryDate}/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg`,
+          };
         }
-
-        if (leafletMap) {
-          leafletMap.invalidateSize();
-          return;
-        }
-
-        leafletMap = L.map(el).setView([50, 10], 4);
-        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        return {
           attribution:
             '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
           maxZoom: 18,
-        }).addTo(leafletMap);
+          url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        };
+      }
+
+      async function initLeafletProvider(providerId, talks) {
+        const element = document.getElementById(`map-${providerId}`);
+        await loadLeaflet();
+        if (leafletMaps[providerId]) {
+          leafletMaps[providerId].invalidateSize();
+          return;
+        }
+
+        const config = rasterTileConfig(providerId);
+        const map = L.map(element, {
+          maxZoom: config.maxZoom,
+          minZoom: config.minZoom ?? 1,
+        }).setView([50, 10], 4);
+        L.tileLayer(config.url, {
+          attribution: config.attribution,
+          maxZoom: config.maxZoom,
+          minZoom: config.minZoom ?? 1,
+        }).addTo(map);
 
         const bounds = [];
         for (const group of groupByLocation(talks).values()) {
           L.marker([group[0].lat, group[0].lng])
-            .addTo(leafletMap)
+            .addTo(map)
             .bindPopup(popupHTML(group), { maxWidth: 300 });
           bounds.push([group[0].lat, group[0].lng]);
         }
         if (bounds.length)
-          leafletMap.fitBounds(bounds, { padding: [40, 40] });
+          map.fitBounds(bounds, { padding: [12, 12] });
+
+        leafletMaps[providerId] = map;
       }
 
       // Toggle
       const btnGmaps = document.getElementById("btn-gmaps");
       const btnOsm = document.getElementById("btn-osm");
+      const btnNasa = document.getElementById("btn-nasa");
       const mapGoogle = document.getElementById("map-google");
       const mapOsm = document.getElementById("map-osm");
+      const mapNasa = document.getElementById("map-nasa");
+
+      function showMap({ activeButton, activeContainer, initializer }) {
+        if (activeButton.classList.contains("active")) return;
+        const buttons = [btnGmaps, btnOsm, btnNasa];
+        const containers = [mapGoogle, mapOsm, mapNasa];
+        for (const button of buttons) {
+          button.classList.remove("active");
+          button.setAttribute("aria-pressed", "false");
+        }
+        for (const container of containers) {
+          container.hidden = container !== activeContainer;
+        }
+        activeButton.classList.add("active");
+        activeButton.setAttribute("aria-pressed", "true");
+        return initializer();
+      }
 
       btnGmaps.addEventListener("click", () => {
-        if (btnGmaps.classList.contains("active")) return;
-        btnGmaps.classList.add("active");
-        btnGmaps.setAttribute("aria-pressed", "true");
-        btnOsm.classList.remove("active");
-        btnOsm.setAttribute("aria-pressed", "false");
-        mapOsm.hidden = true;
-        mapGoogle.hidden = false;
-        initGoogleMaps(talks);
+        showMap({
+          activeButton: btnGmaps,
+          activeContainer: mapGoogle,
+          initializer: () => initGoogleMaps(talks),
+        });
       });
 
       btnOsm.addEventListener("click", async () => {
-        if (btnOsm.classList.contains("active")) return;
-        btnOsm.classList.add("active");
-        btnOsm.setAttribute("aria-pressed", "true");
-        btnGmaps.classList.remove("active");
-        btnGmaps.setAttribute("aria-pressed", "false");
-        mapGoogle.hidden = true;
-        mapOsm.hidden = false;
-        await initLeaflet(talks);
-        leafletMap.invalidateSize();
+        await showMap({
+          activeButton: btnOsm,
+          activeContainer: mapOsm,
+          initializer: async () => {
+            await initLeafletProvider("osm", talks);
+            leafletMaps.osm.invalidateSize();
+          },
+        });
+      });
+
+      btnNasa.addEventListener("click", async () => {
+        await showMap({
+          activeButton: btnNasa,
+          activeContainer: mapNasa,
+          initializer: async () => {
+            await initLeafletProvider("nasa", talks);
+            leafletMaps.nasa.invalidateSize();
+          },
+        });
       });
 
       const talks = await loadTalks();
