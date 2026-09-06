@@ -90,7 +90,7 @@ function ProviderSelector({ selectedProvider, onSelect, nasaImageryDate }) {
       <p className="provider-attribution">
         {selectedProvider === "google" && <a href="https://maps.google.com/">Google Maps</a>}
         {selectedProvider === "openstreetmap" && <a href="https://www.openstreetmap.org/copyright">© OpenStreetMap contributors</a>}
-        {selectedProvider === "nasa" && <><a href="https://earthdata.nasa.gov/worldview">NASA Earthdata.</a><span>Imagery from {formatImageryDate(nasaImageryDate)}.</span></>}
+        {selectedProvider === "nasa" && <><a href="https://earthdata.nasa.gov/worldview">NASA Earthdata.</a><span>This imagery is from {formatImageryDate(nasaImageryDate)}.</span></>}
       </p>
     </div>
   );
