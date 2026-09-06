@@ -32,6 +32,7 @@ city = "Pasadena"
 lat = 34.1478
 lng = -118.1445
 url = "tracking-nixpkgs-merged-pull-requests/"
+video = "https://www.youtube.com/watch?v=wo38491N3Nw"
 
 [[talk]]
 title = "The Giant Immutable LEGO Set: Demystifying the Nix Store"
@@ -43,6 +44,7 @@ city = "Pasadena"
 lat = 34.1478
 lng = -118.1445
 url = "demystifying-the-nix-store/"
+video = "https://www.youtube.com/watch?v=4bwSRCTAAn0"
 
 [[talk]]
 title = "Getting Started with Kernel Virtual Machine"
