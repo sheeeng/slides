@@ -21,6 +21,7 @@ city = "Oslo"
 lat = 59.9139
 lng = 10.7522
 url = "reproducible-environments-docker-vs-nix/"
+video = "https://vimeo.com/1223729965"
 
 [[talk]]
 title = "When is the fix available? A 5-Minute Guide to Tracking Nixpkgs PRs"
