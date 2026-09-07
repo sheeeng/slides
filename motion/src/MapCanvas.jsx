@@ -1,11 +1,6 @@
 import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef } from "react";
 import { getCameraFlightFrame } from "./cameraFlight.js";
-import {
-  DEFAULT_MAP_PROVIDER,
-  getNasaTileUrl,
-  getOpenStreetMapTileUrl,
-  MAP_PROVIDERS,
-} from "./mapProviders.js";
+import { DEFAULT_MAP_PROVIDER, MAP_PROVIDERS } from "./mapProviders.js";
 
 const GOOGLE_MAPS_API_KEY = __GOOGLE_MAPS_API_KEY__;
 let googleMapsPromise;
@@ -35,7 +30,30 @@ function loadGoogleMaps() {
   return googleMapsPromise;
 }
 
-function markerIcon(maps, active) {
+function loadLeaflet() {
+  return new Promise((resolve, reject) => {
+    if (window.L) {
+      resolve(window.L);
+      return;
+    }
+    if (!document.querySelector("link[data-leaflet]")) {
+      const stylesheet = document.createElement("link");
+      stylesheet.dataset.leaflet = "true";
+      stylesheet.rel = "stylesheet";
+      stylesheet.href = "https://unpkg.com/leaflet@1/dist/leaflet.css";
+      document.head.append(stylesheet);
+    }
+    const script = document.createElement("script");
+    script.dataset.leaflet = "true";
+    script.src = "https://unpkg.com/leaflet@1/dist/leaflet.js";
+    script.async = true;
+    script.onload = () => resolve(window.L);
+    script.onerror = () => reject(new Error("The raster map could not load."));
+    document.head.append(script);
+  });
+}
+
+function googleMarkerIcon(maps, active) {
   return {
     path: maps.SymbolPath.CIRCLE,
     fillColor: active ? "#34268f" : "#6655cc",
@@ -46,50 +64,33 @@ function markerIcon(maps, active) {
   };
 }
 
-function registerProviderMapTypes(maps, map, nasaImageryDate) {
-  const openStreetMapType = new maps.ImageMapType({
-    alt: "OpenStreetMap standard raster tiles",
-    getTileUrl: (coordinate, zoom) => {
-      const tileUrl = getOpenStreetMapTileUrl({ x: coordinate.x, y: coordinate.y }, zoom);
-      return tileUrl || "";
-    },
-    maxZoom: MAP_PROVIDERS.openstreetmap.maxZoom,
-    minZoom: MAP_PROVIDERS.openstreetmap.minZoom,
-    name: "OpenStreetMap",
-    tileSize: new maps.Size(256, 256),
-  });
-  const nasaMapType = new maps.ImageMapType({
-    alt: "NASA Worldview MODIS Terra corrected reflectance true color imagery",
-    getTileUrl: (coordinate, zoom) => {
-      const tileUrl = getNasaTileUrl({ x: coordinate.x, y: coordinate.y }, zoom, nasaImageryDate);
-      return tileUrl || "";
-    },
-    maxZoom: MAP_PROVIDERS.nasa.maxZoom,
-    minZoom: MAP_PROVIDERS.nasa.minZoom,
-    name: "NASA Worldview",
-    tileSize: new maps.Size(256, 256),
-  });
-
-  map.mapTypes.set(MAP_PROVIDERS.openstreetmap.mapTypeId, openStreetMapType);
-  map.mapTypes.set(MAP_PROVIDERS.nasa.mapTypeId, nasaMapType);
-  map.setMapTypeId(MAP_PROVIDERS[DEFAULT_MAP_PROVIDER].mapTypeId);
-}
-
 export const MapCanvas = forwardRef(function MapCanvas(
   { locations, selectedLocationId, selectionRequest, mapProvider, nasaImageryDate, onSelect, onStatus, onVisibleChange },
   controllerRef,
 ) {
-  const mapElementRef = useRef(null);
-  const mapRef = useRef(null);
+  const googleElementRef = useRef(null);
+  const leafletElementRef = useRef(null);
+  const googleMapRef = useRef(null);
   const mapsRef = useRef(null);
-  const markersRef = useRef([]);
-  const currentLocationMarkerRef = useRef(null);
-  const boundsRef = useRef(null);
+  const leafletMapRef = useRef(null);
+  const leafletRef = useRef(null);
+  const googleMarkersRef = useRef([]);
+  const leafletMarkersRef = useRef([]);
+  const googleBoundsRef = useRef(null);
+  const leafletBoundsRef = useRef(null);
+  const tileLayerRef = useRef(null);
+  const currentLocationMarkerRef = useRef({ google: null, leaflet: null });
   const cameraFlightFrameRef = useRef(null);
   const geolocationRequestGenerationRef = useRef(0);
   const selectedLocationIdRef = useRef(selectedLocationId);
+  const mapProviderRef = useRef(mapProvider);
 
   selectedLocationIdRef.current = selectedLocationId;
+  mapProviderRef.current = mapProvider;
+
+  function isGoogleActive() {
+    return mapProviderRef.current === "google";
+  }
 
   const cancelCameraFlight = useCallback(() => {
     if (cameraFlightFrameRef.current !== null) {
@@ -103,20 +104,43 @@ export const MapCanvas = forwardRef(function MapCanvas(
     return geolocationRequestGenerationRef.current;
   }, []);
 
+  const notifyVisibleChange = useCallback(() => {
+    if (isGoogleActive()) {
+      if (!googleMapRef.current) return;
+      const bounds = googleMapRef.current.getBounds();
+      if (!bounds) return;
+      const visibleLocationIds = locations
+        .filter(({ lat, lng }) => bounds.contains({ lat, lng }))
+        .map(({ id }) => id);
+      onVisibleChange(visibleLocationIds);
+      return;
+    }
+    if (!leafletMapRef.current) return;
+    const bounds = leafletMapRef.current.getBounds();
+    const visibleLocationIds = locations
+      .filter(({ lat, lng }) => bounds.contains([lat, lng]))
+      .map(({ id }) => id);
+    onVisibleChange(visibleLocationIds);
+  }, [locations, onVisibleChange]);
+
   const viewAllTalks = useCallback(() => {
     supersedeGeolocationRequest();
     cancelCameraFlight();
-    if (mapRef.current && boundsRef.current) {
-      const compactViewport = mapRef.current.getDiv().clientWidth < 720;
-      mapRef.current.fitBounds(boundsRef.current, compactViewport ? 24 : 96);
-      onStatus("Map view reset.");
+    if (isGoogleActive()) {
+      if (!googleMapRef.current || !googleBoundsRef.current) return;
+      const compactViewport = googleMapRef.current.getDiv().clientWidth < 720;
+      googleMapRef.current.fitBounds(googleBoundsRef.current, compactViewport ? 24 : 96);
+    } else {
+      if (!leafletMapRef.current || !leafletBoundsRef.current) return;
+      leafletMapRef.current.fitBounds(leafletBoundsRef.current, { padding: [24, 24] });
     }
+    onStatus("Map view reset.");
   }, [cancelCameraFlight, onStatus, supersedeGeolocationRequest]);
 
   const locateUser = useCallback(() => {
     const requestGeneration = supersedeGeolocationRequest();
     cancelCameraFlight();
-    if (!navigator.geolocation || !mapRef.current) {
+    if (!navigator.geolocation) {
       onStatus("Current location is not available in this browser.");
       return;
     }
@@ -125,23 +149,37 @@ export const MapCanvas = forwardRef(function MapCanvas(
       ({ coords }) => {
         if (requestGeneration !== geolocationRequestGenerationRef.current) return;
         const position = { lat: coords.latitude, lng: coords.longitude };
-        currentLocationMarkerRef.current?.setMap(null);
-        currentLocationMarkerRef.current = new mapsRef.current.Marker({
-          map: mapRef.current,
-          position,
-          title: "Your current location",
-          icon: {
-            path: mapsRef.current.SymbolPath.CIRCLE,
+        if (isGoogleActive()) {
+          if (!googleMapRef.current || !mapsRef.current) return;
+          currentLocationMarkerRef.current.google?.setMap(null);
+          currentLocationMarkerRef.current.google = new mapsRef.current.Marker({
+            map: googleMapRef.current,
+            position,
+            title: "Your current location",
+            icon: {
+              path: mapsRef.current.SymbolPath.CIRCLE,
+              fillColor: "#1677ff",
+              fillOpacity: 1,
+              strokeColor: "#ffffff",
+              strokeWeight: 4,
+              scale: 9,
+            },
+            zIndex: 1000,
+          });
+          googleMapRef.current.panTo(position);
+          googleMapRef.current.setZoom(4);
+        } else {
+          if (!leafletMapRef.current || !leafletRef.current) return;
+          currentLocationMarkerRef.current.leaflet?.remove();
+          currentLocationMarkerRef.current.leaflet = leafletRef.current.circleMarker([position.lat, position.lng], {
+            color: "#ffffff",
             fillColor: "#1677ff",
             fillOpacity: 1,
-            strokeColor: "#ffffff",
-            strokeWeight: 4,
-            scale: 9,
-          },
-          zIndex: 1000,
-        });
-        mapRef.current.panTo(position);
-        mapRef.current.setZoom(4);
+            radius: 9,
+            weight: 4,
+          }).addTo(leafletMapRef.current).bindTooltip("Your current location");
+          leafletMapRef.current.setView([position.lat, position.lng], 4);
+        }
         onStatus("Map centered on your current location.");
       },
       () => {
@@ -155,22 +193,29 @@ export const MapCanvas = forwardRef(function MapCanvas(
 
   const startCameraFlight = useCallback((locationId) => {
     const location = locations.find(({ id }) => id === locationId);
-    if (!location || !mapRef.current) return;
+    const activeMap = isGoogleActive() ? googleMapRef.current : leafletMapRef.current;
+    if (!location || !activeMap) return;
 
     supersedeGeolocationRequest();
     cancelCameraFlight();
-    const currentCenter = mapRef.current.getCenter();
-    const startCenter = { lat: currentCenter.lat(), lng: currentCenter.lng() };
+    const currentCenter = activeMap.getCenter();
+    const startCenter = isGoogleActive()
+      ? { lat: currentCenter.lat(), lng: currentCenter.lng() }
+      : { lat: currentCenter.lat, lng: currentCenter.lng };
     const destination = { lat: location.lat, lng: location.lng };
-    const startZoom = mapRef.current.getZoom();
+    const startZoom = activeMap.getZoom();
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     function applyFrame(frame) {
-      if (typeof mapRef.current.moveCamera === "function") {
-        mapRef.current.moveCamera({ center: frame.center, zoom: frame.zoom });
+      if (isGoogleActive()) {
+        if (typeof googleMapRef.current.moveCamera === "function") {
+          googleMapRef.current.moveCamera({ center: frame.center, zoom: frame.zoom });
+        } else {
+          googleMapRef.current.setCenter(frame.center);
+          googleMapRef.current.setZoom(frame.zoom);
+        }
       } else {
-        mapRef.current.setCenter(frame.center);
-        mapRef.current.setZoom(frame.zoom);
+        leafletMapRef.current.setView([frame.center.lat, frame.center.lng], frame.zoom, { animate: false });
       }
     }
 
@@ -211,16 +256,6 @@ export const MapCanvas = forwardRef(function MapCanvas(
     cameraFlightFrameRef.current = window.requestAnimationFrame(renderFrame);
   }, [cancelCameraFlight, locations, supersedeGeolocationRequest]);
 
-  const notifyVisibleChange = useCallback(() => {
-    if (!mapRef.current) return;
-    const bounds = mapRef.current.getBounds();
-    if (!bounds) return;
-    const visibleLocationIds = locations
-      .filter(({ lat, lng }) => bounds.contains({ lat, lng }))
-      .map(({ id }) => id);
-    onVisibleChange(visibleLocationIds);
-  }, [locations, onVisibleChange]);
-
   useImperativeHandle(controllerRef, () => ({ locateUser, viewAllTalks }), [locateUser, viewAllTalks]);
 
   useEffect(() => {
@@ -230,7 +265,7 @@ export const MapCanvas = forwardRef(function MapCanvas(
       .then((maps) => {
         if (cancelled) return;
         mapsRef.current = maps;
-        mapRef.current = new maps.Map(mapElementRef.current, {
+        googleMapRef.current = new maps.Map(googleElementRef.current, {
           center: { lat: 32, lng: 12 },
           zoom: 2,
           minZoom: MAP_PROVIDERS[DEFAULT_MAP_PROVIDER].minZoom,
@@ -244,17 +279,16 @@ export const MapCanvas = forwardRef(function MapCanvas(
           zoomControl: !window.matchMedia("(max-width: 640px)").matches,
           zoomControlOptions: { position: 9 },
         });
-        registerProviderMapTypes(maps, mapRef.current, nasaImageryDate);
-        mapListeners.push(mapRef.current.addListener("idle", notifyVisibleChange));
-        boundsRef.current = new maps.LatLngBounds();
-        markersRef.current = locations.map((location) => {
+        mapListeners.push(googleMapRef.current.addListener("idle", notifyVisibleChange));
+        googleBoundsRef.current = new maps.LatLngBounds();
+        googleMarkersRef.current = locations.map((location) => {
           const position = { lat: location.lat, lng: location.lng };
-          boundsRef.current.extend(position);
+          googleBoundsRef.current.extend(position);
           const marker = new maps.Marker({
-            map: mapRef.current,
+            map: googleMapRef.current,
             position,
             title: `${location.city}, ${location.country}. ${location.talks.length} ${location.talks.length === 1 ? "talk" : "talks"}.`,
-            icon: markerIcon(maps, location.id === selectedLocationIdRef.current),
+            icon: googleMarkerIcon(maps, location.id === selectedLocationIdRef.current),
             label: {
               text: String(location.talks.length),
               color: "#ffffff",
@@ -281,26 +315,86 @@ export const MapCanvas = forwardRef(function MapCanvas(
       supersedeGeolocationRequest();
       cancelCameraFlight();
       mapListeners.forEach((listener) => listener.remove());
-      markersRef.current.forEach(({ marker }) => marker.setMap(null));
-      currentLocationMarkerRef.current?.setMap(null);
-      mapRef.current = null;
-      markersRef.current = [];
-      mapListeners = [];
+      googleMarkersRef.current.forEach(({ marker }) => marker.setMap(null));
+      currentLocationMarkerRef.current.google?.setMap(null);
+      googleMapRef.current = null;
+      googleMarkersRef.current = [];
     };
-  }, [cancelCameraFlight, locateUser, locations, nasaImageryDate, notifyVisibleChange, onSelect, onStatus, startCameraFlight, supersedeGeolocationRequest, viewAllTalks]);
+  }, [cancelCameraFlight, locateUser, locations, notifyVisibleChange, onSelect, onStatus, startCameraFlight, supersedeGeolocationRequest, viewAllTalks]);
 
   useEffect(() => {
     const provider = MAP_PROVIDERS[mapProvider];
-    if (!mapRef.current || !provider) return;
-    mapRef.current.setMapTypeId(provider.mapTypeId);
-    mapRef.current.setOptions({ minZoom: provider.minZoom, maxZoom: provider.maxZoom });
-    mapsRef.current?.event.trigger(mapRef.current, "resize");
-  }, [mapProvider]);
+    if (!provider) return;
+    let cancelled = false;
+    cancelCameraFlight();
+    googleElementRef.current.hidden = !isGoogleActive();
+    leafletElementRef.current.hidden = isGoogleActive();
+    if (isGoogleActive()) {
+      if (googleMapRef.current) {
+        mapsRef.current?.event.trigger(googleMapRef.current, "resize");
+      }
+      return undefined;
+    }
+
+    const needsInitialView = !leafletMapRef.current;
+    loadLeaflet()
+      .then((leaflet) => {
+        if (cancelled) return;
+        if (!leafletMapRef.current) {
+          leafletRef.current = leaflet;
+          leafletMapRef.current = leaflet.map(leafletElementRef.current, {
+            zoomControl: !window.matchMedia("(max-width: 640px)").matches,
+          }).setView([32, 12], 2);
+          leafletMapRef.current.attributionControl.setPrefix(false);
+          leafletBoundsRef.current = leaflet.latLngBounds([]);
+          leafletMarkersRef.current = locations.map((location) => {
+            leafletBoundsRef.current.extend([location.lat, location.lng]);
+            const marker = leaflet.marker([location.lat, location.lng], {
+              title: `${location.city}, ${location.country}. ${location.talks.length} ${location.talks.length === 1 ? "talk" : "talks"}.`,
+            }).addTo(leafletMapRef.current);
+            marker.on("click", () => onSelect(location.id));
+            return { location, marker };
+          });
+          leafletMapRef.current.on("moveend", notifyVisibleChange);
+        }
+        tileLayerRef.current?.remove();
+        const tileOptions = {
+          attribution: "© OpenStreetMap contributors",
+          maxZoom: provider.maxZoom,
+          minZoom: provider.minZoom,
+        };
+        if (mapProvider === "openstreetmap") {
+          tileLayerRef.current = leaflet.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            ...tileOptions,
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+          }).addTo(leafletMapRef.current);
+        } else {
+          tileLayerRef.current = leaflet.tileLayer(
+            `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_CorrectedReflectance_TrueColor/default/${nasaImageryDate}/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg`,
+            {
+              ...tileOptions,
+              attribution: '<a href="https://earthdata.nasa.gov/worldview">NASA Earthdata</a>',
+            },
+          ).addTo(leafletMapRef.current);
+        }
+        leafletMapRef.current.setMaxZoom(provider.maxZoom);
+        leafletMapRef.current.setMinZoom(provider.minZoom);
+        leafletMapRef.current.invalidateSize();
+        if (selectedLocationIdRef.current) {
+          startCameraFlight(selectedLocationIdRef.current);
+        } else if (needsInitialView) {
+          viewAllTalks();
+        }
+      })
+      .catch((error) => onStatus(error.message));
+
+    return () => { cancelled = true; };
+  }, [cancelCameraFlight, locations, mapProvider, nasaImageryDate, notifyVisibleChange, onSelect, onStatus, startCameraFlight, viewAllTalks]);
 
   useEffect(() => {
     if (mapsRef.current) {
-      markersRef.current.forEach(({ location, marker }) => {
-        marker.setIcon(markerIcon(mapsRef.current, location.id === selectedLocationId));
+      googleMarkersRef.current.forEach(({ location, marker }) => {
+        marker.setIcon(googleMarkerIcon(mapsRef.current, location.id === selectedLocationId));
         marker.setZIndex(location.id === selectedLocationId ? 500 : undefined);
       });
     }
@@ -308,9 +402,16 @@ export const MapCanvas = forwardRef(function MapCanvas(
     return cancelCameraFlight;
   }, [cancelCameraFlight, selectedLocationId, selectionRequest, startCameraFlight]);
 
+  useEffect(() => () => {
+    leafletMapRef.current?.remove();
+    leafletMapRef.current = null;
+    leafletMarkersRef.current = [];
+  }, []);
+
   return (
     <div className="map-canvas" aria-label="Interactive map of talk locations">
-      <div ref={mapElementRef} className="map-canvas__surface map-canvas__surface--google" />
+      <div ref={googleElementRef} className="map-canvas__surface" hidden={!isGoogleActive()} />
+      <div ref={leafletElementRef} className="map-canvas__surface" hidden={isGoogleActive()} />
     </div>
   );
 });
