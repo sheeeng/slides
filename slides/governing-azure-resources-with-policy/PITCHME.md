@@ -7,7 +7,7 @@ theme: uncover
 transition: fade
 author: "Leonard Sheng Sheng Lee"
 header: "[Governing Azure Resources with Policy](https://sheeeng.github.io/slides/governing-azure-resources-with-policy/)"
-footer: "Made with [Marp](https://marp.app/) by [Leonard Sheng Sheng Lee](https://github.com/sheeeng)."
+footer: "Built from [`__GIT_SHA__`](https://github.com/sheeeng/slides/commit/__GIT_REVISION__). Made with [Marp](https://marp.app/) by [Leonard Sheng Sheng Lee](https://github.com/sheeeng)."
 paginate: true
 _paginate: false
 backgroundImage: url('https://marp.app/assets/hero-background.svg')

@@ -6,9 +6,9 @@
   "private": true,
   "scripts": {
     "build": "rimraf public && npm run -s og-image && npm run -s deck",
-    "deck": "marp --no-stdin PITCHME.md --output public/index.html && ncp assets public/assets && node ../../scripts/inject-ga.mjs public/index.html",
-    "og-image": "marp --no-stdin PITCHME.md --output public/og-image.jpg",
-    "export-all": "marp --no-stdin PITCHME.md --output PITCHME.html && marp --no-stdin PITCHME.md --output PITCHME.pdf && marp --no-stdin PITCHME.md --output PITCHME.png && marp --no-stdin PITCHME.md --output PITCHME.jpeg",
+    "deck": "node ../../scripts/marp-with-git-sha.mjs PITCHME.md --output public/index.html && ncp assets public/assets && node ../../scripts/inject-ga.mjs public/index.html",
+    "og-image": "node ../../scripts/marp-with-git-sha.mjs PITCHME.md --output public/og-image.jpg",
+    "export-all": "node ../../scripts/marp-with-git-sha.mjs PITCHME.md --output PITCHME.html && node ../../scripts/marp-with-git-sha.mjs PITCHME.md --output PITCHME.pdf && node ../../scripts/marp-with-git-sha.mjs PITCHME.md --output PITCHME.png && node ../../scripts/marp-with-git-sha.mjs PITCHME.md --output PITCHME.jpeg",
     "start": "marp --server --preview .",
     "vercel-build": "yum install nss mesa-libgbm -y && MARP_USER=root CHROME_PATH=$(npx -y @puppeteer/browsers@latest install chrome@stable --path $(realpath ./tmp) | awk '{print $2}') npm run build"
   },

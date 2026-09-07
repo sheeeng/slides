@@ -7,7 +7,7 @@ theme: uncover
 transition: fade
 author: "Leonard Sheng Sheng Lee"
 header: "[Tracking Nixpkgs Merged Pull Requests](https://sheeeng.github.io/slides/tracking-nixpkgs-merged-pull-requests/) | [PlanetNix 2026 • SCaLE 23x](https://www.socallinuxexpo.org/scale/23x/presentations/when-fix-available-5-minute-guide-tracking-nixpkgs-prs)"
-footer: "Made with [Marp](https://marp.app/) by [Leonard Sheng Sheng Lee](https://github.com/sheeeng)."
+footer: "Built from [`__GIT_SHA__`](https://github.com/sheeeng/slides/commit/__GIT_REVISION__). Made with [Marp](https://marp.app/) by [Leonard Sheng Sheng Lee](https://github.com/sheeeng)."
 paginate: true
 _paginate: false
 backgroundImage: url('https://raw.githubusercontent.com/NixOS/nixos-artwork/refs/heads/master/wallpapers/nix-wallpaper-nineish.png')

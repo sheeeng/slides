@@ -7,7 +7,7 @@ theme: uncover
 transition: fade
 author: "Leonard Sheng Sheng Lee"
 header: "[Reproducible Environments: Why Docker Isn't Enough and Why Nix Might Be!](https://sheeeng.github.io/slides/reproducible-environments-docker-vs-nix/) | [JavaZone 2026](https://2026.javazone.no/program/3db5bd92-6205-404b-8582-96cf0e7d88c6) | [Stø AS](https://stoe.no/)"
-footer: "Made with [Marp](https://marp.app/) by [Leonard Sheng Sheng Lee](https://github.com/sheeeng)."
+footer: "Built from [`__GIT_SHA__`](https://github.com/sheeeng/slides/commit/__GIT_REVISION__). Made with [Marp](https://marp.app/) by [Leonard Sheng Sheng Lee](https://github.com/sheeeng)."
 paginate: true
 _paginate: false
 backgroundImage: url('https://raw.githubusercontent.com/NixOS/nixos-artwork/refs/heads/master/wallpapers/nix-wallpaper-nineish.png')
