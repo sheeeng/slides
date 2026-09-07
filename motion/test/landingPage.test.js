@@ -34,6 +34,36 @@ test("the landing page links the Kernel Virtual Machine YouTube recording", () =
   assert.match(indexHtml, /t\.video/);
 });
 
+test("the landing page orders the static slides newest first", () => {
+  const slidesBlock = indexHtml.match(/<h2 class="section-heading">Slides<\/h2>([\s\S]*?)<h2 class="section-heading">Videos<\/h2>/)[1];
+  const hrefs = [
+    "reproducible-environments-docker-vs-nix/",
+    "demystifying-the-nix-store/",
+    "tracking-nixpkgs-merged-pull-requests/",
+    "running-kernel-based-virtual-machine/",
+    "governing-azure-resources-with-policy/",
+    "https://events.csdn.net/QtDeveloperConference/Qt%20Cross-platform%20Development%20-%20MeeGo%20and%20Symbian.pdf",
+  ];
+  const positions = hrefs.map((href) => slidesBlock.indexOf(`href="${href}"`));
+
+  assert.ok(positions.every((position) => position >= 0));
+  assert.deepEqual(positions, [...positions].sort((first, second) => first - second));
+});
+
+test("the landing page orders the static videos newest first", () => {
+  const videosBlock = indexHtml.match(/<h2 class="section-heading">Videos<\/h2>([\s\S]*?)<section id="talks-map">/)[1];
+  const hrefs = [
+    "https://vimeo.com/1223729965",
+    "https://www.youtube.com/watch?v=4bwSRCTAAn0",
+    "https://www.youtube.com/watch?v=wo38491N3Nw",
+    "https://www.youtube.com/watch?v=mAZNlyXVoT4",
+  ];
+  const positions = hrefs.map((href) => videosBlock.indexOf(`href="${href}"`));
+
+  assert.ok(positions.every((position) => position >= 0));
+  assert.deepEqual(positions, [...positions].sort((first, second) => first - second));
+});
+
 test("the landing page popup can link a talk to its repository", () => {
   assert.match(indexHtml, /Repository ↗/);
   assert.match(indexHtml, /t\.repository/);
