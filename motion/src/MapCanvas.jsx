@@ -1,6 +1,6 @@
 import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef } from "react";
 import { getCameraFlightFrame } from "./cameraFlight.js";
-import { DEFAULT_MAP_PROVIDER, formatImageryDate, MAP_PROVIDERS } from "./mapProviders.js";
+import { DEFAULT_MAP_PROVIDER, formatImageryDate, MAP_PROVIDERS, NASA_REFERENCE_LAYERS } from "./mapProviders.js";
 
 const GOOGLE_MAPS_API_KEY = __GOOGLE_MAPS_API_KEY__;
 let googleMapsPromise;
@@ -81,6 +81,8 @@ export const MapCanvas = forwardRef(function MapCanvas(
   const tileLayerRef = useRef(null);
   const referenceLayersRef = useRef(null);
   const currentLocationMarkerRef = useRef({ google: null, leaflet: null });
+  const currentPositionRef = useRef(null);
+  const cameraViewRef = useRef(null);
   const cameraFlightFrameRef = useRef(null);
   const geolocationRequestGenerationRef = useRef(0);
   const selectedLocationIdRef = useRef(selectedLocationId);
@@ -91,6 +93,40 @@ export const MapCanvas = forwardRef(function MapCanvas(
 
   function isGoogleActive() {
     return mapProviderRef.current === "google";
+  }
+
+  function addGoogleCurrentLocationMarker() {
+    if (!googleMapRef.current || !mapsRef.current || !currentPositionRef.current) return;
+    currentLocationMarkerRef.current.google?.setMap(null);
+    currentLocationMarkerRef.current.google = new mapsRef.current.Marker({
+      map: googleMapRef.current,
+      position: currentPositionRef.current,
+      title: "Your current location",
+      icon: {
+        path: mapsRef.current.SymbolPath.CIRCLE,
+        fillColor: "#1677ff",
+        fillOpacity: 1,
+        strokeColor: "#ffffff",
+        strokeWeight: 4,
+        scale: 9,
+      },
+      zIndex: 1000,
+    });
+  }
+
+  function addLeafletCurrentLocationMarker() {
+    if (!leafletMapRef.current || !leafletRef.current || !currentPositionRef.current) return;
+    currentLocationMarkerRef.current.leaflet?.remove();
+    currentLocationMarkerRef.current.leaflet = leafletRef.current
+      .circleMarker([currentPositionRef.current.lat, currentPositionRef.current.lng], {
+        color: "#ffffff",
+        fillColor: "#1677ff",
+        fillOpacity: 1,
+        radius: 9,
+        weight: 4,
+      })
+      .addTo(leafletMapRef.current)
+      .bindTooltip("Your current location");
   }
 
   const cancelCameraFlight = useCallback(() => {
@@ -106,6 +142,23 @@ export const MapCanvas = forwardRef(function MapCanvas(
   }, []);
 
   const notifyVisibleChange = useCallback(() => {
+    if (isGoogleActive()) {
+      if (googleMapRef.current) {
+        const center = googleMapRef.current.getCenter();
+        cameraViewRef.current = {
+          lat: center.lat(),
+          lng: center.lng(),
+          zoom: googleMapRef.current.getZoom(),
+        };
+      }
+    } else if (leafletMapRef.current) {
+      const center = leafletMapRef.current.getCenter();
+      cameraViewRef.current = {
+        lat: center.lat,
+        lng: center.lng,
+        zoom: leafletMapRef.current.getZoom(),
+      };
+    }
     if (isGoogleActive()) {
       if (!googleMapRef.current) return;
       const bounds = googleMapRef.current.getBounds();
@@ -138,11 +191,16 @@ export const MapCanvas = forwardRef(function MapCanvas(
     onStatus("Map view reset.");
   }, [cancelCameraFlight, onStatus, supersedeGeolocationRequest]);
 
-  const locateUser = useCallback(() => {
+  const locateUser = useCallback(({ fallbackToAllTalks = false } = {}) => {
     const requestGeneration = supersedeGeolocationRequest();
     cancelCameraFlight();
     if (!navigator.geolocation) {
-      onStatus("Current location is not available in this browser.");
+      if (fallbackToAllTalks) {
+        viewAllTalks();
+        onStatus("Current location is not available. All talk locations are visible.");
+      } else {
+        onStatus("Current location is not available in this browser.");
+      }
       return;
     }
     onStatus("Finding your current location.");
@@ -150,47 +208,32 @@ export const MapCanvas = forwardRef(function MapCanvas(
       ({ coords }) => {
         if (requestGeneration !== geolocationRequestGenerationRef.current) return;
         const position = { lat: coords.latitude, lng: coords.longitude };
+        currentPositionRef.current = position;
         if (isGoogleActive()) {
           if (!googleMapRef.current || !mapsRef.current) return;
-          currentLocationMarkerRef.current.google?.setMap(null);
-          currentLocationMarkerRef.current.google = new mapsRef.current.Marker({
-            map: googleMapRef.current,
-            position,
-            title: "Your current location",
-            icon: {
-              path: mapsRef.current.SymbolPath.CIRCLE,
-              fillColor: "#1677ff",
-              fillOpacity: 1,
-              strokeColor: "#ffffff",
-              strokeWeight: 4,
-              scale: 9,
-            },
-            zIndex: 1000,
-          });
+          addGoogleCurrentLocationMarker();
           googleMapRef.current.panTo(position);
           googleMapRef.current.setZoom(4);
         } else {
           if (!leafletMapRef.current || !leafletRef.current) return;
-          currentLocationMarkerRef.current.leaflet?.remove();
-          currentLocationMarkerRef.current.leaflet = leafletRef.current.circleMarker([position.lat, position.lng], {
-            color: "#ffffff",
-            fillColor: "#1677ff",
-            fillOpacity: 1,
-            radius: 9,
-            weight: 4,
-          }).addTo(leafletMapRef.current).bindTooltip("Your current location");
+          addLeafletCurrentLocationMarker();
           leafletMapRef.current.setView([position.lat, position.lng], 4);
         }
         onStatus("Map centered on your current location.");
       },
       () => {
         if (requestGeneration === geolocationRequestGenerationRef.current) {
-          onStatus("Location access was not granted. The talk locations remain visible.");
+          if (fallbackToAllTalks) {
+            viewAllTalks();
+            onStatus("Location access was not granted. All talk locations are visible.");
+          } else {
+            onStatus("Location access was not granted. The talk locations remain visible.");
+          }
         }
       },
       { enableHighAccuracy: false, timeout: 8000 },
     );
-  }, [cancelCameraFlight, onStatus, supersedeGeolocationRequest]);
+  }, [cancelCameraFlight, onStatus, supersedeGeolocationRequest, viewAllTalks]);
 
   const startCameraFlight = useCallback((locationId) => {
     const location = locations.find(({ id }) => id === locationId);
@@ -305,8 +348,7 @@ export const MapCanvas = forwardRef(function MapCanvas(
         if (selectedLocationIdRef.current) {
           startCameraFlight(selectedLocationIdRef.current);
         } else {
-          viewAllTalks();
-          locateUser();
+          locateUser({ fallbackToAllTalks: true });
         }
       })
       .catch((error) => onStatus(error.message));
@@ -328,11 +370,17 @@ export const MapCanvas = forwardRef(function MapCanvas(
     if (!provider) return;
     let cancelled = false;
     cancelCameraFlight();
+    const savedCameraView = cameraViewRef.current ? { ...cameraViewRef.current } : null;
     googleElementRef.current.hidden = !isGoogleActive();
     leafletElementRef.current.hidden = isGoogleActive();
     if (isGoogleActive()) {
       if (googleMapRef.current) {
         mapsRef.current?.event.trigger(googleMapRef.current, "resize");
+        if (savedCameraView) {
+          googleMapRef.current.setCenter({ lat: savedCameraView.lat, lng: savedCameraView.lng });
+          googleMapRef.current.setZoom(savedCameraView.zoom);
+        }
+        addGoogleCurrentLocationMarker();
       }
       return undefined;
     }
@@ -345,7 +393,10 @@ export const MapCanvas = forwardRef(function MapCanvas(
           leafletRef.current = leaflet;
           leafletMapRef.current = leaflet.map(leafletElementRef.current, {
             zoomControl: !window.matchMedia("(max-width: 640px)").matches,
-          }).setView([32, 12], 2);
+          }).setView(
+            savedCameraView ? [savedCameraView.lat, savedCameraView.lng] : [32, 12],
+            savedCameraView?.zoom ?? 2,
+          );
           leafletMapRef.current.attributionControl.setPrefix(false);
           leafletMapRef.current.createPane("referencePane");
           leafletMapRef.current.getPane("referencePane").style.zIndex = "300";
@@ -382,11 +433,7 @@ export const MapCanvas = forwardRef(function MapCanvas(
             },
           ).addTo(leafletMapRef.current);
           referenceLayersRef.current = leaflet.layerGroup(
-            [
-              ["Reference_Features_15m", "GoogleMapsCompatible_Level13"],
-              ["Coastlines_15m", "GoogleMapsCompatible_Level13"],
-              ["Reference_Labels", "GoogleMapsCompatible_Level9"],
-            ].map(([layerName, matrixSet]) =>
+            NASA_REFERENCE_LAYERS.map(({ layerName, matrixSet }) =>
               leaflet.tileLayer(`https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/${layerName}/default/${matrixSet}/{z}/{y}/{x}.png`, {
                 pane: "referencePane",
                 maxZoom: provider.maxZoom,
@@ -398,8 +445,17 @@ export const MapCanvas = forwardRef(function MapCanvas(
         leafletMapRef.current.setMaxZoom(provider.maxZoom);
         leafletMapRef.current.setMinZoom(provider.minZoom);
         leafletMapRef.current.invalidateSize();
+        if (currentPositionRef.current) {
+          addLeafletCurrentLocationMarker();
+        }
         if (selectedLocationIdRef.current) {
           startCameraFlight(selectedLocationIdRef.current);
+        } else if (savedCameraView) {
+          leafletMapRef.current.setView(
+            [savedCameraView.lat, savedCameraView.lng],
+            savedCameraView.zoom,
+            { animate: false },
+          );
         } else if (needsInitialView) {
           viewAllTalks();
         }

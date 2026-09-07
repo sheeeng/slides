@@ -21,6 +21,24 @@ export const MAP_PROVIDERS = {
   },
 };
 
+export const NASA_REFERENCE_LAYERS = [
+  {
+    layerName: "Reference_Features_15m",
+    matrixSet: "GoogleMapsCompatible_Level13",
+    maxZoom: 13,
+  },
+  {
+    layerName: "Coastlines_15m",
+    matrixSet: "GoogleMapsCompatible_Level13",
+    maxZoom: 13,
+  },
+  {
+    layerName: "Reference_Labels",
+    matrixSet: "GoogleMapsCompatible_Level9",
+    maxZoom: 9,
+  },
+];
+
 export function getNasaImageryDate(now = new Date()) {
   return new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
 }
@@ -50,4 +68,10 @@ export function getNasaTileUrl(coordinate, zoom, imageryDate) {
   const normalizedCoordinate = normalizeTileCoordinate(coordinate, zoom);
   if (!normalizedCoordinate || zoom > MAP_PROVIDERS.nasa.maxZoom) return null;
   return `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_CorrectedReflectance_TrueColor/default/${imageryDate}/GoogleMapsCompatible_Level9/${zoom}/${normalizedCoordinate.y}/${normalizedCoordinate.x}.jpg`;
+}
+
+export function getNasaReferenceTileUrl(referenceLayer, coordinate, zoom) {
+  const normalizedCoordinate = normalizeTileCoordinate(coordinate, zoom);
+  if (!normalizedCoordinate || zoom > referenceLayer.maxZoom) return null;
+  return `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/${referenceLayer.layerName}/default/${referenceLayer.matrixSet}/${zoom}/${normalizedCoordinate.y}/${normalizedCoordinate.x}.png`;
 }
