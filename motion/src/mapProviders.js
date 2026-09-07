@@ -52,6 +52,16 @@ export function formatImageryDate(imageryDate) {
   });
 }
 
+export function getProviderAttribution(providerId, imageryDate) {
+  if (providerId === "openstreetmap") {
+    return '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+  }
+  if (providerId === "nasa") {
+    return `<a href="https://earthdata.nasa.gov/worldview">NASA Earthdata</a>. This imagery is from ${formatImageryDate(imageryDate)}.`;
+  }
+  return "";
+}
+
 function normalizeTileCoordinate(coordinate, zoom) {
   const tileCount = 2 ** zoom;
   if (coordinate.y < 0 || coordinate.y >= tileCount) return null;

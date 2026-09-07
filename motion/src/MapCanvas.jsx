@@ -1,6 +1,11 @@
 import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef } from "react";
 import { getCameraFlightFrame } from "./cameraFlight.js";
-import { DEFAULT_MAP_PROVIDER, formatImageryDate, MAP_PROVIDERS, NASA_REFERENCE_LAYERS } from "./mapProviders.js";
+import {
+  DEFAULT_MAP_PROVIDER,
+  getProviderAttribution,
+  MAP_PROVIDERS,
+  NASA_REFERENCE_LAYERS,
+} from "./mapProviders.js";
 
 const GOOGLE_MAPS_API_KEY = __GOOGLE_MAPS_API_KEY__;
 let googleMapsPromise;
@@ -415,21 +420,20 @@ export const MapCanvas = forwardRef(function MapCanvas(
         referenceLayersRef.current = null;
         tileLayerRef.current?.remove();
         const tileOptions = {
-          attribution: "© OpenStreetMap contributors",
           maxZoom: provider.maxZoom,
           minZoom: provider.minZoom,
         };
         if (mapProvider === "openstreetmap") {
           tileLayerRef.current = leaflet.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
             ...tileOptions,
-            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            attribution: getProviderAttribution("openstreetmap"),
           }).addTo(leafletMapRef.current);
         } else {
           tileLayerRef.current = leaflet.tileLayer(
             `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_CorrectedReflectance_TrueColor/default/${nasaImageryDate}/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg`,
             {
               ...tileOptions,
-              attribution: `<a href="https://earthdata.nasa.gov/worldview">NASA Earthdata</a>. This imagery is from ${formatImageryDate(nasaImageryDate)}.`,
+              attribution: getProviderAttribution("nasa", nasaImageryDate),
             },
           ).addTo(leafletMapRef.current);
           referenceLayersRef.current = leaflet.layerGroup(
