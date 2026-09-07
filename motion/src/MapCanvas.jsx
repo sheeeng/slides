@@ -369,7 +369,18 @@ export const MapCanvas = forwardRef(function MapCanvas(
         if (selectedLocationIdRef.current) {
           startCameraFlight(selectedLocationIdRef.current);
         } else {
-          locateUser({ fallbackToAllTalks: true });
+          (async () => {
+            try {
+              const permissionStatus = await navigator.permissions?.query({ name: "geolocation" });
+              if (permissionStatus?.state === "granted") {
+                locateUser({ fallbackToAllTalks: true });
+              } else {
+                viewAllTalks();
+              }
+            } catch {
+              viewAllTalks();
+            }
+          })();
         }
       })
       .catch((error) => onStatus(error.message));

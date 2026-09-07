@@ -134,9 +134,11 @@ test("the motion identity panel offers Map Style, Locate Me, and View All", () =
   assert.match(appSource, /View All/);
 });
 
-test("the motion map requests location before fitting all talks on first load", () => {
+test("the motion map auto-locates only when permission is already granted", () => {
+  assert.match(mapCanvasSource, /navigator\.permissions\?\.query\(\{ name: "geolocation" \}\)/);
+  assert.match(mapCanvasSource, /permissionStatus\?\.state === "granted"/);
   assert.match(mapCanvasSource, /locateUser\(\{ fallbackToAllTalks: true \}\)/);
-  assert.match(mapCanvasSource, /All talk locations are visible/);
+  assert.match(mapCanvasSource, /viewAllTalks\(\)/);
 });
 
 test("the motion map distinguishes denied, timeout, and unavailable location errors", () => {
