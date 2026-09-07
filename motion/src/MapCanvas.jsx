@@ -226,17 +226,25 @@ export const MapCanvas = forwardRef(function MapCanvas(
         }
         onStatus("Map centered on your current location.");
       },
-      () => {
+      (error) => {
         if (requestGeneration === geolocationRequestGenerationRef.current) {
           if (fallbackToAllTalks) {
             viewAllTalks();
-            onStatus("Location access was not granted. All talk locations are visible.");
+            onStatus(
+              error?.code === 1
+                ? "Location access was not granted. All talk locations are visible."
+                : "Could not determine your current location. All talk locations are visible.",
+            );
+          } else if (error?.code === 1) {
+            onStatus("Location access is blocked. Enable location for this site, then try Locate Me again.");
+          } else if (error?.code === 3) {
+            onStatus("Finding your current location timed out. Try Locate Me again.");
           } else {
-            onStatus("Location access was not granted. The talk locations remain visible.");
+            onStatus("Your current location is unavailable. Try Locate Me again.");
           }
         }
       },
-      { enableHighAccuracy: false, timeout: 8000 },
+      { enableHighAccuracy: false, timeout: 30000 },
     );
   }, [cancelCameraFlight, onStatus, supersedeGeolocationRequest, viewAllTalks]);
 

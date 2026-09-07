@@ -125,6 +125,13 @@ test("the motion map requests location before fitting all talks on first load", 
   assert.match(mapCanvasSource, /All talk locations are visible/);
 });
 
+test("the motion map distinguishes denied, timeout, and unavailable location errors", () => {
+  assert.match(mapCanvasSource, /error\?\.code === 1/);
+  assert.match(mapCanvasSource, /error\?\.code === 3/);
+  assert.match(mapCanvasSource, /timeout: 30000/);
+  assert.doesNotMatch(mapCanvasSource, /Location access was not granted\. The talk locations remain visible\./);
+});
+
 test("the motion talks list updates from the visible map area", () => {
   assert.match(appSource, /On This Map/);
   assert.match(appSource, /visibleLocationIds/);
