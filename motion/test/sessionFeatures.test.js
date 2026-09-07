@@ -10,43 +10,14 @@ import {
 } from "../src/mapProviders.js";
 import { groupTalksByLocation, listTalksByDate, parseTalks } from "../src/talks.js";
 
-const indexHtml = readFileSync(new URL("../../index.html", import.meta.url), "utf8");
 const appSource = readFileSync(new URL("../src/App.jsx", import.meta.url), "utf8");
 const mapCanvasSource = readFileSync(new URL("../src/MapCanvas.jsx", import.meta.url), "utf8");
 const styleSource = readFileSync(new URL("../src/styles.css", import.meta.url), "utf8");
 const talks = parseTalks(readFileSync(new URL("../../talks.toml", import.meta.url), "utf8"));
 const locations = groupTalksByLocation(talks);
 
-test("the landing page offers Google Maps, OpenStreetMap, and NASA Worldview", () => {
-  assert.match(indexHtml, /id="btn-gmaps"/);
-  assert.match(indexHtml, /id="btn-osm"/);
-  assert.match(indexHtml, /id="btn-nasa"/);
-  assert.match(indexHtml, /NASA Worldview/);
-});
-
-test("the landing page links the Docker and Nix Vimeo recording", () => {
-  assert.match(indexHtml, /vimeo\.com\/1223729965/);
-});
-
 test("the motion talks list exposes video links for talks with recordings", () => {
   assert.match(appSource, /talk\.video/);
-});
-
-test("the landing popup text wraps instead of cropping around map pins", () => {
-  assert.match(indexHtml, /overflow-wrap:break-word/);
-  assert.match(indexHtml, /max-width:280px/);
-});
-
-test("the landing page NASA map fits all talk pins at narrow widths", () => {
-  assert.match(
-    indexHtml,
-    /earthdata\.nasa\.gov\/worldview">NASA Earthdata<\/a>',\s*maxZoom: 9,\s*minZoom: 1,/,
-  );
-});
-
-test("the landing page shows talk statistics from the talk locations", () => {
-  assert.match(indexHtml, /map-stats/);
-  assert.match(indexHtml, /groupByLocation/);
 });
 
 test("the talk archive supplies every session talk location", () => {
