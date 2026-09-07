@@ -79,6 +79,7 @@ export const MapCanvas = forwardRef(function MapCanvas(
   const googleBoundsRef = useRef(null);
   const leafletBoundsRef = useRef(null);
   const tileLayerRef = useRef(null);
+  const referenceLayersRef = useRef(null);
   const currentLocationMarkerRef = useRef({ google: null, leaflet: null });
   const cameraFlightFrameRef = useRef(null);
   const geolocationRequestGenerationRef = useRef(0);
@@ -346,6 +347,8 @@ export const MapCanvas = forwardRef(function MapCanvas(
             zoomControl: !window.matchMedia("(max-width: 640px)").matches,
           }).setView([32, 12], 2);
           leafletMapRef.current.attributionControl.setPrefix(false);
+          leafletMapRef.current.createPane("referencePane");
+          leafletMapRef.current.getPane("referencePane").style.zIndex = "300";
           leafletBoundsRef.current = leaflet.latLngBounds([]);
           leafletMarkersRef.current = locations.map((location) => {
             leafletBoundsRef.current.extend([location.lat, location.lng]);
@@ -357,6 +360,8 @@ export const MapCanvas = forwardRef(function MapCanvas(
           });
           leafletMapRef.current.on("moveend", notifyVisibleChange);
         }
+        referenceLayersRef.current?.remove();
+        referenceLayersRef.current = null;
         tileLayerRef.current?.remove();
         const tileOptions = {
           attribution: "© OpenStreetMap contributors",
@@ -375,6 +380,19 @@ export const MapCanvas = forwardRef(function MapCanvas(
               ...tileOptions,
               attribution: `<a href="https://earthdata.nasa.gov/worldview">NASA Earthdata</a>. This imagery is from ${formatImageryDate(nasaImageryDate)}.`,
             },
+          ).addTo(leafletMapRef.current);
+          referenceLayersRef.current = leaflet.layerGroup(
+            [
+              ["Reference_Features_15m", "GoogleMapsCompatible_Level13"],
+              ["Coastlines_15m", "GoogleMapsCompatible_Level13"],
+              ["Reference_Labels", "GoogleMapsCompatible_Level9"],
+            ].map(([layerName, matrixSet]) =>
+              leaflet.tileLayer(`https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/${layerName}/default/${matrixSet}/{z}/{y}/{x}.png`, {
+                pane: "referencePane",
+                maxZoom: provider.maxZoom,
+                minZoom: provider.minZoom,
+              }),
+            ),
           ).addTo(leafletMapRef.current);
         }
         leafletMapRef.current.setMaxZoom(provider.maxZoom);
