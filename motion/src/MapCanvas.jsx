@@ -1,6 +1,6 @@
 import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef } from "react";
 import { getCameraFlightFrame } from "./cameraFlight.js";
-import { DEFAULT_MAP_PROVIDER, MAP_PROVIDERS } from "./mapProviders.js";
+import { DEFAULT_MAP_PROVIDER, formatImageryDate, MAP_PROVIDERS } from "./mapProviders.js";
 
 const GOOGLE_MAPS_API_KEY = __GOOGLE_MAPS_API_KEY__;
 let googleMapsPromise;
@@ -373,7 +373,7 @@ export const MapCanvas = forwardRef(function MapCanvas(
             `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_CorrectedReflectance_TrueColor/default/${nasaImageryDate}/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg`,
             {
               ...tileOptions,
-              attribution: '<a href="https://earthdata.nasa.gov/worldview">NASA Earthdata</a>',
+              attribution: `<a href="https://earthdata.nasa.gov/worldview">NASA Earthdata</a>. This imagery is from ${formatImageryDate(nasaImageryDate)}.`,
             },
           ).addTo(leafletMapRef.current);
         }

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MapCanvas } from "./MapCanvas.jsx";
-import { DEFAULT_MAP_PROVIDER, formatImageryDate, getNasaImageryDate, MAP_PROVIDERS } from "./mapProviders.js";
+import { DEFAULT_MAP_PROVIDER, getNasaImageryDate, MAP_PROVIDERS } from "./mapProviders.js";
 import { groupTalksByLocation, listTalksByDate, parseTalks } from "./talks.js";
 
 function formatDate(date) {
@@ -73,7 +73,7 @@ function VisibleTalks({ entries, onSelect }) {
   );
 }
 
-function ProviderSelector({ selectedProvider, onSelect, nasaImageryDate }) {
+function ProviderSelector({ selectedProvider, onSelect }) {
   return (
     <div className="provider-control">
       <span className="provider-control__label">Map Style</span>
@@ -89,11 +89,6 @@ function ProviderSelector({ selectedProvider, onSelect, nasaImageryDate }) {
           </button>
         ))}
       </div>
-      <p className="provider-attribution">
-        {selectedProvider === "google" && <a href="https://maps.google.com/">Google Maps</a>}
-        {selectedProvider === "openstreetmap" && <a href="https://www.openstreetmap.org/copyright">© OpenStreetMap contributors</a>}
-        {selectedProvider === "nasa" && <><a href="https://earthdata.nasa.gov/worldview">NASA Earthdata.</a><span>This imagery is from {formatImageryDate(nasaImageryDate)}.</span></>}
-      </p>
     </div>
   );
 }
@@ -151,7 +146,7 @@ export function App() {
       <div className="left-rail">
         <section className="identity-panel">
           <a className="identity-panel__title" href="index.html">Leonard's Slides</a>
-          <ProviderSelector selectedProvider={mapProvider} onSelect={setMapProvider} nasaImageryDate={nasaImageryDate} />
+          <ProviderSelector selectedProvider={mapProvider} onSelect={setMapProvider} />
           <div className="map-actions" aria-label="Map controls">
             <button type="button" onClick={() => mapControllerRef.current?.locateUser()}>Locate Me</button>
             <button type="button" onClick={() => { setSelectedLocationId(null); setSelectedTalkTitle(null); mapControllerRef.current?.viewAllTalks(); }}>View All</button>

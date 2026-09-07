@@ -127,19 +127,6 @@ button { color: inherit; }
   color: var(--accent-dark);
 }
 
-.provider-attribution {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 3px 8px;
-  min-height: 1em;
-  margin: 7px 0 0;
-  color: var(--muted);
-  font-size: 0.6rem;
-  line-height: 1.3;
-}
-
-.provider-attribution a { color: var(--accent-dark); }
-
 .map-actions {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -275,7 +262,7 @@ button { color: inherit; }
 @keyframes drawer-in { from { opacity: 0; transform: translateY(-10px) scale(0.98); } }
 @keyframes card-in { from { opacity: 0; transform: translateX(14px); } }
 
-@media (max-width: 720px) {
+@media (max-width: 720px), (max-height: 520px) {
   .left-rail {
     top: max(10px, env(safe-area-inset-top));
     right: max(10px, env(safe-area-inset-right));
@@ -293,7 +280,6 @@ button { color: inherit; }
   .provider-control { margin-top: 9px; }
   .provider-control__label { margin-bottom: 5px; }
   .provider-selector button { min-height: 44px; font-size: 0.56rem; }
-  .provider-attribution { margin-top: 5px; }
   .map-actions { margin-top: 10px; }
   .map-actions button { min-height: 44px; }
   .map-status { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
