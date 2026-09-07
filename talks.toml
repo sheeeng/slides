@@ -57,6 +57,7 @@ city = "Dublin"
 lat = 53.3498
 lng = -6.2603
 url = "running-kernel-based-virtual-machine/"
+video = "https://www.youtube.com/watch?v=mAZNlyXVoT4"
 
 [[talk]]
 title = "Getting Started with Jenkins As Code"

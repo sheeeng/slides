@@ -436,6 +436,21 @@
             Be
           </a>
         </li>
+        <li>
+          <a
+            href="https://www.youtube.com/watch?v=mAZNlyXVoT4"
+            target="_blank"
+            rel="noopener"
+          >
+            <img
+              src="https://raw.githubusercontent.com/googlefonts/noto-emoji/main/png/512/emoji_u1f3ac.png"
+              alt="Clapper Board"
+              width="32"
+              height="32"
+            />
+            Getting Started with Kernel Virtual Machine
+          </a>
+        </li>
       </ul>
       <section id="talks-map">
         <div class="map-header">
@@ -565,7 +580,11 @@
           const repository = t.repository
             ? `<a href="${t.repository}" target="_blank" rel="noopener">Repository ↗</a>`
             : "";
-          return `<div style="margin-top:0.375rem">${event}${date}<div>${title}</div>${repository}</div>`;
+          const video = t.video
+            ? `<a href="${t.video}" target="_blank" rel="noopener">Video ↗</a>`
+            : "";
+          const links = [repository, video].filter(Boolean).join(" · ");
+          return `<div style="margin-top:0.375rem">${event}${date}<div>${title}</div>${links ? `<div style="margin-top:0.25rem">${links}</div>` : ""}</div>`;
         }).join("");
         return (
           `<div style="font-family:inherit;line-height:1.6;padding:2px 4px;max-width:280px;overflow-wrap:break-word">` +

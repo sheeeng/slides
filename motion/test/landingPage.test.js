@@ -28,6 +28,12 @@ test("the landing page links the Docker and Nix Vimeo recording", () => {
   assert.match(indexHtml, /Reproducible Environments/);
 });
 
+test("the landing page links the Kernel Virtual Machine YouTube recording", () => {
+  assert.match(indexHtml, /href="https:\/\/www\.youtube\.com\/watch\?v=mAZNlyXVoT4"/);
+  assert.match(indexHtml, /Getting Started with Kernel Virtual Machine/);
+  assert.match(indexHtml, /t\.video/);
+});
+
 test("the landing page popup can link a talk to its repository", () => {
   assert.match(indexHtml, /Repository ↗/);
   assert.match(indexHtml, /t\.repository/);
