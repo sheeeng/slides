@@ -236,6 +236,7 @@ button { color: inherit; }
 .talk-browser__links { padding: 0 16px 14px; }
 .talk-browser__links a,
 .talk-card__links a { color: var(--accent); font-size: 0.65rem; font-weight: 750; letter-spacing: 0.07em; text-decoration: none; text-transform: uppercase; }
+.talk-browser__empty { margin: 0; padding: 24px 16px; color: var(--muted); font-size: 0.82rem; line-height: 1.4; text-align: center; }
 
 .talk-card {
   position: fixed;

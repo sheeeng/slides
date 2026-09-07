@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MapCanvas } from "./MapCanvas.jsx";
 import { DEFAULT_MAP_PROVIDER, formatImageryDate, getNasaImageryDate, MAP_PROVIDERS } from "./mapProviders.js";
-import { groupTalksByLocation, listTalksByDate, listVideosByDate, parseTalks } from "./talks.js";
+import { groupTalksByLocation, listTalksByDate, parseTalks } from "./talks.js";
 
 function formatDate(date) {
   if (!date || /^\d{4}$/.test(date)) return date || "Date unavailable";
@@ -45,15 +45,17 @@ function TalkCard({ location, selectedTalkTitle, onClose }) {
   );
 }
 
-function TalkBrowser({ entries, mode, onSelect }) {
+function VisibleTalks({ entries, onSelect }) {
   return (
-    <aside className="talk-browser" aria-label={`Browse ${mode}`}>
+    <aside className="talk-browser" aria-label="Talks in the visible map area">
       <div className="talk-browser__header">
-        <span>{mode === "videos" ? "Recording Archive" : "Talk Archive"}</span>
-        <span>{entries.length} {mode === "videos" ? "Recordings" : "Talks"}</span>
+        <span>On This Map</span>
+        <span>{entries.length} {entries.length === 1 ? "Talk" : "Talks"}</span>
       </div>
       <div className="talk-browser__list">
-        {entries.map(({ locationId, city, country, talk }) => (
+        {entries.length === 0 ? (
+          <p className="talk-browser__empty">Pan or zoom the map to browse talks in view.</p>
+        ) : entries.map(({ locationId, city, country, talk }) => (
           <article className="talk-browser__item" key={`${locationId}-${talk.date}-${talk.title}`}>
             <button type="button" onClick={() => onSelect(locationId, talk.title)}>
               <span className="talk-browser__date">{formatDate(talk.date)}</span>
@@ -99,10 +101,10 @@ function ProviderSelector({ selectedProvider, onSelect, nasaImageryDate }) {
 export function App() {
   const mapControllerRef = useRef(null);
   const [locations, setLocations] = useState([]);
+  const [visibleLocationIds, setVisibleLocationIds] = useState([]);
   const [selectedLocationId, setSelectedLocationId] = useState(null);
   const [selectionRequest, setSelectionRequest] = useState(0);
   const [selectedTalkTitle, setSelectedTalkTitle] = useState(null);
-  const [browserMode, setBrowserMode] = useState(null);
   const [mapProvider, setMapProvider] = useState(DEFAULT_MAP_PROVIDER);
   const [status, setStatus] = useState("Loading talk locations.");
   const nasaImageryDate = useMemo(() => getNasaImageryDate(), []);
@@ -124,41 +126,39 @@ export function App() {
     return () => { cancelled = true; };
   }, []);
 
+  const visibleLocations = useMemo(
+    () => locations.filter((location) => visibleLocationIds.includes(location.id)),
+    [locations, visibleLocationIds],
+  );
+  const visibleEntries = useMemo(() => listTalksByDate(visibleLocations), [visibleLocations]);
   const selectedLocation = useMemo(
     () => locations.find((location) => location.id === selectedLocationId) || null,
     [locations, selectedLocationId],
   );
-  const talkEntries = useMemo(() => listTalksByDate(locations), [locations]);
-  const videoEntries = useMemo(() => listVideosByDate(locations), [locations]);
   const selectLocation = useCallback((locationId, talkTitle = null) => {
     setSelectedLocationId(locationId);
     setSelectedTalkTitle(talkTitle);
     setSelectionRequest((currentRequest) => currentRequest + 1);
   }, []);
+  const handleVisibleChange = useCallback((locationIds) => {
+    setVisibleLocationIds(locationIds);
+  }, []);
   const updateStatus = useCallback((message) => setStatus(message), []);
 
   return (
     <div className={`app-shell ${selectedLocation ? "app-shell--details-open" : ""}`}>
-      {locations.length > 0 && <MapCanvas ref={mapControllerRef} locations={locations} selectedLocationId={selectedLocationId} selectionRequest={selectionRequest} mapProvider={mapProvider} nasaImageryDate={nasaImageryDate} onSelect={selectLocation} onStatus={updateStatus} />}
+      {locations.length > 0 && <MapCanvas ref={mapControllerRef} locations={locations} selectedLocationId={selectedLocationId} selectionRequest={selectionRequest} mapProvider={mapProvider} nasaImageryDate={nasaImageryDate} onSelect={selectLocation} onStatus={updateStatus} onVisibleChange={handleVisibleChange} />}
       <div className="left-rail">
         <section className="identity-panel">
-          <div className="identity-panel__header">
-            <a className="identity-panel__title" href="index.html">Leonard's Slides</a>
-            <nav className="landing-links" aria-label="Main landing page">
-              <a href="index.html">Slides</a>
-              <a href="index.html">Videos</a>
-            </nav>
-          </div>
+          <a className="identity-panel__title" href="index.html">Leonard's Slides</a>
           <ProviderSelector selectedProvider={mapProvider} onSelect={setMapProvider} nasaImageryDate={nasaImageryDate} />
           <div className="map-actions" aria-label="Map controls">
-            <button type="button" aria-expanded={browserMode === "talks"} onClick={() => setBrowserMode((mode) => mode === "talks" ? null : "talks")}>Browse Talks</button>
-            <button type="button" aria-expanded={browserMode === "videos"} onClick={() => setBrowserMode((mode) => mode === "videos" ? null : "videos")}>Browse Recordings</button>
             <button type="button" onClick={() => mapControllerRef.current?.locateUser()}>Locate Me</button>
             <button type="button" onClick={() => { setSelectedLocationId(null); setSelectedTalkTitle(null); mapControllerRef.current?.viewAllTalks(); }}>View All</button>
           </div>
           <p className="map-status" aria-live="polite">{status}</p>
         </section>
-        {browserMode && <TalkBrowser entries={browserMode === "videos" ? videoEntries : talkEntries} mode={browserMode} onSelect={selectLocation} />}
+        <VisibleTalks entries={visibleEntries} onSelect={selectLocation} />
       </div>
       <TalkCard location={selectedLocation} selectedTalkTitle={selectedTalkTitle} onClose={() => { setSelectedLocationId(null); setSelectedTalkTitle(null); }} />
     </div>

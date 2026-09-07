@@ -76,7 +76,7 @@ function registerProviderMapTypes(maps, map, nasaImageryDate) {
 }
 
 export const MapCanvas = forwardRef(function MapCanvas(
-  { locations, selectedLocationId, selectionRequest, mapProvider, nasaImageryDate, onSelect, onStatus },
+  { locations, selectedLocationId, selectionRequest, mapProvider, nasaImageryDate, onSelect, onStatus, onVisibleChange },
   controllerRef,
 ) {
   const mapElementRef = useRef(null);
@@ -107,7 +107,8 @@ export const MapCanvas = forwardRef(function MapCanvas(
     supersedeGeolocationRequest();
     cancelCameraFlight();
     if (mapRef.current && boundsRef.current) {
-      mapRef.current.fitBounds(boundsRef.current, 96);
+      const compactViewport = mapRef.current.getDiv().clientWidth < 720;
+      mapRef.current.fitBounds(boundsRef.current, compactViewport ? 24 : 96);
       onStatus("Map view reset.");
     }
   }, [cancelCameraFlight, onStatus, supersedeGeolocationRequest]);
@@ -210,6 +211,16 @@ export const MapCanvas = forwardRef(function MapCanvas(
     cameraFlightFrameRef.current = window.requestAnimationFrame(renderFrame);
   }, [cancelCameraFlight, locations, supersedeGeolocationRequest]);
 
+  const notifyVisibleChange = useCallback(() => {
+    if (!mapRef.current) return;
+    const bounds = mapRef.current.getBounds();
+    if (!bounds) return;
+    const visibleLocationIds = locations
+      .filter(({ lat, lng }) => bounds.contains({ lat, lng }))
+      .map(({ id }) => id);
+    onVisibleChange(visibleLocationIds);
+  }, [locations, onVisibleChange]);
+
   useImperativeHandle(controllerRef, () => ({ locateUser, viewAllTalks }), [locateUser, viewAllTalks]);
 
   useEffect(() => {
@@ -234,6 +245,7 @@ export const MapCanvas = forwardRef(function MapCanvas(
           zoomControlOptions: { position: 9 },
         });
         registerProviderMapTypes(maps, mapRef.current, nasaImageryDate);
+        mapListeners.push(mapRef.current.addListener("idle", notifyVisibleChange));
         boundsRef.current = new maps.LatLngBounds();
         markersRef.current = locations.map((location) => {
           const position = { lat: location.lat, lng: location.lng };
@@ -275,7 +287,7 @@ export const MapCanvas = forwardRef(function MapCanvas(
       markersRef.current = [];
       mapListeners = [];
     };
-  }, [cancelCameraFlight, locateUser, locations, nasaImageryDate, onSelect, onStatus, startCameraFlight, supersedeGeolocationRequest, viewAllTalks]);
+  }, [cancelCameraFlight, locateUser, locations, nasaImageryDate, notifyVisibleChange, onSelect, onStatus, startCameraFlight, supersedeGeolocationRequest, viewAllTalks]);
 
   useEffect(() => {
     const provider = MAP_PROVIDERS[mapProvider];
