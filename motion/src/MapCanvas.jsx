@@ -90,6 +90,7 @@ export const MapCanvas = forwardRef(function MapCanvas(
   const cameraViewRef = useRef(null);
   const cameraFlightFrameRef = useRef(null);
   const geolocationRequestGenerationRef = useRef(0);
+  const geolocationRequestActiveRef = useRef(false);
   const selectedLocationIdRef = useRef(selectedLocationId);
   const mapProviderRef = useRef(mapProvider);
 
@@ -197,6 +198,10 @@ export const MapCanvas = forwardRef(function MapCanvas(
   }, [cancelCameraFlight, onStatus, supersedeGeolocationRequest]);
 
   const locateUser = useCallback(({ fallbackToAllTalks = false } = {}) => {
+    if (geolocationRequestActiveRef.current) {
+      onStatus("Location request is already in progress. Allow access when prompted.");
+      return;
+    }
     const requestGeneration = supersedeGeolocationRequest();
     cancelCameraFlight();
     if (!navigator.geolocation) {
@@ -208,9 +213,11 @@ export const MapCanvas = forwardRef(function MapCanvas(
       }
       return;
     }
+    geolocationRequestActiveRef.current = true;
     onStatus("Finding your current location.");
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => {
+        geolocationRequestActiveRef.current = false;
         if (requestGeneration !== geolocationRequestGenerationRef.current) return;
         const position = { lat: coords.latitude, lng: coords.longitude };
         currentPositionRef.current = position;
@@ -227,6 +234,7 @@ export const MapCanvas = forwardRef(function MapCanvas(
         onStatus("Map centered on your current location.");
       },
       (error) => {
+        geolocationRequestActiveRef.current = false;
         if (requestGeneration === geolocationRequestGenerationRef.current) {
           if (fallbackToAllTalks) {
             viewAllTalks();

@@ -146,6 +146,11 @@ test("the motion map distinguishes denied, timeout, and unavailable location err
   assert.doesNotMatch(mapCanvasSource, /Location access was not granted\. The talk locations remain visible\./);
 });
 
+test("the motion map prevents overlapping location requests", () => {
+  assert.match(mapCanvasSource, /geolocationRequestActiveRef\.current/);
+  assert.match(mapCanvasSource, /Location request is already in progress\. Allow access when prompted\./);
+});
+
 test("the motion talks list updates from the visible map area", () => {
   assert.match(appSource, /On This Map/);
   assert.match(appSource, /visibleLocationIds/);
