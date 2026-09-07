@@ -96,6 +96,18 @@ test("the landing page NASA map loads corrected reflectance at zoom levels one t
   assert.match(indexHtml, /maxZoom: 9,\s*minZoom: 1,/);
 });
 
+test("the landing page NASA Worldview adds country boundaries, coastlines, and labels", () => {
+  assert.match(indexHtml, /Reference_Features_15m/);
+  assert.match(indexHtml, /Coastlines_15m/);
+  assert.match(indexHtml, /Reference_Labels/);
+  assert.match(indexHtml, /createPane\("referencePane"\)/);
+  assert.match(indexHtml, /pane: "referencePane"/);
+});
+
+test("the landing page NASA map names Earthdata and its imagery date", () => {
+  assert.match(indexHtml, /This imagery is from \$\{formatDate\(nasaImageryDate\)\}\./);
+});
+
 test("the landing page credits OpenStreetMap contributors on the raster map", () => {
   assert.match(indexHtml, /openstreetmap\.org\/copyright">OpenStreetMap<\/a> contributors/);
 });

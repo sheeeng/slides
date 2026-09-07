@@ -700,7 +700,9 @@
       function rasterTileConfig(providerId) {
         if (providerId === "nasa") {
           return {
-            attribution: '<a href="https://earthdata.nasa.gov/worldview">NASA Earthdata</a>',
+            attribution:
+              `<a href="https://earthdata.nasa.gov/worldview">NASA Earthdata</a>. ` +
+              `This imagery is from ${formatDate(nasaImageryDate)}.`,
             maxZoom: 9,
             minZoom: 1,
             url:
@@ -735,6 +737,34 @@
           maxZoom: config.maxZoom,
           minZoom: config.minZoom ?? 1,
         }).addTo(map);
+        if (providerId === "nasa") {
+          map.createPane("referencePane");
+          map.getPane("referencePane").style.zIndex = "300";
+          const referenceLayers = [
+            {
+              layerName: "Reference_Features_15m",
+              matrixSet: "GoogleMapsCompatible_Level13",
+            },
+            {
+              layerName: "Coastlines_15m",
+              matrixSet: "GoogleMapsCompatible_Level13",
+            },
+            {
+              layerName: "Reference_Labels",
+              matrixSet: "GoogleMapsCompatible_Level9",
+            },
+          ];
+          for (const { layerName, matrixSet } of referenceLayers) {
+            L.tileLayer(
+              `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/${layerName}/default/${matrixSet}/{z}/{y}/{x}.png`,
+              {
+                pane: "referencePane",
+                maxZoom: config.maxZoom,
+                minZoom: config.minZoom ?? 1,
+              },
+            ).addTo(map);
+          }
+        }
 
         const bounds = [];
         for (const group of groupByLocation(talks).values()) {
