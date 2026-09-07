@@ -4,6 +4,7 @@ import test from "node:test";
 import {
   DEFAULT_MAP_PROVIDER,
   getNasaReferenceTileUrl,
+  getProviderAttribution,
   MAP_PROVIDERS,
   NASA_REFERENCE_LAYERS,
 } from "../src/mapProviders.js";
@@ -25,6 +26,15 @@ test("the landing page offers Google Maps, OpenStreetMap, and NASA Worldview", (
 
 test("the landing page links the Docker and Nix Vimeo recording", () => {
   assert.match(indexHtml, /vimeo\.com\/1223729965/);
+});
+
+test("the motion talks list exposes video links for talks with recordings", () => {
+  assert.match(appSource, /talk\.video/);
+});
+
+test("the landing popup text wraps instead of cropping around map pins", () => {
+  assert.match(indexHtml, /overflow-wrap:break-word/);
+  assert.match(indexHtml, /max-width:280px/);
 });
 
 test("the landing page NASA map fits all talk pins at narrow widths", () => {
@@ -78,6 +88,22 @@ test("map style buttons show Google Maps, OpenStreetMap, and NASA Worldview", ()
     "OpenStreetMap",
     "NASA Worldview",
   ]);
+});
+
+test("OpenStreetMap attribution credits contributors on the raster map", () => {
+  assert.match(getProviderAttribution("openstreetmap"), /OpenStreetMap/);
+  assert.match(getProviderAttribution("openstreetmap"), /contributors/);
+});
+
+test("NASA attribution names Earthdata and announces the imagery date", () => {
+  assert.equal(
+    getProviderAttribution("nasa", "2026-09-06"),
+    '<a href="https://earthdata.nasa.gov/worldview">NASA Earthdata</a>. This imagery is from September 6, 2026.',
+  );
+});
+
+test("Google Maps attribution stays empty so its own terms remain visible", () => {
+  assert.equal(getProviderAttribution("google"), "");
 });
 
 test("NASA corrected reflectance uses dated Web Mercator tiles at zoom nine", () => {
@@ -145,15 +171,24 @@ test("the motion layout has responsive and reduced-motion rules", () => {
   assert.match(styleSource, /prefers-reduced-motion/);
 });
 
+test("raster providers keep their attribution in the Leaflet corner", () => {
+  assert.match(mapCanvasSource, /attributionControl\.setPrefix\(false\)/);
+  assert.match(mapCanvasSource, /attribution: getProviderAttribution/);
+});
+
+test("the motion map fills the full page below the fixed layout surfaces", () => {
+  assert.match(styleSource, /\.app-shell, \.map-canvas \{ position: fixed; inset: 0; \}/);
+  assert.match(styleSource, /\.map-canvas__surface \{ position: absolute; inset: 0;/);
+});
+
 test("NASA Worldview overlays render above corrected reflectance imagery", () => {
   assert.match(mapCanvasSource, /NASA_REFERENCE_LAYERS/);
   assert.match(mapCanvasSource, /pane: "referencePane"/);
   assert.match(mapCanvasSource, /MODIS_Terra_CorrectedReflectance_TrueColor/);
 });
 
-test("the motion map shows the NASA imagery date in attribution", () => {
-  assert.match(mapCanvasSource, /This imagery is from \$\{formatImageryDate/);
-  assert.match(mapCanvasSource, /NASA Earthdata/);
+test("the motion map uses the shared NASA imagery attribution", () => {
+  assert.match(mapCanvasSource, /getProviderAttribution\("nasa", nasaImageryDate\)/);
 });
 
 test("the motion map shares the current location across map styles", () => {

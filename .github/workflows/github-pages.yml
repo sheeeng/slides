@@ -47,6 +47,9 @@ jobs:
       - name: Install Dependencies
         working-directory: motion
         run: npm ci
+      - name: Run Motion Tests
+        working-directory: motion
+        run: npm test
       - name: Build Motion Preview
         working-directory: motion
         env:
