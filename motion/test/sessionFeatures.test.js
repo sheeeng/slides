@@ -34,6 +34,13 @@ test("Oslo keeps its Docker and Nix talk and Vimeo video", () => {
   assert.ok(oslo.talks.some((talk) => talk.video === "https://vimeo.com/1223729965"));
 });
 
+test("the Jenkins As Code workshop item links to its repository", () => {
+  const jenkinsTalk = talks.find((talk) => talk.title === "Getting Started with Jenkins As Code");
+
+  assert.ok(jenkinsTalk);
+  assert.equal(jenkinsTalk.repository, "https://github.com/sheeeng/jenkins-configuration-as-code-workshop");
+});
+
 test("the visible map list returns every session talk once", () => {
   const entries = listTalksByDate(locations);
 

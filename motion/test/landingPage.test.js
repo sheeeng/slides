@@ -28,6 +28,11 @@ test("the landing page links the Docker and Nix Vimeo recording", () => {
   assert.match(indexHtml, /Reproducible Environments/);
 });
 
+test("the landing page popup can link a talk to its repository", () => {
+  assert.match(indexHtml, /Repository ↗/);
+  assert.match(indexHtml, /t\.repository/);
+});
+
 test("the landing page never commits a real Google Maps API key", () => {
   assert.match(indexHtml, /const GOOGLE_MAPS_API_KEY = "YOUR_GOOGLE_MAPS_API_KEY"/);
 });

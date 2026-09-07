@@ -36,6 +36,7 @@ function TalkCard({ location, selectedTalkTitle, onClose }) {
             <h3>{talk.title}</h3>
             <div className="talk-card__links">
               {talk.url && <a href={talk.url}>Open Slides <span aria-hidden="true">↗</span></a>}
+              {talk.repository && <a href={talk.repository} target="_blank" rel="noopener noreferrer">Repository <span aria-hidden="true">↗</span></a>}
               {talk.video && <a href={talk.video} target="_blank" rel="noopener noreferrer">Watch Video <span aria-hidden="true">↗</span></a>}
             </div>
           </article>
@@ -64,6 +65,7 @@ function VisibleTalks({ entries, onSelect }) {
             </button>
             <div className="talk-browser__links">
               {talk.url && <a href={talk.url}>Slides <span aria-hidden="true">↗</span></a>}
+              {talk.repository && <a href={talk.repository} target="_blank" rel="noopener noreferrer">Repository <span aria-hidden="true">↗</span></a>}
               {talk.video && <a href={talk.video} target="_blank" rel="noopener noreferrer">Video <span aria-hidden="true">↗</span></a>}
             </div>
           </article>

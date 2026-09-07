@@ -67,6 +67,7 @@ country = "Norway"
 city = "Oslo"
 lat = 59.9139
 lng = 10.7522
+repository = "https://github.com/sheeeng/jenkins-configuration-as-code-workshop"
 
 [[talk]]
 title = "MeeGo平台与塞班平台中的Qt跨平台开发"
