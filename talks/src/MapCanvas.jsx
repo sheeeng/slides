@@ -16,7 +16,7 @@ function loadGoogleMaps() {
   if (!GOOGLE_MAPS_API_KEY) return Promise.reject(new Error("Google Maps is not configured for this preview."));
 
   googleMapsPromise = new Promise((resolve, reject) => {
-    const callbackName = "__motionGoogleMapsReady";
+    const callbackName = "__talksGoogleMapsReady";
     window[callbackName] = () => {
       delete window[callbackName];
       resolve(window.google.maps);

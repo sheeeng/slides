@@ -169,6 +169,26 @@ button { color: inherit; }
   line-height: 1.35;
 }
 
+.identity-panel__build {
+  margin: 13px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.62rem;
+  line-height: 1.4;
+}
+
+.identity-panel__build a {
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.identity-panel__build a:hover,
+.identity-panel__build a:focus-visible {
+  color: var(--accent);
+}
+
 .talk-browser {
   min-height: 0;
   overflow: hidden;

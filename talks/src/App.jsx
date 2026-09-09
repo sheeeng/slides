@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MapCanvas } from "./MapCanvas.jsx";
 import { DEFAULT_MAP_PROVIDER, getNasaImageryDate, MAP_PROVIDERS } from "./mapProviders.js";
-import { groupTalksByLocation, listTalksByDate, parseTalks } from "./talks.js";
+import { formatLocation, groupTalksByLocation, listTalksByDate, parseTalks } from "./talks.js";
 
 function formatDate(date) {
   if (!date || /^\d{4}$/.test(date)) return date || "Date unavailable";
@@ -25,7 +25,7 @@ function TalkCard({ location, selectedTalkTitle, onClose }) {
       <div className="talk-card__header">
         <div>
           <span className="talk-card__label">Selected Location</span>
-          <h2>{location.city}, {location.country}</h2>
+          <h2>{formatLocation(location.city, location.country)}</h2>
         </div>
         <button className="icon-button" type="button" onClick={onClose} aria-label="Close talk details">×</button>
       </div>
@@ -61,7 +61,7 @@ function VisibleTalks({ entries, onSelect }) {
             <button type="button" onClick={() => onSelect(locationId, talk.title)}>
               <span className="talk-browser__date">{formatDate(talk.date)}</span>
               <strong>{talk.title}</strong>
-              <span>{city}, {country}</span>
+              <span>{formatLocation(city, country)}</span>
             </button>
             <div className="talk-browser__links">
               {talk.url && <a href={talk.url}>Slides <span aria-hidden="true">↗</span></a>}
@@ -108,7 +108,7 @@ export function App() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch("./talks.toml")
+    fetch("../talks.toml")
       .then((response) => {
         if (!response.ok) throw new Error("Talk locations could not load.");
         return response.text();
@@ -147,13 +147,22 @@ export function App() {
       {locations.length > 0 && <MapCanvas ref={mapControllerRef} locations={locations} selectedLocationId={selectedLocationId} selectionRequest={selectionRequest} mapProvider={mapProvider} nasaImageryDate={nasaImageryDate} onSelect={selectLocation} onStatus={updateStatus} onVisibleChange={handleVisibleChange} />}
       <div className="left-rail">
         <section className="identity-panel">
-          <a className="identity-panel__title" href="index.html">Leonard's Slides</a>
+          <a className="identity-panel__title" href="../index.html">Leonard's Talks</a>
           <ProviderSelector selectedProvider={mapProvider} onSelect={setMapProvider} />
           <div className="map-actions" aria-label="Map controls">
             <button type="button" onClick={() => mapControllerRef.current?.locateUser()}>Locate Me</button>
             <button type="button" onClick={() => { setSelectedLocationId(null); setSelectedTalkTitle(null); mapControllerRef.current?.viewAllTalks(); }}>View All</button>
           </div>
           <p className="map-status" aria-live="polite">{status}</p>
+          <p className="identity-panel__build">
+            Built from{" "}
+            {__BUILD_SHA__ ? (
+              <a href={`https://github.com/sheeeng/slides/commit/${__BUILD_SHA__}`}>{__BUILD_SHA__}</a>
+            ) : (
+              "unknown"
+            )}
+            {". "}Made with 💚 by Leonard.
+          </p>
         </section>
         <VisibleTalks entries={visibleEntries} onSelect={selectLocation} />
       </div>

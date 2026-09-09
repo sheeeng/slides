@@ -16,7 +16,7 @@ const styleSource = readFileSync(new URL("../src/styles.css", import.meta.url), 
 const talks = parseTalks(readFileSync(new URL("../../talks.toml", import.meta.url), "utf8"));
 const locations = groupTalksByLocation(talks);
 
-test("the motion talks list exposes video links for talks with recordings", () => {
+test("the talks list exposes video links for talks with recordings", () => {
   assert.match(appSource, /talk\.video/);
 });
 
@@ -128,38 +128,38 @@ test("NASA reference tile URLs wrap horizontally and reject invalid tiles", () =
   assert.equal(getNasaReferenceTileUrl(referenceLayer, { x: 0, y: 1 }, 14), null);
 });
 
-test("the motion identity panel offers Map Style, Locate Me, and View All", () => {
+test("the talks identity panel offers Map Style, Locate Me, and View All", () => {
   assert.match(appSource, /Map Style/);
   assert.match(appSource, /Locate Me/);
   assert.match(appSource, /View All/);
 });
 
-test("the motion map auto-locates only when permission is already granted", () => {
+test("the talks map auto-locates only when permission is already granted", () => {
   assert.match(mapCanvasSource, /navigator\.permissions\?\.query\(\{ name: "geolocation" \}\)/);
   assert.match(mapCanvasSource, /permissionStatus\?\.state === "granted"/);
   assert.match(mapCanvasSource, /locateUser\(\{ fallbackToAllTalks: true \}\)/);
   assert.match(mapCanvasSource, /viewAllTalks\(\)/);
 });
 
-test("the motion map distinguishes denied, timeout, and unavailable location errors", () => {
+test("the talks map distinguishes denied, timeout, and unavailable location errors", () => {
   assert.match(mapCanvasSource, /error\?\.code === 1/);
   assert.match(mapCanvasSource, /error\?\.code === 3/);
   assert.match(mapCanvasSource, /timeout: 30000/);
   assert.doesNotMatch(mapCanvasSource, /Location access was not granted\. The talk locations remain visible\./);
 });
 
-test("the motion map prevents overlapping location requests", () => {
+test("the talks map prevents overlapping location requests", () => {
   assert.match(mapCanvasSource, /geolocationRequestActiveRef\.current/);
   assert.match(mapCanvasSource, /Location request is already in progress\. Allow access when prompted\./);
 });
 
-test("the motion talks list updates from the visible map area", () => {
+test("the talks list updates from the visible map area", () => {
   assert.match(appSource, /On This Map/);
   assert.match(appSource, /visibleLocationIds/);
   assert.match(appSource, /listTalksByDate\(visibleLocations\)/);
 });
 
-test("the motion talk card appears only for a selected location", () => {
+test("the talk card appears only for a selected location", () => {
   assert.match(appSource, /if \(!location\) return null/);
   assert.match(appSource, /app-shell--details-open/);
 });
@@ -175,7 +175,7 @@ test("raster providers keep their attribution in the Leaflet corner", () => {
   assert.match(mapCanvasSource, /attribution: getProviderAttribution/);
 });
 
-test("the motion map fills the full page below the fixed layout surfaces", () => {
+test("the talks map fills the full page below the fixed layout surfaces", () => {
   assert.match(styleSource, /\.app-shell, \.map-canvas \{ position: fixed; inset: 0; \}/);
   assert.match(styleSource, /\.map-canvas__surface \{ position: absolute; inset: 0;/);
 });
@@ -186,11 +186,11 @@ test("NASA Worldview overlays render above corrected reflectance imagery", () =>
   assert.match(mapCanvasSource, /MODIS_Terra_CorrectedReflectance_TrueColor/);
 });
 
-test("the motion map uses the shared NASA imagery attribution", () => {
+test("the talks map uses the shared NASA imagery attribution", () => {
   assert.match(mapCanvasSource, /getProviderAttribution\("nasa", nasaImageryDate\)/);
 });
 
-test("the motion map shares the current location across map styles", () => {
+test("the talks map shares the current location across map styles", () => {
   assert.match(mapCanvasSource, /const currentPositionRef = useRef\(null\)/);
   assert.match(mapCanvasSource, /currentPositionRef\.current = position/);
   assert.match(mapCanvasSource, /function addGoogleCurrentLocationMarker/);
@@ -199,7 +199,7 @@ test("the motion map shares the current location across map styles", () => {
   assert.match(mapCanvasSource, /addGoogleCurrentLocationMarker\(\)/);
 });
 
-test("the motion map keeps the camera view when switching map styles", () => {
+test("the talks map keeps the camera view when switching map styles", () => {
   assert.match(mapCanvasSource, /const cameraViewRef = useRef\(null\)/);
   assert.match(mapCanvasSource, /const savedCameraView = cameraViewRef\.current/);
   assert.match(mapCanvasSource, /googleMapRef\.current\.setCenter/);

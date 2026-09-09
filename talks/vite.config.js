@@ -5,6 +5,7 @@ export default defineConfig({
   plugins: [react()],
   define: {
     __GOOGLE_MAPS_API_KEY__: JSON.stringify(process.env.GOOGLE_MAPS_API_KEY || ""),
+    __BUILD_SHA__: JSON.stringify((process.env.BUILD_SHA || process.env.GITHUB_SHA || "").slice(0, 8)),
   },
   base: "./",
   build: {
@@ -12,9 +13,9 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       output: {
-        assetFileNames: "motion-assets/[name][extname]",
-        entryFileNames: "motion-assets/[name].js",
-        chunkFileNames: "motion-assets/[name].js",
+        assetFileNames: "talks-assets/[name][extname]",
+        entryFileNames: "talks-assets/[name].js",
+        chunkFileNames: "talks-assets/[name].js",
       },
     },
   },

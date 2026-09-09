@@ -2,7 +2,7 @@
 
 ## Objective
 
-Redesign the optional `motion.html` preview as a professional, map-first experience for Leonard's Slides. Preserve the existing `index.html` landing page and its behavior without modification.
+Redesign the optional `talks.html` preview as a professional, map-first experience for Leonard's Slides. Preserve the existing `index.html` landing page and its behavior without modification.
 
 ## Design Direction
 
@@ -88,7 +88,7 @@ Use motion patterns from [Transitions.dev][transitions-dev] as guidance. Use [Ca
 
 ## Data And Architecture
 
-Keep the preview isolated under `motion/`. Do not add preview behavior to `index.html`.
+Keep the preview isolated under `talks/`. Do not add preview behavior to `index.html`.
 
 Separate the preview into these responsibilities:
 
@@ -121,10 +121,10 @@ The Google Maps API key must come from `GOOGLE_MAPS_API_KEY` during the local bu
 
 Verify the finished preview at desktop and mobile viewport sizes.
 
-1. Build with `npm --prefix motion run build` while `GOOGLE_MAPS_API_KEY` is available.
+1. Build with `npm --prefix talks run build` while `GOOGLE_MAPS_API_KEY` is available.
 2. Run `bash -n dev.sh`.
 3. Run `git diff --check`.
-4. Start `./dev.sh` and open `http://localhost:8080/motion.html`.
+4. Start `./dev.sh` and open `http://localhost:8080/talks.html`.
 5. Confirm that `index.html` has no diff.
 6. Confirm that the heading and three section links are visible above the map.
 7. Confirm that the initial camera includes all talk locations.

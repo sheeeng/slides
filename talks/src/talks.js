@@ -50,3 +50,16 @@ export function listTalksByDate(locations) {
 export function listVideosByDate(locations) {
   return listTalksByDate(locations).filter(({ talk }) => talk.video);
 }
+
+const COUNTRY_FLAGS = {
+  China: "🇨🇳",
+  Ireland: "🇮🇪",
+  Morocco: "🇲🇦",
+  Norway: "🇳🇴",
+  "United States": "🇺🇸",
+};
+
+export function formatLocation(city, country) {
+  const flag = COUNTRY_FLAGS[country] ?? "";
+  return flag ? `${flag} ${city}, ${country}` : `${city}, ${country}`;
+}
