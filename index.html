@@ -137,116 +137,86 @@
         margin-top: clamp(1.5rem, 4vw, 2rem);
       }
 
-      /* Map section */
-      #talks-map {
+      /* Talks section */
+      #talks {
         margin-top: clamp(1.5rem, 4vw, 2rem);
       }
 
-      .map-header {
+      #talk-stats {
+        margin-bottom: 0.75rem;
+        font-size: 0.875rem;
+      }
+
+      .talks-cta {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 0.75rem;
-        margin-bottom: 0.75rem;
-      }
-
-      .map-header h2 {
-        font-size: clamp(1rem, 2.5vw, 1.25rem);
-        font-weight: 600;
-        letter-spacing: -0.01em;
-      }
-
-      .map-toggle {
-        display: flex;
-        width: fit-content;
-        margin: 0.75rem auto 0;
+        gap: clamp(0.75rem, 2vw, 1rem);
+        padding: clamp(0.75rem, 2vw, 1rem);
         border: 1px solid var(--border);
-        border-radius: 6px;
-        overflow: hidden;
-      }
-
-      .map-btn {
-        padding: 0.375rem 0.875rem;
-        font-size: 0.875rem;
-        font-weight: 500;
-        font-family: inherit;
-        background: var(--bg-card);
-        color: var(--text-muted);
-        border: none;
-        cursor: pointer;
-        transition:
-          background 0.15s ease,
-          color 0.15s ease;
-      }
-
-      .map-btn:not(:last-child) {
-        border-right: 1px solid var(--border);
-      }
-
-      .map-btn.active {
-        background: var(--link);
-        color: #ffffff;
-      }
-
-      .map-btn:hover:not(.active) {
-        background: var(--bg);
-        color: var(--text);
-      }
-
-      .map-btn:focus-visible {
-        outline: 2px solid var(--link);
-        outline-offset: -2px;
-      }
-
-      .map-container {
-        height: 320px;
         border-radius: 8px;
-        border: 1px solid var(--border);
-        overflow: hidden;
+        background: var(--bg-card);
+        color: var(--link);
+        text-decoration: none;
+        font-size: clamp(0.95rem, 2vw, 1.0625rem);
+        font-weight: 500;
+        transition: border-color 0.15s ease;
       }
 
-      .map-container[hidden] {
-        display: none;
+      .talks-cta:hover {
+        border-color: var(--link);
       }
 
-      .map-error {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
-        color: var(--text-muted);
-        font-size: 0.9rem;
-        padding: 1rem;
-        text-align: center;
+      .talks-cta:focus-visible {
+        outline: 2px solid var(--link);
+        outline-offset: 2px;
       }
 
-      #map-google .gm-style-iw-c,
-      #map-osm .leaflet-popup-content-wrapper {
-        color: #1f2328;
-      }
-
-      #map-google .gm-style-iw-c a,
-      #map-osm .leaflet-popup-content-wrapper a {
-        color: #0969da;
-      }
-
-      #map-stats {
-        margin-bottom: 0.75rem;
-        font-size: 0.875rem;
+      .talks-cta img {
+        display: block;
+        width: clamp(24px, 5vw, 32px);
+        height: clamp(24px, 5vw, 32px);
       }
 
       .stats-summary {
-        font-weight: 600;
-        margin-bottom: 0.375rem;
+        list-style: none;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.5rem;
+        margin: 0 0 1rem;
+      }
+
+      .stats-summary li {
+        padding: 0.75rem 0.5rem;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--bg-card);
+        text-align: center;
+      }
+
+      .stats-summary strong {
+        display: block;
+        font-size: 1.25rem;
+        font-weight: 700;
+      }
+
+      .stats-summary span {
+        display: block;
+        margin-top: 0.125rem;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+      }
+
+      @media (min-width: 480px) {
+        .stats-summary {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
       }
 
       .stats-continents {
         list-style: none;
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 0.75rem 1.25rem;
-        align-items: start;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
       }
 
       .stats-continent-label {
@@ -266,6 +236,15 @@
         flex-direction: column;
         gap: 0.125rem;
         margin-top: 0.25rem;
+      }
+
+      .stats-country {
+        color: var(--text);
+        font-weight: 500;
+      }
+
+      .stats-city {
+        color: var(--text-muted);
       }
 
       @media (prefers-reduced-motion: reduce) {
@@ -388,89 +367,18 @@
           </a>
         </li>
       </ul>
-      <h2 class="section-heading">Videos</h2>
-      <ul>
-        <li>
-          <a
-            href="https://vimeo.com/1223729965"
-            target="_blank"
-            rel="noopener"
-          >
-            <img
-              src="https://raw.githubusercontent.com/googlefonts/noto-emoji/main/png/512/emoji_u1f3ac.png"
-              alt="Clapper Board"
-              width="32"
-              height="32"
-            />
-            Reproducible Environments: Why Docker Isn't Enough and Why Nix Might
-            Be
-          </a>
-        </li>
-        <li>
-          <a
-            href="https://www.youtube.com/watch?v=4bwSRCTAAn0"
-            target="_blank"
-            rel="noopener"
-          >
-            <img
-              src="https://raw.githubusercontent.com/googlefonts/noto-emoji/main/png/512/emoji_u1f3ac.png"
-              alt="Clapper Board"
-              width="32"
-              height="32"
-            />
-            The Giant Immutable LEGO Set: Demystifying the Nix Store
-          </a>
-        </li>
-        <li>
-          <a
-            href="https://www.youtube.com/watch?v=wo38491N3Nw"
-            target="_blank"
-            rel="noopener"
-          >
-            <img
-              src="https://raw.githubusercontent.com/googlefonts/noto-emoji/main/png/512/emoji_u1f3ac.png"
-              alt="Clapper Board"
-              width="32"
-              height="32"
-            />
-            When is the fix available? A 5-Minute Guide to Tracking Nixpkgs PRs
-          </a>
-        </li>
-        <li>
-          <a
-            href="https://www.youtube.com/watch?v=mAZNlyXVoT4"
-            target="_blank"
-            rel="noopener"
-          >
-            <img
-              src="https://raw.githubusercontent.com/googlefonts/noto-emoji/main/png/512/emoji_u1f3ac.png"
-              alt="Clapper Board"
-              width="32"
-              height="32"
-            />
-            Getting Started with Kernel Virtual Machine
-          </a>
-        </li>
-      </ul>
-      <section id="talks-map">
-        <div class="map-header">
-          <h2>Where I've Spoken</h2>
-        </div>
-        <div id="map-stats" aria-live="polite"></div>
-        <div id="map-google" class="map-container"></div>
-        <div id="map-osm" class="map-container" hidden></div>
-        <div id="map-nasa" class="map-container" hidden></div>
-        <div class="map-toggle" role="group" aria-label="Map provider">
-          <button id="btn-gmaps" class="map-btn active" aria-pressed="true">
-            Google Maps
-          </button>
-          <button id="btn-osm" class="map-btn" aria-pressed="false">
-            OpenStreetMap
-          </button>
-          <button id="btn-nasa" class="map-btn" aria-pressed="false">
-            NASA Worldview
-          </button>
-        </div>
+      <section id="talks">
+        <h2 class="section-heading">Where I've Spoken</h2>
+        <div id="talk-stats" aria-live="polite"></div>
+        <a class="talks-cta" href="talks/">
+          <img
+            src="https://raw.githubusercontent.com/googlefonts/noto-emoji/main/png/512/emoji_u1f5fa.png"
+            alt="World Map"
+            width="32"
+            height="32"
+          />
+          See Where I've Spoken
+        </a>
       </section>
     </main>
     <footer>
@@ -480,10 +388,6 @@
     </footer>
 
     <script type="module">
-      // Replace with your Google Maps JavaScript API key.
-      // Restrict it to your domain in Google Cloud Console.
-      const GOOGLE_MAPS_API_KEY = "YOUR_GOOGLE_MAPS_API_KEY";
-
       function parseTOML(text) {
         const result = {};
         let current = null;
@@ -540,58 +444,10 @@
           if (!t.continent) {
             console.warn(`talks.toml: missing continent for "${t.title}"`);
           } else if (!VALID_CONTINENTS.has(t.continent)) {
-            console.warn(`talks.toml: unknown continent "${t.continent}" for "${t.title}" — valid values: ${[...VALID_CONTINENTS].join(", ")}`);
+            console.warn(`talks.toml: unknown continent "${t.continent}" for "${t.title}". Valid values: ${[...VALID_CONTINENTS].join(", ")}`);
           }
         }
         return talks;
-      }
-
-      function formatDate(d) {
-        if (!d) return "";
-        if (/^\d{4}$/.test(d)) return d;
-        const [y, m, day] = d.split("-").map(Number);
-        return new Date(y, m - 1, day).toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        });
-      }
-
-      function groupByLocation(talks) {
-        const map = new Map();
-        for (const t of talks) {
-          const key = `${t.lat},${t.lng}`;
-          if (!map.has(key)) map.set(key, []);
-          map.get(key).push(t);
-        }
-        return map;
-      }
-
-      function popupHTML(talkOrGroup, showLocation = true) {
-        const group = Array.isArray(talkOrGroup) ? talkOrGroup : [talkOrGroup];
-        const first = group[0];
-        const location = [first.city, first.country].filter(Boolean).join(", ");
-        const items = group.map(t => {
-          const title = t.url
-            ? `<a href="${t.url}" target="_blank" rel="noopener">${t.title}</a>`
-            : t.title;
-          const event = t.event ? `<div style="color:#777;font-size:0.875em">${t.event}</div>` : "";
-          const date = formatDate(t.date) ? `<div style="color:#777;font-size:0.875em">${formatDate(t.date)}</div>` : "";
-          const repository = t.repository
-            ? `<a href="${t.repository}" target="_blank" rel="noopener">Repository ↗</a>`
-            : "";
-          const video = t.video
-            ? `<a href="${t.video}" target="_blank" rel="noopener">Video ↗</a>`
-            : "";
-          const links = [repository, video].filter(Boolean).join(" · ");
-          return `<div style="margin-top:0.375rem">${event}${date}<div>${title}</div>${links ? `<div style="margin-top:0.25rem">${links}</div>` : ""}</div>`;
-        }).join("");
-        return (
-          `<div style="font-family:inherit;line-height:1.6;padding:2px 4px;max-width:280px;overflow-wrap:break-word">` +
-          (showLocation ? `<strong>${location}</strong>` : "") +
-          `${items}` +
-          `</div>`
-        );
       }
 
       function renderStats(talks) {
@@ -606,7 +462,8 @@
         const totalCountries = Object.values(byContinent).reduce((n, countries) => n + Object.keys(countries).length, 0);
         const totalCities = Object.values(byContinent).reduce((n, countries) =>
           n + Object.values(countries).reduce((m, cities) => m + cities.size, 0), 0);
-        const pl = (n, singular, plural = singular + "s") => `${n} ${n === 1 ? singular : plural}`;
+        const stat = (value, singular, plural = singular + "s") =>
+          `<li><strong>${value}</strong><span>${value === 1 ? singular : plural}</span></li>`;
         const continentRows = Object.entries(byContinent)
           .sort(([a], [b]) => a.localeCompare(b))
           .map(([continent, countries]) => {
@@ -614,228 +471,26 @@
               .sort(([a], [b]) => a.localeCompare(b))
               .map(([country, cities]) => {
                 const flag = COUNTRY_FLAGS[country];
-                const label = flag ? `${country} ${flag}` : country;
-                return `<li>${label} • ${[...cities].sort().join(", ")}</li>`;
+                const label = flag ? `${flag} ${country}` : country;
+                return `<li><span class="stats-country">${label}</span> · <span class="stats-city">${[...cities].sort().join(", ")}</span></li>`;
               })
               .join("");
             return `<li><span class="stats-continent-label">${continent}</span><ul class="stats-countries">${countryRows}</ul></li>`;
           })
           .join("");
-        document.getElementById("map-stats").innerHTML =
-          `<p class="stats-summary">${pl(talks.length, "talk")} · ${pl(totalContinents, "continent")} · ${pl(totalCountries, "country", "countries")} · ${pl(totalCities, "city", "cities")}</p>` +
+        document.getElementById("talk-stats").innerHTML =
+          `<ul class="stats-summary">` +
+          stat(talks.length, "Talk") +
+          stat(totalContinents, "Continent") +
+          stat(totalCountries, "Country", "Countries") +
+          stat(totalCities, "City", "Cities") +
+          `</ul>` +
           `<ul class="stats-continents">${continentRows}</ul>`;
       }
 
-      // Google Maps
-      let gmapsMap = null;
-
-      async function initGoogleMaps(talks) {
-        const el = document.getElementById("map-google");
-        if (gmapsMap) return;
-
-        if (GOOGLE_MAPS_API_KEY.startsWith("YOUR_")) {
-          el.innerHTML =
-            '<p class="map-error">Set your Google Maps API key in index.html to enable this map.</p>';
-          return;
-        }
-
-        if (!window.google?.maps) {
-          await new Promise((resolve, reject) => {
-            window.__gmapsReady = resolve;
-            const s = document.createElement("script");
-            s.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&callback=__gmapsReady&loading=async`;
-            s.onerror = reject;
-            document.head.appendChild(s);
-          });
-        }
-
-        const bounds = new google.maps.LatLngBounds();
-        gmapsMap = new google.maps.Map(el, {
-          zoom: 4,
-          center: { lat: 50, lng: 10 },
-        });
-
-        const infoWindow = new google.maps.InfoWindow({ maxWidth: 300 });
-        for (const group of groupByLocation(talks).values()) {
-          const pos = { lat: group[0].lat, lng: group[0].lng };
-          const marker = new google.maps.Marker({
-            position: pos,
-            map: gmapsMap,
-            title: group.length > 1 ? `${group[0].city} (${group.length} talks)` : group[0].title,
-          });
-          marker.addListener("click", () => {
-            const location = [group[0].city, group[0].country].filter(Boolean).join(", ");
-            infoWindow.setHeaderContent(location);
-            infoWindow.setContent(popupHTML(group, false));
-            infoWindow.open(gmapsMap, marker);
-          });
-          bounds.extend(pos);
-        }
-        if (talks.length) gmapsMap.fitBounds(bounds);
-      }
-
-      // Leaflet raster providers
-      const leafletMaps = {};
-      const nasaImageryDate = (() => {
-        const previousDate = new Date();
-        previousDate.setUTCDate(previousDate.getUTCDate() - 1);
-        return previousDate.toISOString().slice(0, 10);
-      })();
-
-      async function loadLeaflet() {
-        if (window.L) return;
-        const link = document.createElement("link");
-        link.rel = "stylesheet";
-        link.href = "https://unpkg.com/leaflet@1/dist/leaflet.css";
-        document.head.appendChild(link);
-        await new Promise((resolve, reject) => {
-          const s = document.createElement("script");
-          s.src = "https://unpkg.com/leaflet@1/dist/leaflet.js";
-          s.onload = resolve;
-          s.onerror = reject;
-          document.head.appendChild(s);
-        });
-      }
-
-      function rasterTileConfig(providerId) {
-        if (providerId === "nasa") {
-          return {
-            attribution:
-              `<a href="https://earthdata.nasa.gov/worldview">NASA Earthdata</a>. ` +
-              `This imagery is from ${formatDate(nasaImageryDate)}.`,
-            maxZoom: 9,
-            minZoom: 1,
-            url:
-              `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/` +
-              `MODIS_Terra_CorrectedReflectance_TrueColor/default/` +
-              `${nasaImageryDate}/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg`,
-          };
-        }
-        return {
-          attribution:
-            '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-          maxZoom: 18,
-          url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        };
-      }
-
-      async function initLeafletProvider(providerId, talks) {
-        const element = document.getElementById(`map-${providerId}`);
-        await loadLeaflet();
-        if (leafletMaps[providerId]) {
-          leafletMaps[providerId].invalidateSize();
-          return;
-        }
-
-        const config = rasterTileConfig(providerId);
-        const map = L.map(element, {
-          maxZoom: config.maxZoom,
-          minZoom: config.minZoom ?? 1,
-        }).setView([50, 10], 4);
-        L.tileLayer(config.url, {
-          attribution: config.attribution,
-          maxZoom: config.maxZoom,
-          minZoom: config.minZoom ?? 1,
-        }).addTo(map);
-        if (providerId === "nasa") {
-          map.createPane("referencePane");
-          map.getPane("referencePane").style.zIndex = "300";
-          const referenceLayers = [
-            {
-              layerName: "Reference_Features_15m",
-              matrixSet: "GoogleMapsCompatible_Level13",
-            },
-            {
-              layerName: "Coastlines_15m",
-              matrixSet: "GoogleMapsCompatible_Level13",
-            },
-            {
-              layerName: "Reference_Labels",
-              matrixSet: "GoogleMapsCompatible_Level9",
-            },
-          ];
-          for (const { layerName, matrixSet } of referenceLayers) {
-            L.tileLayer(
-              `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/${layerName}/default/${matrixSet}/{z}/{y}/{x}.png`,
-              {
-                pane: "referencePane",
-                maxZoom: config.maxZoom,
-                minZoom: config.minZoom ?? 1,
-              },
-            ).addTo(map);
-          }
-        }
-
-        const bounds = [];
-        for (const group of groupByLocation(talks).values()) {
-          L.marker([group[0].lat, group[0].lng])
-            .addTo(map)
-            .bindPopup(popupHTML(group), { maxWidth: 300 });
-          bounds.push([group[0].lat, group[0].lng]);
-        }
-        if (bounds.length)
-          map.fitBounds(bounds, { padding: [12, 12] });
-
-        leafletMaps[providerId] = map;
-      }
-
-      // Toggle
-      const btnGmaps = document.getElementById("btn-gmaps");
-      const btnOsm = document.getElementById("btn-osm");
-      const btnNasa = document.getElementById("btn-nasa");
-      const mapGoogle = document.getElementById("map-google");
-      const mapOsm = document.getElementById("map-osm");
-      const mapNasa = document.getElementById("map-nasa");
-
-      function showMap({ activeButton, activeContainer, initializer }) {
-        if (activeButton.classList.contains("active")) return;
-        const buttons = [btnGmaps, btnOsm, btnNasa];
-        const containers = [mapGoogle, mapOsm, mapNasa];
-        for (const button of buttons) {
-          button.classList.remove("active");
-          button.setAttribute("aria-pressed", "false");
-        }
-        for (const container of containers) {
-          container.hidden = container !== activeContainer;
-        }
-        activeButton.classList.add("active");
-        activeButton.setAttribute("aria-pressed", "true");
-        return initializer();
-      }
-
-      btnGmaps.addEventListener("click", () => {
-        showMap({
-          activeButton: btnGmaps,
-          activeContainer: mapGoogle,
-          initializer: () => initGoogleMaps(talks),
-        });
-      });
-
-      btnOsm.addEventListener("click", async () => {
-        await showMap({
-          activeButton: btnOsm,
-          activeContainer: mapOsm,
-          initializer: async () => {
-            await initLeafletProvider("osm", talks);
-            leafletMaps.osm.invalidateSize();
-          },
-        });
-      });
-
-      btnNasa.addEventListener("click", async () => {
-        await showMap({
-          activeButton: btnNasa,
-          activeContainer: mapNasa,
-          initializer: async () => {
-            await initLeafletProvider("nasa", talks);
-            leafletMaps.nasa.invalidateSize();
-          },
-        });
-      });
-
       const talks = await loadTalks();
       renderStats(talks);
-      await initGoogleMaps(talks);
+
     </script>
   </body>
 </html>
