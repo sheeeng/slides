@@ -128,15 +128,11 @@ test("NASA reference tile URLs wrap horizontally and reject invalid tiles", () =
   assert.equal(getNasaReferenceTileUrl(referenceLayer, { x: 0, y: 1 }, 14), null);
 });
 
-test("the talks identity panel offers Map Style, Locate Me, and View All", () => {
-  assert.match(appSource, /Map Style/);
-  assert.match(appSource, /Locate Me/);
-  assert.match(appSource, /View All/);
+test("the talks identity panel offers map style selection", () => {
+  assert.match(appSource, /aria-label="Map style"/);
 });
 
-test("the talks map auto-locates only when permission is already granted", () => {
-  assert.match(mapCanvasSource, /navigator\.permissions\?\.query\(\{ name: "geolocation" \}\)/);
-  assert.match(mapCanvasSource, /permissionStatus\?\.state === "granted"/);
+test("the talks map auto-locates on load with all talks as fallback", () => {
   assert.match(mapCanvasSource, /locateUser\(\{ fallbackToAllTalks: true \}\)/);
   assert.match(mapCanvasSource, /viewAllTalks\(\)/);
 });

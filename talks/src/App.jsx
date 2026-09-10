@@ -103,7 +103,6 @@ function ProviderSelector({ selectedProvider, onSelect }) {
 
   return (
     <div className="provider-control">
-      <span className="provider-control__label">Map Style</span>
       <div className="provider-selector" aria-label="Map style">
         <span className="provider-pill" aria-hidden="true" style={pillStyle} />
         {entries.map(([providerId, provider], index) => (
@@ -174,14 +173,12 @@ export function App() {
       {locations.length > 0 && <MapCanvas ref={mapControllerRef} locations={locations} selectedLocationId={selectedLocationId} selectionRequest={selectionRequest} mapProvider={mapProvider} nasaImageryDate={nasaImageryDate} onSelect={selectLocation} onStatus={updateStatus} onVisibleChange={handleVisibleChange} />}
       <div className="left-rail">
         <section className="identity-panel">
-          <a className="identity-panel__title" href="../index.html">
-            <Typewriter text="Leonard's Talks" />
-          </a>
-          <ProviderSelector selectedProvider={mapProvider} onSelect={setMapProvider} />
-          <div className="map-actions" aria-label="Map controls">
-            <button type="button" onClick={() => mapControllerRef.current?.locateUser()}>Locate Me</button>
-            <button type="button" onClick={() => { setSelectedLocationId(null); setSelectedTalkTitle(null); mapControllerRef.current?.viewAllTalks(); }}>View All</button>
+          <div className="identity-panel__header">
+            <a className="identity-panel__title" href="../index.html">
+              <Typewriter text="Leonard's Talks" />
+            </a>
           </div>
+          <ProviderSelector selectedProvider={mapProvider} onSelect={setMapProvider} />
           <p className="map-status" aria-live="polite">{status}</p>
           <p className="identity-panel__build">
             Built from{" "}
