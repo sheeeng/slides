@@ -174,6 +174,7 @@ export function App() {
       <div className="left-rail">
         <section className="identity-panel">
           <div className="identity-panel__header">
+            <img className="identity-panel__logo" src="https://sheeeng.github.io/logo.png" alt="Leonard" />
             <a className="identity-panel__title" href="../index.html">
               <Typewriter text="Leonard's Talks" />
             </a>

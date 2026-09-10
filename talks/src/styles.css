@@ -26,7 +26,7 @@ button { color: inherit; }
   left: 24px;
   z-index: 2;
   display: grid;
-  width: min(400px, calc(100vw - 48px));
+  width: min(470px, calc(100vw - 48px));
   max-height: calc(100vh - 48px);
   gap: 10px;
   pointer-events: none;
@@ -80,6 +80,12 @@ button { color: inherit; }
   align-items: center;
   justify-content: center;
   gap: clamp(0.75rem, 2vw, 1rem);
+}
+
+.identity-panel__logo {
+  flex: 0 0 auto;
+  width: clamp(40px, 8vw, 56px);
+  height: clamp(40px, 8vw, 56px);
 }
 
 
