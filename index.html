@@ -185,12 +185,33 @@
         margin: 0 0 1rem;
       }
 
-      .stats-summary li {
+      .stats-tile {
+        appearance: none;
+        width: 100%;
         padding: 0.75rem 0.5rem;
         border: 1px solid var(--border);
         border-radius: 8px;
         background: var(--bg-card);
+        color: inherit;
+        font: inherit;
         text-align: center;
+        cursor: pointer;
+        transition: border-color 0.15s ease;
+      }
+
+      .stats-tile:hover {
+        border-color: var(--link);
+      }
+
+      .stats-tile:focus-visible {
+        outline: 2px solid var(--link);
+        outline-offset: 2px;
+      }
+
+      .talk-details {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.45s cubic-bezier(0.16, 1, 0.3, 1);
       }
 
       .stats-summary strong {
@@ -463,7 +484,7 @@
         const totalCities = Object.values(byContinent).reduce((n, countries) =>
           n + Object.values(countries).reduce((m, cities) => m + cities.size, 0), 0);
         const stat = (value, singular, plural = singular + "s") =>
-          `<li><strong>${value}</strong><span>${value === 1 ? singular : plural}</span></li>`;
+          `<li><button type="button" class="stats-tile" aria-expanded="false" aria-controls="talk-details"><strong>${value}</strong><span>${value === 1 ? singular : plural}</span></button></li>`;
         const continentRows = Object.entries(byContinent)
           .sort(([a], [b]) => a.localeCompare(b))
           .map(([continent, countries]) => {
@@ -485,11 +506,40 @@
           stat(totalCountries, "Country", "Countries") +
           stat(totalCities, "City", "Cities") +
           `</ul>` +
-          `<ul class="stats-continents">${continentRows}</ul>`;
+          `<div id="talk-details" class="talk-details" aria-hidden="true"><ul class="stats-continents">${continentRows}</ul></div>`;
+      }
+
+      function setupTalkDetailsToggle() {
+        const details = document.getElementById("talk-details");
+        const tiles = document.querySelectorAll(".stats-tile");
+
+        function setOpen(open) {
+          details.style.maxHeight = open ? `${details.scrollHeight}px` : "0px";
+          details.setAttribute("aria-hidden", String(!open));
+          for (const tile of tiles) {
+            tile.setAttribute("aria-expanded", String(open));
+          }
+        }
+
+        for (const tile of tiles) {
+          tile.addEventListener("click", () => {
+            const collapsed =
+              details.style.maxHeight === "" ||
+              details.style.maxHeight === "0px";
+            setOpen(collapsed);
+          });
+        }
+
+        window.addEventListener("resize", () => {
+          if (details.getAttribute("aria-hidden") === "false") {
+            details.style.maxHeight = `${details.scrollHeight}px`;
+          }
+        });
       }
 
       const talks = await loadTalks();
       renderStats(talks);
+      setupTalkDetailsToggle();
 
     </script>
   </body>
