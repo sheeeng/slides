@@ -12,6 +12,14 @@ function formatDate(date) {
   });
 }
 
+function Typewriter({ text }) {
+  return [...text].map((char, index) => (
+    <span key={index} className="typewriter-char" style={{ "--index": index }}>
+      {char}
+    </span>
+  ));
+}
+
 function TalkCard({ location, selectedTalkTitle, onClose }) {
   const cardRef = useRef(null);
 
@@ -76,14 +84,33 @@ function VisibleTalks({ entries, onSelect }) {
 }
 
 function ProviderSelector({ selectedProvider, onSelect }) {
+  const entries = useMemo(() => Object.entries(MAP_PROVIDERS), []);
+  const buttonRefs = useRef([]);
+  const [pillStyle, setPillStyle] = useState({});
+
+  useEffect(() => {
+    function updatePill() {
+      const index = entries.findIndex(([providerId]) => providerId === selectedProvider);
+      const button = buttonRefs.current[index];
+      if (button) {
+        setPillStyle({ left: button.offsetLeft, width: button.offsetWidth });
+      }
+    }
+    updatePill();
+    window.addEventListener("resize", updatePill);
+    return () => window.removeEventListener("resize", updatePill);
+  }, [selectedProvider, entries]);
+
   return (
     <div className="provider-control">
       <span className="provider-control__label">Map Style</span>
       <div className="provider-selector" aria-label="Map style">
-        {Object.entries(MAP_PROVIDERS).map(([providerId, provider]) => (
+        <span className="provider-pill" aria-hidden="true" style={pillStyle} />
+        {entries.map(([providerId, provider], index) => (
           <button
             type="button"
             key={providerId}
+            ref={(element) => { buttonRefs.current[index] = element; }}
             aria-pressed={selectedProvider === providerId}
             onClick={() => onSelect(providerId)}
           >
@@ -147,7 +174,9 @@ export function App() {
       {locations.length > 0 && <MapCanvas ref={mapControllerRef} locations={locations} selectedLocationId={selectedLocationId} selectionRequest={selectionRequest} mapProvider={mapProvider} nasaImageryDate={nasaImageryDate} onSelect={selectLocation} onStatus={updateStatus} onVisibleChange={handleVisibleChange} />}
       <div className="left-rail">
         <section className="identity-panel">
-          <a className="identity-panel__title" href="../index.html">Leonard's Talks</a>
+          <a className="identity-panel__title" href="../index.html">
+            <Typewriter text="Leonard's Talks" />
+          </a>
           <ProviderSelector selectedProvider={mapProvider} onSelect={setMapProvider} />
           <div className="map-actions" aria-label="Map controls">
             <button type="button" onClick={() => mapControllerRef.current?.locateUser()}>Locate Me</button>
