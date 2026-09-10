@@ -48,7 +48,7 @@ url = "demystifying-the-nix-store/"
 video = "https://www.youtube.com/watch?v=4bwSRCTAAn0"
 
 [[talk]]
-title = "Getting Started with Kernel Virtual Machine"
+title = "Running Kernel-based Virtual Machine"
 event = "Linux Foundation's Open Source Summit EU 2022"
 date = "2022-09-14"
 continent = "Europe"

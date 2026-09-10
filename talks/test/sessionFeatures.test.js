@@ -42,8 +42,8 @@ test("the Jenkins As Code workshop item links to its repository", () => {
   assert.equal(jenkinsTalk.repository, "https://github.com/sheeeng/jenkins-configuration-as-code-workshop");
 });
 
-test("the Kernel Virtual Machine talk links to its recording", () => {
-  const kernelTalk = talks.find((talk) => talk.title === "Getting Started with Kernel Virtual Machine");
+test("the Kernel-based Virtual Machine talk links to its recording", () => {
+  const kernelTalk = talks.find((talk) => talk.title === "Running Kernel-based Virtual Machine");
 
   assert.ok(kernelTalk);
   assert.equal(kernelTalk.video, "https://www.youtube.com/watch?v=mAZNlyXVoT4");
@@ -58,7 +58,7 @@ test("the visible map list returns every session talk once", () => {
     "When is the fix available? A 5-Minute Guide to Tracking Nixpkgs PRs",
     "The Giant Immutable LEGO Set: Demystifying the Nix Store",
     "Reproducible Environments: Why Docker Isn't Enough and Why Nix Might Be!",
-    "Getting Started with Kernel Virtual Machine",
+    "Running Kernel-based Virtual Machine",
     "Getting Started with Jenkins As Code",
     "MeeGo平台与塞班平台中的Qt跨平台开发",
   ]);
