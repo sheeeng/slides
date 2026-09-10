@@ -179,23 +179,25 @@
 
       .stats-summary {
         list-style: none;
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 0.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: clamp(0.5rem, 1.5vw, 0.75rem);
         margin: 0 0 1rem;
       }
 
       .stats-tile {
         appearance: none;
-        display: block;
-        width: 100%;
-        padding: 0.75rem 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: clamp(0.75rem, 2vw, 1rem);
+        padding: clamp(0.75rem, 2vw, 1rem);
         border: 1px solid var(--border);
         border-radius: 8px;
         background: var(--bg-card);
-        color: inherit;
-        font: inherit;
-        text-align: center;
+        color: var(--link);
+        font-size: clamp(0.95rem, 2vw, 1.0625rem);
+        font-weight: 500;
+        text-align: left;
         text-decoration: none;
         cursor: pointer;
         transition: border-color 0.15s ease;
@@ -214,25 +216,6 @@
         max-height: 0;
         overflow: hidden;
         transition: max-height 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-      }
-
-      .stats-summary strong {
-        display: block;
-        font-size: 1.25rem;
-        font-weight: 700;
-      }
-
-      .stats-summary span {
-        display: block;
-        margin-top: 0.125rem;
-        font-size: 0.75rem;
-        color: var(--text-muted);
-      }
-
-      @media (min-width: 480px) {
-        .stats-summary {
-          grid-template-columns: repeat(4, minmax(0, 1fr));
-        }
       }
 
       .stats-line {
@@ -265,7 +248,7 @@
       gtag("config", "G-J5M1ZFQ070");
     </script>
   </head>
-  <body>
+  <body id="top">
     <main>
       <header>
         <img src="https://sheeeng.github.io/logo.png" alt="Leonard" />
@@ -476,15 +459,15 @@
 
         const stat = (value, singular, plural = singular + "s") =>
           `${value} ${value === 1 ? singular : plural}`;
-        const tile = (value, label, statKey) =>
-          `<li><button type="button" class="stats-tile" data-stat="${statKey}" aria-expanded="false" aria-controls="talk-details"><strong>${value}</strong><span>${label}</span></button></li>`;
+        const tile = (label, statKey) =>
+          `<li><button type="button" class="stats-tile" data-stat="${statKey}" aria-expanded="false" aria-controls="talk-details">${label}</button></li>`;
 
         document.getElementById("talk-stats").innerHTML =
           `<ul class="stats-summary">` +
-          `<li><a class="stats-tile" href="#slides"><strong>${talks.length}</strong><span>${stat(talks.length, "Talk")}</span></a></li>` +
-          tile(totalContinents, stat(totalContinents, "Continent"), "continents") +
-          tile(totalCountries, stat(totalCountries, "Country", "Countries"), "countries") +
-          tile(totalCities, stat(totalCities, "City", "Cities"), "cities") +
+          `<li><a class="stats-tile" href="#top">${stat(talks.length, "Talk")}</a></li>` +
+          tile(stat(totalContinents, "Continent"), "continents") +
+          tile(stat(totalCountries, "Country", "Countries"), "countries") +
+          tile(stat(totalCities, "City", "Cities"), "cities") +
           `</ul>` +
           `<div id="talk-details" class="talk-details" aria-hidden="true"></div>`;
       }
@@ -492,7 +475,7 @@
       function setupTalkDetailsToggle() {
         const details = document.getElementById("talk-details");
         const tiles = document.querySelectorAll(".stats-tile[data-stat]");
-        const talksLink = document.querySelector('.stats-tile[href="#slides"]');
+        const talksLink = document.querySelector('.stats-tile[href="#top"]');
         let openStat = null;
 
         function show(stat) {
