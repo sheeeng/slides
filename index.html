@@ -43,6 +43,8 @@
       }
 
       body {
+        display: flex;
+        flex-direction: column;
         font-family:
           -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
           sans-serif;
@@ -52,7 +54,21 @@
         min-height: 100vh;
       }
 
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: url("https://sheeeng.github.io/logo.png");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: auto 100%;
+        opacity: 0.1;
+        pointer-events: none;
+        z-index: -1;
+      }
+
       main {
+        flex: 1 0 auto;
         max-width: 640px;
         margin: 0 auto;
         padding: clamp(2rem, 6vw, 4rem) clamp(1rem, 4vw, 2rem);
@@ -75,17 +91,13 @@
       header {
         display: flex;
         align-items: center;
+        justify-content: center;
         gap: clamp(0.75rem, 2vw, 1rem);
-        margin-bottom: clamp(2rem, 5vw, 3rem);
-      }
-
-      header img {
-        width: clamp(40px, 8vw, 56px);
-        height: clamp(40px, 8vw, 56px);
+        margin-bottom: 0.5rem;
       }
 
       h1 {
-        font-size: clamp(1.25rem, 3.5vw, 1.75rem);
+        font-size: clamp(2rem, 6.4vw, 2.8rem);
         font-weight: 600;
         letter-spacing: -0.01em;
       }
@@ -157,6 +169,7 @@
         display: flex;
         align-items: center;
         gap: clamp(0.75rem, 2vw, 1rem);
+        margin-bottom: clamp(0.75rem, 2vw, 1rem);
         padding: clamp(0.75rem, 2vw, 1rem);
         border: 1px solid var(--border);
         border-radius: 8px;
@@ -335,7 +348,6 @@
   <body id="top">
     <main>
       <header>
-        <img src="https://sheeeng.github.io/logo.png" alt="Leonard" />
         <h1>Leonard's Slides</h1>
       </header>
       <h2 class="section-heading" id="slides">Slides</h2>
@@ -432,8 +444,7 @@
         </li>
       </ul>
       <section id="talks">
-        <h2 class="section-heading">Where I've Spoken</h2>
-        <div id="talk-stats" aria-live="polite"></div>
+        <h2 class="section-heading">Statistics</h2>
         <a class="talks-cta" href="talks/">
           <img
             src="https://raw.githubusercontent.com/googlefonts/noto-emoji/main/png/512/emoji_u1f5fa.png"
@@ -443,6 +454,7 @@
           />
           See Where I've Spoken
         </a>
+        <div id="talk-stats" aria-live="polite"></div>
       </section>
     </main>
     <footer>
