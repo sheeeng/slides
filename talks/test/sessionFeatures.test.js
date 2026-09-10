@@ -13,6 +13,7 @@ import { groupTalksByLocation, listTalksByDate, parseTalks } from "../src/talks.
 const appSource = readFileSync(new URL("../src/App.jsx", import.meta.url), "utf8");
 const mapCanvasSource = readFileSync(new URL("../src/MapCanvas.jsx", import.meta.url), "utf8");
 const styleSource = readFileSync(new URL("../src/styles.css", import.meta.url), "utf8");
+const talksIndexHtml = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 const talks = parseTalks(readFileSync(new URL("../../talks.toml", import.meta.url), "utf8"));
 const locations = groupTalksByLocation(talks);
 
@@ -135,6 +136,12 @@ test("the talks identity panel offers map style selection", () => {
 test("the talks map auto-locates on load with all talks as fallback", () => {
   assert.match(mapCanvasSource, /locateUser\(\{ fallbackToAllTalks: true \}\)/);
   assert.match(mapCanvasSource, /viewAllTalks\(\)/);
+});
+
+test("the talks page loads and uses Open Sans without serif fallbacks", () => {
+  assert.match(talksIndexHtml, /family=Open\+Sans/);
+  assert.match(styleSource, /font-family:\s*"Open Sans"/);
+  assert.doesNotMatch(styleSource, /Georgia/);
 });
 
 test("the talks map distinguishes denied, timeout, and unavailable location errors", () => {
