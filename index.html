@@ -271,6 +271,16 @@
         overflow-wrap: anywhere;
       }
 
+      .stats-tile__list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      .stats-tile__list li {
+        line-height: 1.7;
+      }
+
       .stats-tile[aria-expanded="true"] .stats-tile__detail {
         opacity: 1;
         visibility: visible;
@@ -520,26 +530,40 @@
         const totalCountries = countryFlags.size;
         const totalCities = citySet.size;
 
-        const continentLine = Object.keys(byContinent).sort().join(" · ");
-        const countryLine = [...countryFlags.entries()]
+        const CONTINENT_EMOJI = {
+          Africa: "🌍",
+          Asia: "🌏",
+          Europe: "🌍",
+          "North America": "🌎",
+          Oceania: "🌏",
+          "South America": "🌎",
+        };
+
+        const continentItems = Object.keys(byContinent)
+          .sort()
+          .map((continent) =>
+            `${CONTINENT_EMOJI[continent] ?? ""} ${continent}`.trim(),
+          );
+        const countryItems = [...countryFlags.entries()]
           .sort(([a], [b]) => a.localeCompare(b))
-          .map(([country, flag]) => (flag ? `${flag} ${country}` : country))
-          .join(" · ");
-        const cityLine = [...citySet].sort().join(" · ");
+          .map(([country, flag]) => (flag ? `${flag} ${country}` : country));
+        const cityItems = [...citySet].sort();
 
         const label = (value, singular, plural = singular + "s") =>
           value === 1 ? singular : plural;
-        const tile = (value, labelText, detail) =>
-          `<li><button type="button" class="stats-tile" aria-expanded="false"><span class="stats-tile__summary"><strong>${value}</strong><span class="stats-tile__label">${labelText}</span></span><span class="stats-tile__detail"><span class="stats-tile__detail-inner">${detail}</span></span></button></li>`;
+        const list = (items) =>
+          `<ul class="stats-tile__list">${items.map((item) => `<li>${item}</li>`).join("")}</ul>`;
+        const tile = (value, labelText, items) =>
+          `<li><button type="button" class="stats-tile" aria-expanded="false"><span class="stats-tile__summary"><strong>${value}</strong><span class="stats-tile__label">${labelText}</span></span><span class="stats-tile__detail"><span class="stats-tile__detail-inner">${list(items)}</span></span></button></li>`;
         const linkTile = (value, labelText) =>
           `<li><a class="stats-tile" href="#top"><span class="stats-tile__summary"><strong>${value}</strong><span class="stats-tile__label">${labelText}</span></span></a></li>`;
 
         document.getElementById("talk-stats").innerHTML =
           `<ul class="stats-summary">` +
           linkTile(talks.length, label(talks.length, "Talk")) +
-          tile(totalContinents, label(totalContinents, "Continent"), continentLine) +
-          tile(totalCountries, label(totalCountries, "Country", "Countries"), countryLine) +
-          tile(totalCities, label(totalCities, "City", "Cities"), cityLine) +
+          tile(totalContinents, label(totalContinents, "Continent"), continentItems) +
+          tile(totalCountries, label(totalCountries, "Country", "Countries"), countryItems) +
+          tile(totalCities, label(totalCities, "City", "Cities"), cityItems) +
           `</ul>`;
       }
 
