@@ -53,9 +53,9 @@ button { color: inherit; }
   width: fit-content;
   color: var(--ink);
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(2rem, 3vw, 2.75rem);
+  font-size: clamp(1.25rem, 3.5vw, 1.75rem);
   letter-spacing: -0.055em;
-  line-height: 0.95;
+  line-height: 1.2;
   text-decoration: none;
 }
 
@@ -333,7 +333,6 @@ button { color: inherit; }
   }
 
   .identity-panel { padding: 12px; }
-  .identity-panel__title { font-size: 1.65rem; }
   .identity-panel__header { align-items: center; }
   .landing-links { padding-top: 0; }
   .landing-links a { font-size: 0.58rem; }
