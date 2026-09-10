@@ -187,6 +187,7 @@
 
       .stats-tile {
         appearance: none;
+        display: block;
         width: 100%;
         padding: 0.75rem 0.5rem;
         border: 1px solid var(--border);
@@ -195,6 +196,7 @@
         color: inherit;
         font: inherit;
         text-align: center;
+        text-decoration: none;
         cursor: pointer;
         transition: border-color 0.15s ease;
       }
@@ -233,39 +235,13 @@
         }
       }
 
-      .stats-continents {
-        list-style: none;
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-      }
-
-      .stats-continent-label {
-        display: block;
-        font-size: 0.75rem;
-        font-weight: 600;
-        letter-spacing: 0.02em;
+      .stats-line {
+        margin: 0;
+        padding: 0.75rem 0 0.25rem;
         color: var(--text-muted);
-        padding-bottom: 0.1875rem;
-        border-bottom: 1px solid var(--border);
-      }
-
-      .stats-countries {
-        list-style: none;
-        color: var(--text-muted);
-        display: flex;
-        flex-direction: column;
-        gap: 0.125rem;
-        margin-top: 0.25rem;
-      }
-
-      .stats-country {
-        color: var(--text);
-        font-weight: 500;
-      }
-
-      .stats-city {
-        color: var(--text-muted);
+        font-size: 0.875rem;
+        line-height: 1.6;
+        overflow-wrap: anywhere;
       }
 
       @media (prefers-reduced-motion: reduce) {
@@ -295,7 +271,7 @@
         <img src="https://sheeeng.github.io/logo.png" alt="Leonard" />
         <h1>Leonard's Slides</h1>
       </header>
-      <h2 class="section-heading">Slides</h2>
+      <h2 class="section-heading" id="slides">Slides</h2>
       <ul>
         <li>
           <a href="reproducible-environments-docker-vs-nix/">
@@ -471,67 +447,88 @@
         return talks;
       }
 
+      let talkStatLines = {};
+
       function renderStats(talks) {
         const byContinent = {};
+        const countryFlags = new Map();
+        const citySet = new Set();
         for (const t of talks) {
           const c = t.continent ?? "Unknown";
           if (!byContinent[c]) byContinent[c] = {};
           if (!byContinent[c][t.country]) byContinent[c][t.country] = new Set();
           byContinent[c][t.country].add(t.city);
+          countryFlags.set(t.country, COUNTRY_FLAGS[t.country] ?? "");
+          citySet.add(t.city);
         }
         const totalContinents = Object.keys(byContinent).length;
-        const totalCountries = Object.values(byContinent).reduce((n, countries) => n + Object.keys(countries).length, 0);
-        const totalCities = Object.values(byContinent).reduce((n, countries) =>
-          n + Object.values(countries).reduce((m, cities) => m + cities.size, 0), 0);
+        const totalCountries = countryFlags.size;
+        const totalCities = citySet.size;
+
+        talkStatLines = {
+          continents: Object.keys(byContinent).sort().join(" · "),
+          countries: [...countryFlags.entries()]
+            .sort(([a], [b]) => a.localeCompare(b))
+            .map(([country, flag]) => (flag ? `${flag} ${country}` : country))
+            .join(" · "),
+          cities: [...citySet].sort().join(" · "),
+        };
+
         const stat = (value, singular, plural = singular + "s") =>
-          `<li><button type="button" class="stats-tile" aria-expanded="false" aria-controls="talk-details"><strong>${value}</strong><span>${value === 1 ? singular : plural}</span></button></li>`;
-        const continentRows = Object.entries(byContinent)
-          .sort(([a], [b]) => a.localeCompare(b))
-          .map(([continent, countries]) => {
-            const countryRows = Object.entries(countries)
-              .sort(([a], [b]) => a.localeCompare(b))
-              .map(([country, cities]) => {
-                const flag = COUNTRY_FLAGS[country];
-                const label = flag ? `${flag} ${country}` : country;
-                return `<li><span class="stats-country">${label}</span> · <span class="stats-city">${[...cities].sort().join(", ")}</span></li>`;
-              })
-              .join("");
-            return `<li><span class="stats-continent-label">${continent}</span><ul class="stats-countries">${countryRows}</ul></li>`;
-          })
-          .join("");
+          `${value} ${value === 1 ? singular : plural}`;
+        const tile = (value, label, statKey) =>
+          `<li><button type="button" class="stats-tile" data-stat="${statKey}" aria-expanded="false" aria-controls="talk-details"><strong>${value}</strong><span>${label}</span></button></li>`;
+
         document.getElementById("talk-stats").innerHTML =
           `<ul class="stats-summary">` +
-          stat(talks.length, "Talk") +
-          stat(totalContinents, "Continent") +
-          stat(totalCountries, "Country", "Countries") +
-          stat(totalCities, "City", "Cities") +
+          `<li><a class="stats-tile" href="#slides"><strong>${talks.length}</strong><span>${stat(talks.length, "Talk")}</span></a></li>` +
+          tile(totalContinents, stat(totalContinents, "Continent"), "continents") +
+          tile(totalCountries, stat(totalCountries, "Country", "Countries"), "countries") +
+          tile(totalCities, stat(totalCities, "City", "Cities"), "cities") +
           `</ul>` +
-          `<div id="talk-details" class="talk-details" aria-hidden="true"><ul class="stats-continents">${continentRows}</ul></div>`;
+          `<div id="talk-details" class="talk-details" aria-hidden="true"></div>`;
       }
 
       function setupTalkDetailsToggle() {
         const details = document.getElementById("talk-details");
-        const tiles = document.querySelectorAll(".stats-tile");
+        const tiles = document.querySelectorAll(".stats-tile[data-stat]");
+        let openStat = null;
 
-        function setOpen(open) {
-          details.style.maxHeight = open ? `${details.scrollHeight}px` : "0px";
-          details.setAttribute("aria-hidden", String(!open));
+        function show(stat) {
+          details.replaceChildren();
+          const line = document.createElement("p");
+          line.className = "stats-line";
+          line.textContent = talkStatLines[stat];
+          details.appendChild(line);
+          details.style.maxHeight = `${details.scrollHeight}px`;
+          details.setAttribute("aria-hidden", "false");
           for (const tile of tiles) {
-            tile.setAttribute("aria-expanded", String(open));
+            tile.setAttribute("aria-expanded", String(tile.dataset.stat === stat));
           }
+          openStat = stat;
+        }
+
+        function hide() {
+          details.style.maxHeight = "0px";
+          details.setAttribute("aria-hidden", "true");
+          for (const tile of tiles) {
+            tile.setAttribute("aria-expanded", "false");
+          }
+          openStat = null;
         }
 
         for (const tile of tiles) {
           tile.addEventListener("click", () => {
-            const collapsed =
-              details.style.maxHeight === "" ||
-              details.style.maxHeight === "0px";
-            setOpen(collapsed);
+            if (tile.dataset.stat === openStat) {
+              hide();
+            } else {
+              show(tile.dataset.stat);
+            }
           });
         }
 
         window.addEventListener("resize", () => {
-          if (details.getAttribute("aria-hidden") === "false") {
+          if (openStat) {
             details.style.maxHeight = `${details.scrollHeight}px`;
           }
         });

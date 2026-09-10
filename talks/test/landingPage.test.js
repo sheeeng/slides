@@ -8,7 +8,7 @@ const talks = parseTalks(readFileSync(new URL("../../talks.toml", import.meta.ur
 const locations = groupTalksByLocation(talks);
 
 test("the landing page orders the static slides newest first", () => {
-  const slidesBlock = indexHtml.match(/<h2 class="section-heading">Slides<\/h2>([\s\S]*?)<h2 class="section-heading">Where I've Spoken<\/h2>/)[1];
+  const slidesBlock = indexHtml.match(/<h2 class="section-heading" id="slides">Slides<\/h2>([\s\S]*?)<h2 class="section-heading">Where I've Spoken<\/h2>/)[1];
   const hrefs = [
     "reproducible-environments-docker-vs-nix/",
     "demystifying-the-nix-store/",
