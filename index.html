@@ -492,6 +492,7 @@
       function setupTalkDetailsToggle() {
         const details = document.getElementById("talk-details");
         const tiles = document.querySelectorAll(".stats-tile[data-stat]");
+        const talksLink = document.querySelector('.stats-tile[href="#slides"]');
         let openStat = null;
 
         function show(stat) {
@@ -526,6 +527,8 @@
             }
           });
         }
+
+        talksLink.addEventListener("click", hide);
 
         window.addEventListener("resize", () => {
           if (openStat) {
