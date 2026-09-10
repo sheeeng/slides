@@ -517,6 +517,7 @@
       function renderStats(talks) {
         const byContinent = {};
         const countryFlags = new Map();
+        const cityFlags = new Map();
         const citySet = new Set();
         for (const t of talks) {
           const c = t.continent ?? "Unknown";
@@ -524,6 +525,7 @@
           if (!byContinent[c][t.country]) byContinent[c][t.country] = new Set();
           byContinent[c][t.country].add(t.city);
           countryFlags.set(t.country, COUNTRY_FLAGS[t.country] ?? "");
+          cityFlags.set(t.city, COUNTRY_FLAGS[t.country] ?? "");
           citySet.add(t.city);
         }
         const totalContinents = Object.keys(byContinent).length;
@@ -547,7 +549,9 @@
         const countryItems = [...countryFlags.entries()]
           .sort(([a], [b]) => a.localeCompare(b))
           .map(([country, flag]) => (flag ? `${flag} ${country}` : country));
-        const cityItems = [...citySet].sort();
+        const cityItems = [...citySet]
+          .sort()
+          .map((city) => `${cityFlags.get(city) ?? ""} ${city}`.trim());
 
         const label = (value, singular, plural = singular + "s") =>
           value === 1 ? singular : plural;
