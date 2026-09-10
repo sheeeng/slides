@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Special+Elite&display=swap"
       rel="stylesheet"
     />
     <style>
@@ -45,9 +45,7 @@
       body {
         display: flex;
         flex-direction: column;
-        font-family:
-          -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
-          sans-serif;
+        font-family: "Open Sans", system-ui, sans-serif;
         background: var(--bg);
         color: var(--text);
         line-height: 1.6;
@@ -201,13 +199,14 @@
         list-style: none;
         display: flex;
         flex-direction: row;
+        flex-wrap: wrap;
         align-items: flex-start;
         gap: 0.5rem;
         margin: 0 0 1rem;
       }
 
       .stats-summary li {
-        flex: 1 1 0;
+        flex: 1 1 auto;
         min-width: 0;
       }
 
@@ -304,7 +303,6 @@
       }
 
       .typewriter-char {
-        font-family: "Special Elite", "Courier New", monospace;
         letter-spacing: normal;
         opacity: 0;
         animation: typewriter-reveal 240ms steps(1, end) both;
@@ -440,12 +438,76 @@
               width="32"
               height="32"
             />
-            Qt Cross-platform Development - MeeGo and Symbian
+            Qt Cross-platform Development: MeeGo and Symbian
+          </a>
+        </li>
+      </ul>
+      <h2 class="section-heading">Videos</h2>
+      <ul>
+        <li>
+          <a
+            href="https://vimeo.com/1223729965"
+            target="_blank"
+            rel="noopener"
+          >
+            <img
+              src="https://raw.githubusercontent.com/googlefonts/noto-emoji/main/png/512/emoji_u1f3ac.png"
+              alt="Clapper Board"
+              width="32"
+              height="32"
+            />
+            Reproducible Environments: Why Docker Isn't Enough and Why Nix Might
+            Be
+          </a>
+        </li>
+        <li>
+          <a
+            href="https://www.youtube.com/watch?v=4bwSRCTAAn0"
+            target="_blank"
+            rel="noopener"
+          >
+            <img
+              src="https://raw.githubusercontent.com/googlefonts/noto-emoji/main/png/512/emoji_u1f3ac.png"
+              alt="Clapper Board"
+              width="32"
+              height="32"
+            />
+            The Giant Immutable LEGO Set: Demystifying the Nix Store
+          </a>
+        </li>
+        <li>
+          <a
+            href="https://www.youtube.com/watch?v=wo38491N3Nw"
+            target="_blank"
+            rel="noopener"
+          >
+            <img
+              src="https://raw.githubusercontent.com/googlefonts/noto-emoji/main/png/512/emoji_u1f3ac.png"
+              alt="Clapper Board"
+              width="32"
+              height="32"
+            />
+            When is the fix available? A 5-Minute Guide to Tracking Nixpkgs PRs
+          </a>
+        </li>
+        <li>
+          <a
+            href="https://www.youtube.com/watch?v=mAZNlyXVoT4"
+            target="_blank"
+            rel="noopener"
+          >
+            <img
+              src="https://raw.githubusercontent.com/googlefonts/noto-emoji/main/png/512/emoji_u1f3ac.png"
+              alt="Clapper Board"
+              width="32"
+              height="32"
+            />
+            Getting Started with Kernel Virtual Machine
           </a>
         </li>
       </ul>
       <section id="talks">
-        <h2 class="section-heading">Statistics</h2>
+        <h2 class="section-heading" id="stats-heading">Statistics</h2>
         <a class="talks-cta" href="talks/">
           <img
             src="https://raw.githubusercontent.com/googlefonts/noto-emoji/main/png/512/emoji_u1f5fa.png"
@@ -453,7 +515,7 @@
             width="32"
             height="32"
           />
-          See Where I've Spoken
+          Explore Where I've Spoken
         </a>
         <div id="talk-stats" aria-live="polite"></div>
       </section>
@@ -577,7 +639,7 @@
 
         document.getElementById("talk-stats").innerHTML =
           `<ul class="stats-summary">` +
-          linkTile(talks.length, label(talks.length, "Talk")) +
+          linkTile(talks.length, "Talks &amp; Workshops") +
           tile(totalContinents, label(totalContinents, "Continent"), continentItems) +
           tile(totalCountries, label(totalCountries, "Country", "Countries"), countryItems) +
           tile(totalCities, label(totalCities, "City", "Cities"), cityItems) +

@@ -8,7 +8,7 @@ const talks = parseTalks(readFileSync(new URL("../../talks.toml", import.meta.ur
 const locations = groupTalksByLocation(talks);
 
 test("the landing page orders the static slides newest first", () => {
-  const slidesBlock = indexHtml.match(/<h2 class="section-heading" id="slides">Slides<\/h2>([\s\S]*?)<h2 class="section-heading">Statistics<\/h2>/)[1];
+  const slidesBlock = indexHtml.match(/<h2 class="section-heading" id="slides">Slides<\/h2>([\s\S]*?)<h2 class="section-heading" id="stats-heading">Statistics<\/h2>/)[1];
   const hrefs = [
     "reproducible-environments-docker-vs-nix/",
     "demystifying-the-nix-store/",
@@ -25,7 +25,19 @@ test("the landing page orders the static slides newest first", () => {
 
 test("the landing page links to the full talk map", () => {
   assert.match(indexHtml, /<a class="talks-cta" href="talks\/">/);
-  assert.match(indexHtml, /See Where I've Spoken/);
+  assert.match(indexHtml, /Explore Where I've Spoken/);
+});
+
+test("the landing page returns to the top from the talks and workshops tile", () => {
+  assert.match(indexHtml, /href="#top"/);
+  assert.match(indexHtml, /Talks &amp; Workshops/);
+});
+
+test("the landing page links the recorded videos", () => {
+  assert.match(indexHtml, /href="https:\/\/vimeo\.com\/1223729965"/);
+  assert.match(indexHtml, /href="https:\/\/www\.youtube\.com\/watch\?v=4bwSRCTAAn0"/);
+  assert.match(indexHtml, /href="https:\/\/www\.youtube\.com\/watch\?v=wo38491N3Nw"/);
+  assert.match(indexHtml, /href="https:\/\/www\.youtube\.com\/watch\?v=mAZNlyXVoT4"/);
 });
 
 test("the landing page talk statistics match the talk archive", () => {
@@ -33,4 +45,9 @@ test("the landing page talk statistics match the talk archive", () => {
   assert.match(indexHtml, /<div id="talk-stats" aria-live="polite"><\/div>/);
   assert.equal(locations.length, 5);
   assert.equal(talks.length, 7);
+});
+
+test("the landing page loads and uses Open Sans", () => {
+  assert.match(indexHtml, /family=Open\+Sans/);
+  assert.match(indexHtml, /font-family:\s*"Open Sans"/);
 });
