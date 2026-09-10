@@ -60,6 +60,8 @@ button { color: inherit; }
 }
 
 .typewriter-char {
+  font-family: "Special Elite", "Courier New", monospace;
+  letter-spacing: normal;
   opacity: 0;
   animation: typewriter-reveal 240ms steps(1, end) both;
   animation-delay: calc(var(--index) * 46ms);
