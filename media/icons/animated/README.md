@@ -8,6 +8,8 @@ project.
 Base URL: `https://fonts.gstatic.com/s/e/notoemoji/latest/{codepoint}/512.{ext}`
 
 The files are resized to fit within 64 by 64 pixels.
+Each animation has static `.poster.png` and `.poster.webp` files for the
+initial page load.
 
 ## Files
 

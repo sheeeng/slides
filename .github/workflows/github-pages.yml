@@ -118,7 +118,8 @@ jobs:
             --expression "s/__BUILD_SHA__/${BUILD_SHA}/g" \
             index.html > public/index.html
           cp talks.toml public/talks.toml
-          cp media/icons/animated/*.gif media/icons/animated/*.webp public/media/icons/animated/
+          cp media/icons/animated/*.gif media/icons/animated/*.png \
+             media/icons/animated/*.webp public/media/icons/animated/
           cp media/icons/static/emoji_u1f5fa.png public/media/icons/static/
           cp talks-dist/index.html public/talks/index.html
           cp --recursive talks-dist/talks-assets public/talks/talks-assets
