@@ -1,4 +1,31 @@
-const REQUIRED_VIDEO_FIELDS = ["title", "provider", "meta", "url"];
+const REQUIRED_VIDEO_FIELDS = ["title", "provider", "url"];
+const TRANSPARENT_GIF =
+  "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
+
+function getYouTubeId(url) {
+  const match = url.match(/[?&]v=([^&]+)/);
+  return match ? match[1] : null;
+}
+
+async function resolveThumbnail(url, provider) {
+  const ytId = getYouTubeId(url);
+  if (ytId) {
+    return `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
+  }
+  if (provider === "Vimeo") {
+    try {
+      const response = await fetch(
+        `https://vimeo.com/api/oembed.json?url=${encodeURIComponent(url)}`,
+      );
+      if (!response.ok) return null;
+      const data = await response.json();
+      return data.thumbnail_url ?? null;
+    } catch {
+      return null;
+    }
+  }
+  return null;
+}
 
 export function moveVideoIndex(currentIndex, offset, videoCount) {
   if (!Number.isInteger(videoCount) || videoCount < 1) {
@@ -28,11 +55,10 @@ export function initializeVideoGallery(root) {
   if (!root) return false;
 
   const dataElement = root.querySelector("#video-gallery-data");
-  const visualTitle = root.querySelector(".video-gallery__visual-title");
-  const visualProvider = root.querySelector(".video-gallery__visual-provider");
+  const thumbnailLink = root.querySelector(".video-gallery__thumbnail-link");
+  const thumbnailImg = root.querySelector(".video-gallery__thumbnail");
   const title = root.querySelector(".video-gallery__title");
-  const meta = root.querySelector(".video-gallery__meta");
-  const link = root.querySelector(".video-gallery__link");
+  const providerEl = root.querySelector(".video-gallery__provider");
   const status = root.querySelector(".video-gallery__status");
   const previous = root.querySelector('[data-direction="previous"]');
   const next = root.querySelector('[data-direction="next"]');
@@ -49,11 +75,10 @@ export function initializeVideoGallery(root) {
 
   if (
     !dataElement ||
-    !visualTitle ||
-    !visualProvider ||
+    !thumbnailLink ||
+    !thumbnailImg ||
     !title ||
-    !meta ||
-    !link ||
+    !providerEl ||
     !status ||
     !previous ||
     !next
@@ -70,17 +95,32 @@ export function initializeVideoGallery(root) {
 
   if (!validateVideoData(videos)) return false;
 
-  let currentIndex = 0;
+  const thumbnailCache = new Map();
+  let renderGeneration = 0;
+
   const render = (index) => {
+    const generation = ++renderGeneration;
     const video = videos[index];
-    visualTitle.textContent = video.title;
-    visualProvider.textContent = video.provider;
+    thumbnailLink.href = video.url;
+    thumbnailImg.alt = video.title;
     title.textContent = video.title;
-    meta.textContent = video.meta;
-    link.href = video.url;
+    providerEl.textContent = video.provider;
     status.textContent = `${index + 1} of ${videos.length}`;
+
+    if (thumbnailCache.has(index)) {
+      thumbnailImg.src = thumbnailCache.get(index);
+      return;
+    }
+    thumbnailImg.src = TRANSPARENT_GIF;
+    resolveThumbnail(video.url, video.provider).then((url) => {
+      if (url && renderGeneration === generation) {
+        thumbnailCache.set(index, url);
+        thumbnailImg.src = url;
+      }
+    });
   };
 
+  let currentIndex = 0;
   const navigate = (offset) => () => {
     try {
       const nextIndex = moveVideoIndex(currentIndex, offset, videos.length);

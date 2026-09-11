@@ -56,11 +56,10 @@ function createGalleryRoot(data) {
     "#video-gallery-data": new FakeElement({
       textContent: JSON.stringify(data),
     }),
-    ".video-gallery__visual-title": new FakeElement(),
-    ".video-gallery__visual-provider": new FakeElement(),
+    ".video-gallery__thumbnail-link": new FakeElement(),
+    ".video-gallery__thumbnail": new FakeElement(),
     ".video-gallery__title": new FakeElement(),
-    ".video-gallery__meta": new FakeElement(),
-    ".video-gallery__link": new FakeElement(),
+    ".video-gallery__provider": new FakeElement(),
     ".video-gallery__status": new FakeElement(),
     '[data-direction="previous"]': new FakeElement(),
     '[data-direction="next"]': new FakeElement(),
@@ -118,7 +117,7 @@ test("the static default matches the newest embedded video", () => {
     /<h3 class="video-gallery__title" id="video-gallery-title">([\s\S]*?)<\/h3>/,
   );
   const staticLink = indexHtml.match(
-    /<a\s+class="video-gallery__link"\s+href="([^"]+)"/,
+    /<a\s+class="video-gallery__thumbnail-link"\s+href="([^"]+)"/,
   );
 
   assert.ok(staticTitle);
@@ -153,10 +152,10 @@ test("invalid embedded data leaves the gallery disabled", () => {
 
 test("navigation rendering failure restores the disabled fallback state", () => {
   const { elements, root } = createGalleryRoot(videos);
-  const visualTitle = elements[".video-gallery__visual-title"];
+  const titleEl = elements[".video-gallery__title"];
 
   assert.equal(initializeVideoGallery(root), true);
-  Object.defineProperty(visualTitle, "textContent", {
+  Object.defineProperty(titleEl, "textContent", {
     configurable: true,
     set() {
       throw new Error("Simulated rendering failure.");
