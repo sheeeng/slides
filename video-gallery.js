@@ -96,6 +96,9 @@ export function initializeVideoGallery(root) {
   if (!validateVideoData(videos)) return false;
 
   const thumbnailCache = new Map();
+  if (thumbnailImg.src && thumbnailImg.src !== TRANSPARENT_GIF) {
+    thumbnailCache.set(0, thumbnailImg.src);
+  }
   let renderGeneration = 0;
 
   const render = (index) => {
