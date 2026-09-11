@@ -2,71 +2,101 @@
 
 ## Goal
 
-Replace the landing page video list with a compact featured video gallery.
-The gallery starts with the newest recording and lets visitors browse all
-recordings with previous and next controls.
+The landing page shows one featured video gallery. The gallery starts with the
+newest recording and gives access to all four recordings.
 
-## Structure
+## Page Structure
 
-The Videos section contains one featured card with these elements:
+The Videos section contains one gallery card. The card has these parts:
 
-- A local responsive thumbnail.
-- The talk title.
-- The video provider or event label.
-- A Watch Video link that opens the original video in a new tab.
-- Previous and next buttons.
-- A visible and announced position such as `1 of 4`.
+1. A CSS title card with a 16:9 aspect ratio.
+2. A semantic talk title and provider description.
+3. A Watch Video link.
+4. Previous and Next buttons.
+5. A visible live status such as `1 of 4`.
+6. A compact fallback list with all four video links.
 
-The controls wrap continuously. Previous on the first video selects the last
-video. Next on the last video selects the first video. The gallery does not
-rotate automatically.
+The title card shows the talk title and provider. The card has
+`aria-hidden="true"` because the same information follows in semantic HTML.
 
-## Data and Progressive Enhancement
+## Data and Selection
 
-All video titles and links remain in the initial HTML. A compact fallback list
-keeps every recording available to visitors and search crawlers when
-JavaScript is unavailable.
+The initial HTML stores the video data in an `application/json` script.
+Each entry has a title, provider, metadata text, and URL.
 
-JavaScript reads the embedded video entries, selects the newest entry on
-startup, and updates the featured thumbnail, title, label, link, and position
-when a visitor uses a navigation control.
+The data order is newest first:
 
-## Thumbnails
+1. Vimeo `1223729965`.
+2. YouTube `4bwSRCTAAn0`.
+3. YouTube `wo38491N3Nw`.
+4. YouTube `mAZNlyXVoT4`.
 
-Store optimized thumbnails in the repository instead of loading provider
-images at runtime. Provide WebP images with explicit width and height
-attributes. Keep the displayed image responsive and decode it asynchronously.
-Do not embed YouTube or Vimeo players on the landing page.
+The first entry is the default selection. The gallery does not rotate
+automatically.
 
-## Accessibility
+## Progressive Enhancement
 
-Use native buttons for navigation and a normal link for playback. Give each
-button an explicit accessible name. Announce position changes through a polite
-live region. Preserve visible focus styles and support keyboard activation
-through native button behavior.
+The initial HTML shows the featured video and the complete fallback list.
+The initial HTML hides and disables the navigation controls.
 
-The card must not hide the video title behind the thumbnail. Controls must
-remain at least 44 pixels high on narrow screens. Reduced motion must not
-change access to any content.
+The independent root module is `video-gallery.js`. A module failure cannot stop
+the existing statistics module.
 
-## Responsive Behavior
+The module completes these actions before it enables enhancement:
 
-Use a single column card at all viewport widths. The thumbnail fills the card
-width while preserving its aspect ratio. Keep controls in a flexible row that
-does not cause horizontal scrolling at a 320 pixel viewport.
+1. Parse the embedded JSON.
+2. Validate the nonempty array.
+3. Validate each required string.
+4. Find all required gallery elements.
+5. Attach both navigation listeners.
+6. Complete the first render.
+7. Enable the buttons.
+8. Add the enhancement class.
 
-## Failure Behavior
+The enhancement class hides the fallback list and shows the controls.
+Initialization failure leaves the fallback list visible.
 
-If JavaScript fails, the fallback list remains usable. If a thumbnail fails,
-the visible title and Watch Video link still provide access to the recording.
-Do not replace failures with success shaped placeholders.
+A navigation render failure removes the enhancement class. It also disables
+and hides the controls. The fallback list becomes visible again.
+
+## Navigation
+
+Previous and Next use native buttons. Each button has visible text and a
+minimum size of 44 pixels.
+
+Navigation wraps continuously. Previous from the first item selects the final
+item. Next from the final item selects the first item.
+
+The Watch Video link opens the selected URL in a new tab. The link uses
+`rel="noopener noreferrer"`.
+
+## Visual Design
+
+The title card uses CSS and existing color variables. It does not request a
+thumbnail file or an embedded player.
+
+The gallery uses these existing variables:
+
+1. `--bg`.
+2. `--bg-card`.
+3. `--text`.
+4. `--text-muted`.
+5. `--link`.
+6. `--border`.
+
+The layout supports dark mode and a 320 pixel viewport. Focus indicators remain
+visible for links and buttons.
 
 ## Validation
 
-Add landing page tests for video ordering, link preservation, and gallery
-markup. Add browser checks for initial selection, wraparound navigation,
-keyboard operation, fallback content, and narrow viewport overflow.
+Node.js tests cover wraparound, rejected data, the newest default, embedded
+data order, gallery markup, and fallback links.
 
-Run the existing tests and build. Validate the deployed HTML with the W3C Nu
-HTML Checker. Compare mobile and desktop PageSpeed Insights results after
-deployment.
+Browser checks cover keyboard use, focus, control size, live status, fallback
+behavior, runtime failure, dark mode, and 320 pixel overflow.
+
+Development validation uses the W3C Nu HTML Checker against the source HTML.
+After deployment, validate the deployed page with the same checker.
+
+Run the full test suite, the production build, `git diff --check`, and the
+targeted pre-commit hooks.

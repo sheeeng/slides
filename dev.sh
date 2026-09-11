@@ -59,6 +59,7 @@ SOURCES = [
     "talks/src/styles.css",
     "talks/src/talks.js",
     "talks.toml",
+    "video-gallery.js",
 ]
 
 # Development live reload snippet. Injected by dev.sh; absent from production.
@@ -88,6 +89,7 @@ def build():
         html += LIVE_RELOAD
     with open(os.path.join(OUT, "index.html"), "w", encoding="utf-8") as handle:
         handle.write(html)
+    shutil.copy2("video-gallery.js", os.path.join(OUT, "video-gallery.js"))
     shutil.copytree(
         "media/icons/animated",
         os.path.join(OUT, "media", "icons", "animated"),

@@ -33,11 +33,18 @@ test("the landing page returns to the top from the talks and workshops tile", ()
   assert.match(indexHtml, /Talks &amp; Workshops/);
 });
 
-test("the landing page links the recorded videos", () => {
+test("the landing page exposes an accessible video gallery", () => {
+  assert.match(indexHtml, /class="video-gallery"/);
+  assert.match(indexHtml, /class="video-gallery__visual" aria-hidden="true"/);
+  assert.match(indexHtml, /class="video-gallery__button"[\s\S]*data-direction="previous"/);
+  assert.match(indexHtml, /class="video-gallery__button"[\s\S]*data-direction="next"/);
+  assert.match(indexHtml, /id="video-gallery-status"[\s\S]*aria-live="polite"/);
+  assert.match(indexHtml, /class="video-gallery__fallback"/);
   assert.match(indexHtml, /href="https:\/\/vimeo\.com\/1223729965"/);
   assert.match(indexHtml, /href="https:\/\/www\.youtube\.com\/watch\?v=4bwSRCTAAn0"/);
   assert.match(indexHtml, /href="https:\/\/www\.youtube\.com\/watch\?v=wo38491N3Nw"/);
   assert.match(indexHtml, /href="https:\/\/www\.youtube\.com\/watch\?v=mAZNlyXVoT4"/);
+  assert.doesNotMatch(indexHtml, /media\/video-thumbnails/);
 });
 
 test("the landing page talk statistics match the talk archive", () => {

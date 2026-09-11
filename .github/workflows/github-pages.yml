@@ -73,6 +73,7 @@ jobs:
         with:
           sparse-checkout: |
             index.html
+            video-gallery.js
             talks.toml
             favicon.ico
             favicon-16x16.png
@@ -118,6 +119,7 @@ jobs:
             --expression "s/__BUILD_SHA__/${BUILD_SHA}/g" \
             index.html > public/index.html
           cp talks.toml public/talks.toml
+          cp video-gallery.js public/video-gallery.js
           cp media/icons/animated/*.gif media/icons/animated/*.png \
              media/icons/animated/*.webp public/media/icons/animated/
           cp media/icons/static/emoji_u1f5fa.png public/media/icons/static/
