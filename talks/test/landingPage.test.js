@@ -35,7 +35,7 @@ test("the landing page returns to the top from the talks and workshops tile", ()
 
 test("the landing page exposes an accessible video gallery", () => {
   assert.match(indexHtml, /class="video-gallery"/);
-  assert.match(indexHtml, /class="video-gallery__visual" aria-hidden="true"/);
+  assert.match(indexHtml, /class="video-gallery__thumbnail-link"/);
   assert.match(indexHtml, /class="video-gallery__button"[\s\S]*data-direction="previous"/);
   assert.match(indexHtml, /class="video-gallery__button"[\s\S]*data-direction="next"/);
   assert.match(indexHtml, /id="video-gallery-status"[\s\S]*aria-live="polite"/);
