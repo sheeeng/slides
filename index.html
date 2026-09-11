@@ -1,20 +1,25 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+      name="description"
+      content="Slides and recorded talks by Leonard about Nix, virtualization, cloud governance, and cross-platform development."
+    >
     <title>Leonard's Slides</title>
-    <link rel="icon" type="image/x-icon" href="favicon.ico" />
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
-    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
-    <link rel="manifest" href="site.webmanifest" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="canonical" href="https://sheeeng.github.io/slides/">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Special+Elite&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap"
       rel="stylesheet"
-    />
+    >
     <style>
       * {
         margin: 0;
@@ -52,6 +57,11 @@
         min-height: 100vh;
       }
 
+      img {
+        display: block;
+        max-width: 100%;
+      }
+
       body::before {
         content: "";
         position: fixed;
@@ -83,7 +93,8 @@
 
       footer a {
         color: var(--link);
-        text-decoration: none;
+        text-decoration: underline;
+        text-underline-offset: 0.15em;
       }
 
       header {
@@ -144,9 +155,9 @@
 
       li a img {
         flex-shrink: 0;
-        display: block;
         width: clamp(24px, 5vw, 32px);
         height: clamp(24px, 5vw, 32px);
+        object-fit: contain;
       }
 
       .section-heading {
@@ -196,9 +207,9 @@
       }
 
       .talks-cta img {
-        display: block;
         width: clamp(24px, 5vw, 32px);
         height: clamp(24px, 5vw, 32px);
+        object-fit: contain;
       }
 
       .stats-summary {
@@ -353,7 +364,12 @@
   <body id="top">
     <main>
       <header>
-        <img src="https://sheeeng.github.io/logo.png" alt="Leonard" />
+        <img
+          src="https://sheeeng.github.io/logo.png"
+          alt="Leonard"
+          width="56"
+          height="56"
+        >
         <h1>Leonard's Slides</h1>
       </header>
       <h2 class="section-heading" id="slides">Slides</h2>
@@ -362,15 +378,16 @@
           <a href="reproducible-environments-docker-vs-nix/">
             <picture>
               <source
-                srcset="https://fonts.gstatic.com/s/e/notoemoji/latest/1f4e6/512.webp"
+                srcset="media/icons/animated/1f4e6.webp"
                 type="image/webp"
-              />
+              >
               <img
-                src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f4e6/512.gif"
-                alt="📦"
+                src="media/icons/animated/1f4e6.gif"
+                alt=""
                 width="32"
                 height="32"
-              />
+                decoding="async"
+              >
             </picture>
             Reproducible Environments: Why Docker Isn't Enough and Why Nix Might
             Be
@@ -380,17 +397,17 @@
           <a href="demystifying-the-nix-store/">
             <picture>
               <source
-                srcset="
-                  https://fonts.gstatic.com/s/e/notoemoji/latest/2744_fe0f/512.webp
-                "
+                srcset="media/icons/animated/2744_fe0f.webp"
                 type="image/webp"
-              />
+              >
               <img
-                src="https://fonts.gstatic.com/s/e/notoemoji/latest/2744_fe0f/512.gif"
-                alt="Snowflake"
+                src="media/icons/animated/2744_fe0f.gif"
+                alt=""
                 width="32"
                 height="32"
-              />
+                loading="lazy"
+                decoding="async"
+              >
             </picture>
             Demystifying the Nix Store
           </a>
@@ -399,17 +416,17 @@
           <a href="tracking-nixpkgs-merged-pull-requests/">
             <picture>
               <source
-                srcset="
-                  https://fonts.gstatic.com/s/e/notoemoji/latest/2744_fe0f/512.webp
-                "
+                srcset="media/icons/animated/2744_fe0f.webp"
                 type="image/webp"
-              />
+              >
               <img
-                src="https://fonts.gstatic.com/s/e/notoemoji/latest/2744_fe0f/512.gif"
-                alt="Snowflake"
+                src="media/icons/animated/2744_fe0f.gif"
+                alt=""
                 width="32"
                 height="32"
-              />
+                loading="lazy"
+                decoding="async"
+              >
             </picture>
             Tracking Nixpkgs Merged Pull Requests
           </a>
@@ -418,15 +435,17 @@
           <a href="running-kernel-based-virtual-machine/">
             <picture>
               <source
-                srcset="https://fonts.gstatic.com/s/e/notoemoji/latest/1f4bb/512.webp"
+                srcset="media/icons/animated/1f4bb.webp"
                 type="image/webp"
-              />
+              >
               <img
-                src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f4bb/512.gif"
-                alt="Laptop Computer"
+                src="media/icons/animated/1f4bb.gif"
+                alt=""
                 width="32"
                 height="32"
-              />
+                loading="lazy"
+                decoding="async"
+              >
             </picture>
             Running Kernel-based Virtual Machine
           </a>
@@ -435,15 +454,17 @@
           <a href="governing-azure-resources-with-policy/">
             <picture>
               <source
-                srcset="https://fonts.gstatic.com/s/e/notoemoji/latest/2696_fe0f/512.webp"
+                srcset="media/icons/animated/2696_fe0f.webp"
                 type="image/webp"
-              />
+              >
               <img
-                src="https://fonts.gstatic.com/s/e/notoemoji/latest/2696_fe0f/512.gif"
-                alt="Balance Scale"
+                src="media/icons/animated/2696_fe0f.gif"
+                alt=""
                 width="32"
                 height="32"
-              />
+                loading="lazy"
+                decoding="async"
+              >
             </picture>
             Governing Azure Resources with Policy
           </a>
@@ -459,15 +480,17 @@
           >
             <picture>
               <source
-                srcset="https://fonts.gstatic.com/s/e/notoemoji/latest/1f919/512.webp"
+                srcset="media/icons/animated/1f919.webp"
                 type="image/webp"
-              />
+              >
               <img
-                src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f919/512.gif"
-                alt="Call Me Hand"
+                src="media/icons/animated/1f919.gif"
+                alt=""
                 width="32"
                 height="32"
-              />
+                loading="lazy"
+                decoding="async"
+              >
             </picture>
             Qt Cross-platform Development: MeeGo and Symbian
           </a>
@@ -483,15 +506,17 @@
           >
             <picture>
               <source
-                srcset="https://fonts.gstatic.com/s/e/notoemoji/latest/1f39e_fe0f/512.webp"
+                srcset="media/icons/animated/1f39e_fe0f.webp"
                 type="image/webp"
-              />
+              >
               <img
-                src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f39e_fe0f/512.gif"
-                alt="🎞"
+                src="media/icons/animated/1f39e_fe0f.gif"
+                alt=""
                 width="32"
                 height="32"
-              />
+                loading="lazy"
+                decoding="async"
+              >
             </picture>
             Reproducible Environments: Why Docker Isn't Enough and Why Nix Might
             Be
@@ -505,15 +530,17 @@
           >
             <picture>
               <source
-                srcset="https://fonts.gstatic.com/s/e/notoemoji/latest/1f39e_fe0f/512.webp"
+                srcset="media/icons/animated/1f39e_fe0f.webp"
                 type="image/webp"
-              />
+              >
               <img
-                src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f39e_fe0f/512.gif"
-                alt="🎞"
+                src="media/icons/animated/1f39e_fe0f.gif"
+                alt=""
                 width="32"
                 height="32"
-              />
+                loading="lazy"
+                decoding="async"
+              >
             </picture>
             The Giant Immutable LEGO Set: Demystifying the Nix Store
           </a>
@@ -526,15 +553,17 @@
           >
             <picture>
               <source
-                srcset="https://fonts.gstatic.com/s/e/notoemoji/latest/1f39e_fe0f/512.webp"
+                srcset="media/icons/animated/1f39e_fe0f.webp"
                 type="image/webp"
-              />
+              >
               <img
-                src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f39e_fe0f/512.gif"
-                alt="🎞"
+                src="media/icons/animated/1f39e_fe0f.gif"
+                alt=""
                 width="32"
                 height="32"
-              />
+                loading="lazy"
+                decoding="async"
+              >
             </picture>
             When is the fix available? A 5-Minute Guide to Tracking Nixpkgs PRs
           </a>
@@ -547,15 +576,17 @@
           >
             <picture>
               <source
-                srcset="https://fonts.gstatic.com/s/e/notoemoji/latest/1f39e_fe0f/512.webp"
+                srcset="media/icons/animated/1f39e_fe0f.webp"
                 type="image/webp"
-              />
+              >
               <img
-                src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f39e_fe0f/512.gif"
-                alt="🎞"
+                src="media/icons/animated/1f39e_fe0f.gif"
+                alt=""
                 width="32"
                 height="32"
-              />
+                loading="lazy"
+                decoding="async"
+              >
             </picture>
             Running Kernel-based Virtual Machine
           </a>
@@ -565,11 +596,13 @@
         <h2 class="section-heading" id="stats-heading">Statistics</h2>
         <a class="talks-cta" href="talks/">
           <img
-            src="https://raw.githubusercontent.com/googlefonts/noto-emoji/main/png/512/emoji_u1f5fa.png"
-            alt="World Map"
+            src="media/icons/static/emoji_u1f5fa.png"
+            alt=""
             width="32"
             height="32"
-          />
+            loading="lazy"
+            decoding="async"
+          >
           Explore Where I've Spoken
         </a>
         <div id="talk-stats" aria-live="polite"></div>

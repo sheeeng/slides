@@ -81,6 +81,8 @@ jobs:
             android-chrome-192x192.png
             android-chrome-512x512.png
             site.webmanifest
+            media/icons/animated
+            media/icons/static/emoji_u1f5fa.png
           sparse-checkout-cone-mode: false
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
@@ -109,12 +111,15 @@ jobs:
       - name: Prepare Public Directory
         run: |-
           mkdir --parents public/talks
+          mkdir --parents public/media/icons/animated public/media/icons/static
           BUILD_SHA="${GITHUB_SHA:0:8}"
           sed \
             --expression "s/__BUILD_REVISION__/${GITHUB_SHA}/g" \
             --expression "s/__BUILD_SHA__/${BUILD_SHA}/g" \
             index.html > public/index.html
           cp talks.toml public/talks.toml
+          cp media/icons/animated/*.gif media/icons/animated/*.webp public/media/icons/animated/
+          cp media/icons/static/emoji_u1f5fa.png public/media/icons/static/
           cp talks-dist/index.html public/talks/index.html
           cp --recursive talks-dist/talks-assets public/talks/talks-assets
           cp favicon.ico favicon-16x16.png favicon-32x32.png apple-touch-icon.png \

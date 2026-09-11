@@ -48,6 +48,8 @@ API_KEY = os.environ["GOOGLE_MAPS_API_KEY"]
 # Source files that trigger a rebuild and browser reload when they change.
 SOURCES = [
     "index.html",
+    "media/icons/animated",
+    "media/icons/static/emoji_u1f5fa.png",
     "talks/index.html",
     "talks/src/App.jsx",
     "talks/src/MapCanvas.jsx",
@@ -86,6 +88,16 @@ def build():
         html += LIVE_RELOAD
     with open(os.path.join(OUT, "index.html"), "w", encoding="utf-8") as handle:
         handle.write(html)
+    shutil.copytree(
+        "media/icons/animated",
+        os.path.join(OUT, "media", "icons", "animated"),
+        dirs_exist_ok=True,
+    )
+    os.makedirs(os.path.join(OUT, "media", "icons", "static"), exist_ok=True)
+    shutil.copy2(
+        "media/icons/static/emoji_u1f5fa.png",
+        os.path.join(OUT, "media", "icons", "static"),
+    )
     subprocess.run(["npm", "--prefix", "talks", "run", "build"], check=True)
     os.makedirs(os.path.join(OUT, "talks"), exist_ok=True)
     with open("talks/dist/index.html", "r", encoding="utf-8") as source:
