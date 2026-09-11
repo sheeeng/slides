@@ -1,5 +1,6 @@
 public
 .dev
+.worktrees/
 /tmp
 .marp-pitchme-*.md
 
