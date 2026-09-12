@@ -915,10 +915,10 @@
 
         document.getElementById("talk-stats").innerHTML =
           `<ul class="stats-summary">` +
-          linkTile(talks.length, "Talks &amp; Workshops") +
           tile(totalContinents, label(totalContinents, "Continent"), continentItems) +
           tile(totalCountries, label(totalCountries, "Country", "Countries"), countryItems) +
           tile(totalCities, label(totalCities, "City", "Cities"), cityItems) +
+          linkTile(talks.length, "Talks &amp; Workshops") +
           `</ul>`;
       }
 
