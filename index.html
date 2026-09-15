@@ -443,17 +443,17 @@
 
       .typewriter-char {
         letter-spacing: normal;
-        opacity: 0;
-        animation: typewriter-reveal 240ms steps(1, end) both;
+        visibility: visible;
+        animation: typewriter-reveal 240ms steps(1, end) backwards;
         animation-delay: calc(var(--index) * 46ms);
       }
 
       @keyframes typewriter-reveal {
         from {
-          opacity: 0;
+          visibility: hidden;
         }
         to {
-          opacity: 1;
+          visibility: visible;
         }
       }
 
@@ -464,7 +464,7 @@
 
         .typewriter-char {
           animation: none;
-          opacity: 1;
+          visibility: visible;
         }
       }
     </style>
