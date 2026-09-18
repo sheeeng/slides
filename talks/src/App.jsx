@@ -43,6 +43,7 @@ function TalkCard({ location, selectedTalkTitle, onClose }) {
             <div className="talk-card__meta">{formatDate(talk.date)}{talk.event ? ` · ${talk.event}` : ""}</div>
             <h3>{talk.title}</h3>
             <div className="talk-card__links">
+              {talk.conf_url && <a href={talk.conf_url} target="_blank" rel="noopener noreferrer">Conference Page <span aria-hidden="true">↗</span></a>}
               {talk.url && <a href={talk.url}>Open Slides <span aria-hidden="true">↗</span></a>}
               {talk.repository && <a href={talk.repository} target="_blank" rel="noopener noreferrer">Repository <span aria-hidden="true">↗</span></a>}
               {talk.video && <a href={talk.video} target="_blank" rel="noopener noreferrer">Watch Video <span aria-hidden="true">↗</span></a>}
@@ -72,6 +73,7 @@ function VisibleTalks({ entries, onSelect }) {
               <span>{formatLocation(city, country)}</span>
             </button>
             <div className="talk-browser__links">
+              {talk.conf_url && <a href={talk.conf_url} target="_blank" rel="noopener noreferrer">Conference <span aria-hidden="true">↗</span></a>}
               {talk.url && <a href={talk.url}>Slides <span aria-hidden="true">↗</span></a>}
               {talk.repository && <a href={talk.repository} target="_blank" rel="noopener noreferrer">Repository <span aria-hidden="true">↗</span></a>}
               {talk.video && <a href={talk.video} target="_blank" rel="noopener noreferrer">Video <span aria-hidden="true">↗</span></a>}

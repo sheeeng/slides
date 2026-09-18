@@ -10,6 +10,7 @@ city = "Casablanca"
 lat = 33.5731
 lng = -7.5898
 url = "demystifying-the-nix-store/"
+conf_url = "https://m.devoxx.com/events/dvma26/talks/9115/the-giant-immutable-lego-set-demystifying-the-nix-store"
 
 [[talk]]
 title = "Reproducible Environments: Why Docker Isn't Enough and Why Nix Might Be!"
