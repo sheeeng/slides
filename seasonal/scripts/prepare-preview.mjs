@@ -116,9 +116,7 @@ const seasonalStyle = `
 
       header,
       .section-heading,
-      #talk-stats,
-      .seasonal-attribution,
-      footer {
+      #talk-stats {
         text-shadow:
           0 0 0.4rem var(--bg),
           0 0 1.4rem var(--bg);
