@@ -107,6 +107,10 @@ async function refreshOsloSeason() {
 }
 
 function scheduleScene() {
+  if (requestedSeason in seasonVariants) {
+    mountSeasonalScene();
+    return;
+  }
   window.setTimeout(mountSeasonalScene, 15000);
   window.addEventListener("pointerdown", mountSeasonalScene, { once: true, passive: true });
   window.addEventListener("keydown", mountSeasonalScene, { once: true });
