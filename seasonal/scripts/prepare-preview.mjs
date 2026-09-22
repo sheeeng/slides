@@ -207,6 +207,23 @@ const seasonalStyle = `
         font-weight: 650;
       }
 
+      .wind-barb {
+        display: inline-block !important;
+        width: 1.5rem !important;
+        height: 1.5rem !important;
+        max-width: none !important;
+        margin: -0.25rem 0 -0.25rem -0.25rem;
+        vertical-align: middle;
+        transform: rotate(var(--wind-direction));
+      }
+
+      .wind-barb path {
+        fill: none;
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-width: 2;
+      }
+
       #oslo-forecast {
         margin-bottom: 0.65rem;
       }

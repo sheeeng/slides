@@ -104,18 +104,22 @@ test("formats the current Oslo weather condition", () => {
   assert.equal(weather.time, "2026-09-22T14:00:00+02:00");
   assert.equal(
     formatOsloWeather(weather),
-    "Oslo 🇳🇴 · 14.4°C · Few Clouds 🌤️ · Wind 3.2 m/s from SSW.",
+    "Oslo 🇳🇴 · 14.4°C · Few Clouds 🌤️ · Humidity 47.5%.",
   );
   assert.deepEqual(formatOsloWeatherSummary(weather), [
     "Oslo 🇳🇴",
     "14.4°C",
     "Few Clouds 🌤️",
-    "Wind 3.2 m/s from SSW",
+    "Humidity 47.5%",
   ]);
   assert.deepEqual(formatOsloWeatherDetails(weather), [
+    {
+      label: "Wind",
+      value: "3.2 m/s from SSW",
+      windBarb: { direction: 199, speed: 3.2 },
+    },
     { label: "Pressure", value: "1026.5 hPa" },
     { label: "Cloud cover", value: "38.8%" },
-    { label: "Humidity", value: "47.5%" },
   ]);
   assert.deepEqual(
     getOsloForecastPeriods(forecast, new Date("2026-09-22T12:20:00Z")),

@@ -39,13 +39,14 @@ async function refreshOsloSeason() {
       }),
     );
     document.getElementById("oslo-weather-details").replaceChildren(
-      ...weather.weatherDetails.map(({ label, value }) => {
+      ...weather.weatherDetails.map(({ label, value, windBarb }) => {
         const reading = document.createElement("div");
         reading.className = "weather-reading";
         const term = document.createElement("dt");
         term.textContent = label;
         const description = document.createElement("dd");
-        description.textContent = value;
+        if (windBarb) description.append(createWindBarb(windBarb), " ");
+        description.append(value);
         reading.replaceChildren(term, description);
         return reading;
       }),
@@ -104,6 +105,27 @@ async function refreshOsloSeason() {
     document.getElementById("oslo-forecast").hidden = true;
     console.warn(`Could not refresh the Oslo forecast season: ${error.message}`);
   }
+}
+
+function createWindBarb({ direction, speed }) {
+  const knots = Math.round(speed * 1.94384 / 5) * 5;
+  const barb = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  barb.classList.add("wind-barb");
+  barb.setAttribute("aria-hidden", "true");
+  barb.setAttribute("viewBox", "0 0 32 32");
+  barb.style.setProperty("--wind-direction", `${direction}deg`);
+
+  const shaft = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  shaft.setAttribute("d", "M16 28V5");
+  barb.append(shaft);
+
+  for (let remaining = knots, offset = 6; remaining >= 5; remaining -= 5, offset += 3) {
+    const feather = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    feather.setAttribute("d", `M16 ${offset}l8 4`);
+    barb.append(feather);
+  }
+
+  return barb;
 }
 
 function scheduleScene() {

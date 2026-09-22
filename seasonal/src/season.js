@@ -218,40 +218,43 @@ export function formatOsloWeather(weather) {
 export function formatOsloWeatherSummary({
   condition,
   conditionEmoji,
+  relativeHumidity,
   temperature,
-  windFromDirection,
-  windSpeed,
 }) {
   const temperatureText = new Intl.NumberFormat("en", { maximumFractionDigits: 1 }).format(temperature);
   const conditionText = toTitleCase(condition);
-  const windText = Number.isFinite(windSpeed)
-    ? `Wind ${new Intl.NumberFormat("en", { maximumFractionDigits: 1 }).format(windSpeed)} m/s`
-    : "Wind unavailable";
-  const directionText = Number.isFinite(windFromDirection)
-    ? ` from ${formatWindDirection(windFromDirection)}`
-    : "";
   return [
     "Oslo 🇳🇴",
     `${temperatureText}°C`,
     `${conditionText} ${conditionEmoji}`,
-    `${windText}${directionText}`,
+    `Humidity ${formatWeatherReading(relativeHumidity, "%")}`,
   ];
 }
 
 export function formatOsloWeatherDetails(weather) {
-  const numberFormatter = new Intl.NumberFormat("en", {
-    maximumFractionDigits: 1,
-    useGrouping: false,
-  });
-  const formatReading = (value, unit) => Number.isFinite(value)
-    ? `${numberFormatter.format(value)}${unit}`
-    : "Unavailable";
-
   return [
-    { label: "Pressure", value: formatReading(weather.airPressureAtSeaLevel, " hPa") },
-    { label: "Cloud cover", value: formatReading(weather.cloudAreaFraction, "%") },
-    { label: "Humidity", value: formatReading(weather.relativeHumidity, "%") },
+    {
+      label: "Wind",
+      value: formatWindReading(weather.windSpeed, weather.windFromDirection),
+      windBarb: Number.isFinite(weather.windSpeed) && Number.isFinite(weather.windFromDirection)
+        ? { direction: weather.windFromDirection, speed: weather.windSpeed }
+        : null,
+    },
+    { label: "Pressure", value: formatWeatherReading(weather.airPressureAtSeaLevel, " hPa") },
+    { label: "Cloud cover", value: formatWeatherReading(weather.cloudAreaFraction, "%") },
   ];
+}
+
+function formatWeatherReading(value, unit) {
+  return Number.isFinite(value)
+    ? `${new Intl.NumberFormat("en", { maximumFractionDigits: 1, useGrouping: false }).format(value)}${unit}`
+    : "Unavailable";
+}
+
+function formatWindReading(speed, direction) {
+  if (!Number.isFinite(speed)) return "Unavailable";
+  const directionText = Number.isFinite(direction) ? ` from ${formatWindDirection(direction)}` : "";
+  return `${formatWeatherReading(speed, " m/s")}${directionText}`;
 }
 
 function formatWindDirection(degrees) {
