@@ -62,6 +62,9 @@ const seasonalStyle = `
     <style>
       html {
         --season-wash: 250 251 252;
+        --season-link: #0550ae;
+        --season-muted: #3b4652;
+        --season-text: #1f2933;
         background: var(--bg);
       }
 
@@ -137,7 +140,7 @@ const seasonalStyle = `
         max-width: 640px;
         margin: 0 auto;
         padding: 0 clamp(1rem, 4vw, 2rem) 0.75rem;
-        color: var(--text-muted);
+        color: var(--season-muted);
         font-size: 0.8125rem;
         text-align: center;
       }
@@ -160,7 +163,7 @@ const seasonalStyle = `
 
       #oslo-weather {
         margin-bottom: 0.65rem;
-        color: var(--text);
+        color: var(--season-text);
         font-size: clamp(1rem, 2vw, 1.125rem);
         font-weight: 650;
       }
@@ -200,7 +203,7 @@ const seasonalStyle = `
 
       .weather-reading dd {
         margin: 0.125rem 0 0;
-        color: var(--text);
+        color: var(--season-text);
         font-size: 0.9375rem;
         font-weight: 650;
       }
@@ -249,13 +252,21 @@ const seasonalStyle = `
       }
 
       .weather-period-precipitation {
-        color: var(--text-muted);
+        color: var(--season-muted);
       }
 
       .seasonal-attribution a {
-        color: var(--link);
+        color: var(--season-link);
         text-decoration: underline;
         text-underline-offset: 0.15em;
+      }
+
+      footer {
+        color: var(--season-muted);
+      }
+
+      footer a {
+        color: var(--season-link);
       }
 
       @media (prefers-color-scheme: dark) {
