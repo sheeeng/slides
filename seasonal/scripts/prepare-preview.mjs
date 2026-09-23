@@ -163,7 +163,7 @@ const seasonalStyle = `
       }
 
       #oslo-weather {
-        margin-bottom: 0.65rem;
+        margin-bottom: 0;
         color: var(--season-muted);
         font-size: 0.8125rem;
         font-weight: 400;
