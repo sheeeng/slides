@@ -104,7 +104,7 @@ test("formats the current Oslo weather condition", () => {
   assert.equal(weather.time, "2026-09-22T14:00:00+02:00");
   assert.equal(
     formatOsloWeather(weather),
-    "🇳🇴 Oslo · 14.4°C · Few Clouds · 47.5%.",
+    "Currently, 14.4°C, few clouds in Oslo, 🇳🇴.",
   );
   assert.deepEqual(formatOsloWeatherSummary(weather), [
     { icon: null, value: "🇳🇴 Oslo" },

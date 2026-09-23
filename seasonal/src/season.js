@@ -213,7 +213,8 @@ function formatWeatherCondition(symbolCode) {
 }
 
 export function formatOsloWeather(weather) {
-  return `${formatOsloWeatherSummary(weather).map(({ value }) => value).join(" · ")}.`;
+  const temperature = new Intl.NumberFormat("en", { maximumFractionDigits: 1 }).format(weather.temperature);
+  return `Currently, ${temperature}°C, ${weather.condition} in Oslo, 🇳🇴.`;
 }
 
 export function formatOsloWeatherSummary({
