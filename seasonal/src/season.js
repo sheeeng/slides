@@ -97,6 +97,7 @@ export function getOsloWeather(forecast, now = new Date()) {
     cloudAreaFraction: details.cloud_area_fraction,
     condition: formatWeatherCondition(symbolCode),
     conditionEmoji: getWeatherEmoji(symbolCode),
+    conditionIcon: getWeatherIcon(symbolCode),
     relativeHumidity: details.relative_humidity,
     temperature: details.air_temperature,
     time: formatOsloIsoTime(new Date(current.time)),
@@ -135,7 +136,7 @@ export function getOsloForecastPeriods(forecast, now = new Date()) {
       condition: symbolCode
         ? toTitleCase(formatWeatherCondition(symbolCode))
         : "Unavailable",
-      emoji: getWeatherEmoji(symbolCode),
+      icon: getWeatherIcon(symbolCode),
       precipitation: Number.isFinite(precipitationAmount)
         ? `${numberFormatter.format(precipitationAmount)} mm`
         : null,
@@ -212,22 +213,22 @@ function formatWeatherCondition(symbolCode) {
 }
 
 export function formatOsloWeather(weather) {
-  return `${formatOsloWeatherSummary(weather).join(" · ")}.`;
+  return `${formatOsloWeatherSummary(weather).map(({ value }) => value).join(" · ")}.`;
 }
 
 export function formatOsloWeatherSummary({
   condition,
-  conditionEmoji,
+  conditionIcon,
   relativeHumidity,
   temperature,
 }) {
   const temperatureText = new Intl.NumberFormat("en", { maximumFractionDigits: 1 }).format(temperature);
   const conditionText = toTitleCase(condition);
   return [
-    "Oslo 🇳🇴",
-    `${temperatureText}°C`,
-    `${conditionText} ${conditionEmoji}`,
-    `Humidity ${formatWeatherReading(relativeHumidity, "%")}`,
+    { icon: null, value: "🇳🇴 Oslo" },
+    { icon: "wi-thermometer", value: `${temperatureText}°C` },
+    { icon: conditionIcon, value: conditionText },
+    { icon: "wi-humidity", value: formatWeatherReading(relativeHumidity, "%") },
   ];
 }
 
@@ -235,13 +236,22 @@ export function formatOsloWeatherDetails(weather) {
   return [
     {
       label: "Wind",
+      icon: "wi-strong-wind",
       value: formatWindReading(weather.windSpeed, weather.windFromDirection),
       windBarb: Number.isFinite(weather.windSpeed) && Number.isFinite(weather.windFromDirection)
         ? { direction: weather.windFromDirection, speed: weather.windSpeed }
         : null,
     },
-    { label: "Pressure", value: formatWeatherReading(weather.airPressureAtSeaLevel, " hPa") },
-    { label: "Cloud cover", value: formatWeatherReading(weather.cloudAreaFraction, "%") },
+    {
+      label: "Pressure",
+      icon: "wi-barometer",
+      value: formatWeatherReading(weather.airPressureAtSeaLevel, " hPa"),
+    },
+    {
+      label: "Cloud cover",
+      icon: "wi-cloudy",
+      value: formatWeatherReading(weather.cloudAreaFraction, "%"),
+    },
   ];
 }
 
@@ -280,6 +290,19 @@ function getWeatherEmoji(symbolCode) {
   if (normalized.includes("sleet")) return "🌨️";
   if (normalized.includes("rain")) return "🌧️";
   return "🌡️";
+}
+
+function getWeatherIcon(symbolCode) {
+  const normalized = symbolCode?.replace(/_(day|night|polartwilight)$/, "") ?? "";
+  const isNight = symbolCode?.endsWith("_night");
+  if (["clearsky", "fair"].includes(normalized)) return isNight ? "wi-night-clear" : "wi-day-sunny";
+  if (["partlycloudy", "cloudy"].includes(normalized)) return isNight ? "wi-night-alt-cloudy" : "wi-day-cloudy";
+  if (normalized === "fog") return "wi-fog";
+  if (normalized.includes("thunder")) return "wi-thunderstorm";
+  if (normalized.includes("snow")) return "wi-snow";
+  if (normalized.includes("sleet")) return "wi-sleet";
+  if (normalized.includes("rain")) return "wi-rain";
+  return "wi-na";
 }
 
 export function getSeasonDefinition(seasonId) {

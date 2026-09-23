@@ -59,6 +59,7 @@ documentSource = documentSource
   );
 
 const seasonalStyle = `
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.12/css/weather-icons.min.css">
     <style>
       html {
         --season-wash: 250 251 252;
@@ -191,8 +192,22 @@ const seasonalStyle = `
       }
 
       .weather-summary-item {
-        display: grid;
-        place-items: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.35rem;
+      }
+
+      .weather-summary-item .wi,
+      .weather-reading dd > .wi {
+        display: block;
+        font-size: 1.125em;
+        flex: 0 0 auto;
+        vertical-align: -0.08em;
+      }
+
+      .weather-summary-item > span {
+        line-height: 1;
       }
 
       .weather-reading dt {
@@ -202,7 +217,11 @@ const seasonalStyle = `
       }
 
       .weather-reading dd {
-        margin: 0.125rem 0 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.35rem;
+        margin: 0;
         color: var(--season-text);
         font-size: 0.9375rem;
         font-weight: 650;
@@ -223,6 +242,16 @@ const seasonalStyle = `
         stroke: currentColor;
         stroke-linecap: round;
         stroke-width: 2;
+      }
+
+      .wind-barb circle {
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+      }
+
+      .wind-barb polygon {
+        fill: currentColor;
       }
 
       #oslo-forecast {
@@ -249,6 +278,18 @@ const seasonalStyle = `
         border: 1px solid rgb(var(--season-wash) / 35%);
         border-radius: 0.5rem;
         background: rgb(var(--season-wash) / 16%);
+      }
+
+      .weather-period > span:not(.weather-period-precipitation) {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.35rem;
+      }
+
+      .weather-period .wi {
+        flex: 0 0 auto;
+        font-size: 1.125em;
       }
 
       .weather-period-precipitation {

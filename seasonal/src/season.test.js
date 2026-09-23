@@ -104,22 +104,23 @@ test("formats the current Oslo weather condition", () => {
   assert.equal(weather.time, "2026-09-22T14:00:00+02:00");
   assert.equal(
     formatOsloWeather(weather),
-    "Oslo 🇳🇴 · 14.4°C · Few Clouds 🌤️ · Humidity 47.5%.",
+    "🇳🇴 Oslo · 14.4°C · Few Clouds · 47.5%.",
   );
   assert.deepEqual(formatOsloWeatherSummary(weather), [
-    "Oslo 🇳🇴",
-    "14.4°C",
-    "Few Clouds 🌤️",
-    "Humidity 47.5%",
+    { icon: null, value: "🇳🇴 Oslo" },
+    { icon: "wi-thermometer", value: "14.4°C" },
+    { icon: "wi-day-sunny", value: "Few Clouds" },
+    { icon: "wi-humidity", value: "47.5%" },
   ]);
   assert.deepEqual(formatOsloWeatherDetails(weather), [
     {
       label: "Wind",
+      icon: "wi-strong-wind",
       value: "3.2 m/s from SSW",
       windBarb: { direction: 199, speed: 3.2 },
     },
-    { label: "Pressure", value: "1026.5 hPa" },
-    { label: "Cloud cover", value: "38.8%" },
+    { label: "Pressure", icon: "wi-barometer", value: "1026.5 hPa" },
+    { label: "Cloud cover", icon: "wi-cloudy", value: "38.8%" },
   ]);
   assert.deepEqual(
     getOsloForecastPeriods(forecast, new Date("2026-09-22T12:20:00Z")),
@@ -127,19 +128,19 @@ test("formats the current Oslo weather condition", () => {
       {
         label: "Next Hour",
         condition: "Few Clouds",
-        emoji: "🌤️",
+        icon: "wi-day-sunny",
         precipitation: "0 mm",
       },
       {
         label: "Next 6 Hours",
         condition: "Rain",
-        emoji: "🌧️",
+        icon: "wi-rain",
         precipitation: "2.4 mm",
       },
       {
         label: "Next 12 Hours",
         condition: "Partly Cloudy",
-        emoji: "⛅",
+        icon: "wi-day-cloudy",
         precipitation: null,
       },
     ],
