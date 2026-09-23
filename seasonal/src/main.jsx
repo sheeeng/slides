@@ -31,7 +31,9 @@ async function refreshOsloSeason() {
     weatherSummary.classList.remove("weather-summary");
     weatherSummary.setAttribute("aria-label", weather.weatherText);
     weatherSummary.textContent = weather.weatherText;
-    document.getElementById("oslo-weather-details").replaceChildren();
+    const weatherDetails = document.getElementById("oslo-weather-details");
+    weatherDetails.replaceChildren();
+    weatherDetails.hidden = true;
     document.getElementById("oslo-forecast").hidden = true;
     const weatherAttribution = document.getElementById("oslo-weather-attribution");
     const weatherLink = weatherAttribution.querySelector("a");
@@ -63,7 +65,9 @@ async function refreshOsloSeason() {
     weatherSummary.classList.remove("weather-summary");
     weatherSummary.removeAttribute("aria-label");
     weatherSummary.textContent = "Current weather for Oslo is unavailable.";
-    document.getElementById("oslo-weather-details").replaceChildren();
+    const weatherDetails = document.getElementById("oslo-weather-details");
+    weatherDetails.replaceChildren();
+    weatherDetails.hidden = true;
     document.getElementById("oslo-forecast").hidden = true;
     console.warn(`Could not refresh the Oslo forecast season: ${error.message}`);
   }

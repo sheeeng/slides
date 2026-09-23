@@ -138,6 +138,8 @@ const seasonalStyle = `
       }
 
       .seasonal-attribution {
+        display: grid;
+        gap: 0.125rem;
         max-width: 640px;
         margin: 0 auto;
         padding: 0 clamp(1rem, 4vw, 2rem) 0.75rem;
@@ -155,7 +157,7 @@ const seasonalStyle = `
         flex-direction: column;
         justify-content: center;
         gap: 0.125rem;
-        margin-bottom: 0.65rem;
+        margin: 0;
       }
 
       .weather-forecast-time {
@@ -181,6 +183,10 @@ const seasonalStyle = `
         gap: 0.5rem;
         max-width: 32rem;
         margin: 0 auto 0.65rem;
+      }
+
+      #oslo-weather-details[hidden] {
+        display: none;
       }
 
       .weather-summary-item,
