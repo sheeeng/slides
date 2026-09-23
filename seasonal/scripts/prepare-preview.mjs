@@ -164,9 +164,9 @@ const seasonalStyle = `
 
       #oslo-weather {
         margin-bottom: 0.65rem;
-        color: var(--season-text);
-        font-size: clamp(1rem, 2vw, 1.125rem);
-        font-weight: 650;
+        color: var(--season-muted);
+        font-size: 0.8125rem;
+        font-weight: 400;
       }
 
       #oslo-weather.weather-summary {
