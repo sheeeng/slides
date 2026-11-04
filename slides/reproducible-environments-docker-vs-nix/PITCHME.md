@@ -83,6 +83,23 @@ section.comparison table {
   font-size: 1em;
   line-height: 1.2;
 }
+
+section.contact h2 {
+  font-size: 52px;
+  margin: 0 0 12px;
+}
+
+section.contact > p {
+  font-size: 26px;
+  margin: 10px 0;
+}
+
+section.contact img {
+  width: 260px;
+  height: 260px;
+  padding: 16px;
+  background: white;
+}
 </style>
 
 ## <!--fit--> Reproducible Environments
@@ -528,26 +545,34 @@ And the two compose well: build with Nix, ship with Docker.
 
 ---
 
-## Thanks!
+<!-- _class: contact -->
+
+## Follow and Get in Touch
 
 <!-- markdownlint-enable MD026 -->
 
 <!-- markdownlint-disable MD036 -->
 
-`sheeeng.github.io/slides`
+[github.com/sheeeng][github-profile]
 
-<img src="assets/qr-slides.svg" alt="QR code for sheeeng.github.io/slides" width="256" height="256">
+<img src="assets/qr-github-profile.png" alt="QR code for Leonard’s GitHub profile at github.com/sheeeng" width="300" height="300" style="background: white; padding: 24px;">
+
+Follow me on GitHub. Contact details are on my profile.
+
+`sheeeng.github.io/slides`
 
 <!-- markdownlint-enable MD036 -->
 
 <!--
-[15 seconds]
+[30 seconds]
 
 Thank you!
 
-Slides are on GitHub at that link.
+Scan this code to open my GitHub profile. Follow me there and use the contact details on my profile to get in touch.
 
-Leave with the one line that sums it up: Docker packages the mess, Nix fixes the mess.
+The slides link is also available below the code.
 
 Questions?
 -->
+
+[github-profile]: https://github.com/sheeeng

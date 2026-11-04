@@ -1426,25 +1426,24 @@ The best way to learn is by doing. Start exploring your own system and see how t
 
 ![bg opacity](../media/nix-wallpaper-nineish.webp)
 
-## Thanks!
+## Follow and Get in Touch
 
 <!-- markdownlint-enable MD026 -->
 
-<!-- markdownlint-disable MD036 -->
+[github.com/sheeeng][github-profile]
 
-sheeeng.github.io/slides
+<img src="assets/qr-github-profile.png" alt="QR code for Leonard’s GitHub profile at github.com/sheeeng" width="300" height="300" style="background: white; padding: 24px;">
 
-<!-- markdownlint-enable MD036 -->
+Follow me on GitHub. Contact details are on my profile.
 
-<picture>
-  <source srcset="https://fonts.gstatic.com/s/e/notoemoji/latest/2744_fe0f/512.webp" type="image/webp">
-  <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/2744_fe0f/512.gif" alt="❄" width="128" height="128">
-</picture>
+`sheeeng.github.io/slides`
 
 <!--
-[15 seconds] Thanks! Slides are on GitHub. Questions? If you have any questions, feel free to find me after the talk or reach out online. Happy Nixing!
+[15 seconds] Thank you! Scan the code to follow me on GitHub. Use the contact details on my profile to get in touch. The slides link is below the code. Questions?
 -->
 
 <!--
 LEGO® is a trademark of the LEGO Group of companies which does not sponsor, authorize or endorse this site/presentation.
 -->
+
+[github-profile]: https://github.com/sheeeng
