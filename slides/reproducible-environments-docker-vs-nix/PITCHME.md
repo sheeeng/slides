@@ -132,17 +132,39 @@ section.contact img {
 }
 section.workflows h2 {
   font-size: 48px;
+  margin: 0 0 48px;
 }
 
-section.workflows table {
-  font-size: 26px;
-  line-height: 1.35;
+section.workflows .workflow-options {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 56px;
+  text-align: left;
+  margin-bottom: 40px;
+}
+
+section.workflows .workflow-options h3 {
+  font-size: 32px;
+  line-height: 1.25;
+  margin: 0 0 24px;
+}
+
+section.workflows .workflow-options p {
+  font-size: 28px;
+  line-height: 1.45;
+  margin: 12px 0;
+}
+
+section.workflows .workflow-options code {
+  font-size: 22px;
 }
 
 section.workflows > p {
   font-size: 28px;
   line-height: 1.4;
+  margin: 0;
 }
+
 section.verification h2 {
   font-size: 44px;
   margin: 0 0 12px;
@@ -669,15 +691,33 @@ Here is the part I want you to remember.
 
 ## Two Ways to Combine Nix and Docker
 
-| Workflow                  | Image Assembly                                                               |
-| ------------------------- | ---------------------------------------------------------------------------- |
-| Keep a Dockerfile.        | Copy the Nix application output and its runtime dependencies into the image. |
-| Build the image with Nix. | Use `dockerTools.buildLayeredImage` to assemble it directly.                 |
+<div class="workflow-options">
+<div>
 
-**Nix can build the application, or it can build the entire container image. Your familiar container runtime can still run the result.**
+### 1. Keep the Dockerfile
+
+Nix builds the application.
+
+The Dockerfile includes it and its runtime dependencies.
+
+</div>
+<div>
+
+### 2. Let Nix Build the Image
+
+Nix assembles the complete image with:
+
+`dockerTools.buildLayeredImage`
+
+</div>
+</div>
+
+**Both run with Docker or another compatible container runtime.**
 
 <!--
 [35 seconds]
+
+Nix can build the application, or it can build the entire container image. Your familiar container runtime can still run the result.
 
 There are two useful starting points.
 
