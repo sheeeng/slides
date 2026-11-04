@@ -1039,7 +1039,7 @@ Use the dependency graph to explain relationships and the SBOM to inventory and 
 
 <!-- _class: contact -->
 
-## Follow and Get in Touch
+## Thanks!
 
 <!-- markdownlint-enable MD026 -->
 
@@ -1049,7 +1049,7 @@ Use the dependency graph to explain relationships and the SBOM to inventory and 
 
 <img src="assets/qr-github-profile.png" alt="QR code for Leonard’s GitHub profile at github.com/sheeeng" width="300" height="300" style="background: white; padding: 24px;">
 
-Follow me on GitHub. Contact details are on my profile.
+Get in touch on GitHub. Thank you!
 
 `sheeeng.github.io/slides`
 
