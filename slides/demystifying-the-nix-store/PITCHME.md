@@ -119,6 +119,8 @@ blockquote::after {
 The Giant Immutable LEGO® Set
 
 <!--
+Presenter timing: The session slot is 50 minutes.
+
 Ever looked inside /nix/store and felt immediate confusion? You aren't alone.
 
 For many, the "magic" of Nix is hidden behind cryptic hashes and the mysterious "derivation."
