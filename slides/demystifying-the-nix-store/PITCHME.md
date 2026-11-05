@@ -110,6 +110,26 @@ blockquote::after {
   content: "\201D";
 }
 */
+section.contact h2 {
+  font-size: 52px;
+  margin: 0 0 12px;
+}
+section.contact > p {
+  font-size: 26px;
+  margin: 10px 0;
+}
+section.contact img {
+  width: 260px;
+  height: 260px;
+  padding: 16px;
+  background: white;
+}
+
+section.contact {
+  background-image: url('assets/nix-wallpaper-nineish.webp');
+  background-size: cover;
+  background-position: center;
+}
 </style>
 
 ## <!--fit--> Demystifying the Nix Store
@@ -1426,19 +1446,23 @@ The best way to learn is by doing. Start exploring your own system and see how t
 
 ---
 
-![bg opacity](../media/nix-wallpaper-nineish.webp)
+<!-- _class: contact -->
 
-## Follow and Get in Touch
+## Thanks!
 
 <!-- markdownlint-enable MD026 -->
+
+<!-- markdownlint-disable MD036 -->
 
 [github.com/sheeeng][github-profile]
 
 <img src="assets/qr-github-profile.png" alt="QR code for Leonard’s GitHub profile at github.com/sheeeng" width="300" height="300" style="background: white; padding: 24px;">
 
-Follow me on GitHub. Contact details are on my profile.
+Get in touch on GitHub. Thank you!
 
 `sheeeng.github.io/slides`
+
+<!-- markdownlint-enable MD036 -->
 
 <!--
 [15 seconds] Thank you! Scan the code to follow me on GitHub. Use the contact details on my profile to get in touch. The slides link is below the code. Questions?
