@@ -6,7 +6,8 @@ description: "The Giant Immutable LEGO Set: Demystifying the Nix Store"
 theme: uncover
 transition: fade
 author: "Leonard Sheng Sheng Lee"
-header: "[Demystifying the Nix Store](https://sheeeng.github.io/slides/demystifying-the-nix-store/) | [PlanetNix 2026 • SCaLE 23x](https://www.socallinuxexpo.org/scale/23x/presentations/giant-immutable-lego-set-demystifying-nix-store)"
+# header: "[Demystifying the Nix Store](https://sheeeng.github.io/slides/demystifying-the-nix-store/) | [PlanetNix 2026 • SCaLE 23x](https://www.socallinuxexpo.org/scale/23x/presentations/giant-immutable-lego-set-demystifying-nix-store)"
+header: "[Demystifying the Nix Store](https://sheeeng.github.io/slides/demystifying-the-nix-store/) | [Devoxx Morocco 2026](https://m.devoxx.com/events/dvma26/talks/9115/the-giant-immutable-lego-set-demystifying-the-nix-store)"
 footer: "Built from [`__GIT_SHA__`](https://github.com/sheeeng/slides/commit/__GIT_REVISION__). Made with [Marp](https://marp.app/) by [Leonard Sheng Sheng Lee](https://github.com/sheeeng)."
 paginate: true
 _paginate: false
